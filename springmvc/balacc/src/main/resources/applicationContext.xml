@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+
+    <!-- 整合 SpringMVC 1. 配置当前的 SpringIOC 容器的扫描的包 2. 配置 SpringMVC IOC 容器扫描的包. -->
+    <context:component-scan base-package="com.*">
+        <context:exclude-filter type="annotation"
+                                expression="org.springframework.stereotype.Controller"/>
+        <context:exclude-filter type="annotation"
+                                expression="org.springframework.web.bind.annotation.RestController"/>
+        <context:exclude-filter type="annotation"
+                                expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+    </context:component-scan>
+
+    <!-- 整合 myBatis: 1. 配置 SqlSessionFactory 2. 使用 Spring 的声明式事务 -->
+    <context:property-placeholder /> <!--location="classpath:jdbc.properties"/> -->
+   <!-- <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"  destroy-method="close">
+        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+        <property name="jdbcUrl" value="jdbc:mysql://192.168.6.238:3306/rightsman?useUnicode=true&amp;characterEncoding=UTF-8"/>
+        <property name="user" value="root"/>
+        <property name="password" value="123456"/>
+        <property name="initialPoolSize" value="5" />
+        <property name="maxPoolSize" value="10"/>
+        <property name="maxIdleTime" value="1800" />
+        <property name="minPoolSize" value="5"/>
+        <property name="preferredTestQuery" value="select 1"/>
+
+    </bean>-->
+
+    <bean id="dataSource"
+          class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://192.168.6.238:3306/rightsman?useUnicode=true&amp;characterEncoding=UTF-8"/>
+        <property name="username" value="root"/>
+        <property name="password" value="123456"/>
+
+    </bean>
+
+    <bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"></property>
+        <property name="configLocation" value="classpath:mybatis-config.xml"></property>
+        <property name="mapperLocations" value="classpath*:com/**/*.xml"/>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!-- 因为 transaction-manager 属性指向了 DataSourceTransactionManager 实例, 所以只能给 mybatis 做声明式事务. -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+
+    <bean id="multipartResolver"
+        class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- max upload size in bytes -->
+        <property name="maxUploadSize" value="20971520" /> <!-- 20MB -->
+        <!-- max size of file in memory (in bytes) -->
+        <property name="maxInMemorySize" value="1048576" /> <!-- 1MB -->
+
+    </bean>
+
+    <!-- spring aop 代理配置cglib -->
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+
+    <!-- 配置 Mapper 所在的包和子包 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com"/>
+    </bean>
+
+</beans>
+
