@@ -84,7 +84,6 @@ a:link, a:visited {
 	height: 60px;
 }
 
-}
 .navigation-up .navigation-v3 li {
 	font-weight: normal;
 	padding: 0;
@@ -250,7 +249,6 @@ a:link, a:visited {
  .info-list {
     background-color: #373d41;
     padding: 0px;
-}
 }
 .info-cell ul li.user-uid {
     overflow: hidden;

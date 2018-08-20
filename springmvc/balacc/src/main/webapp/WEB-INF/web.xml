@@ -26,6 +26,7 @@
     </filter-mapping>
 
     <!-- urlrewrite-->
+<!--
     <filter>
         <filter-name>UrlRewriteFilter</filter-name>
         <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
@@ -36,6 +37,7 @@
         <dispatcher>REQUEST</dispatcher>
         <dispatcher>FORWARD</dispatcher>
     </filter-mapping>
+-->
 
     <!-- 日志记录 -->
     <context-param>
@@ -86,6 +88,6 @@
     </error-page>-->
 
     <welcome-file-list>
-        <welcome-file>view/index.jsp</welcome-file>
+        <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
 </web-app>
