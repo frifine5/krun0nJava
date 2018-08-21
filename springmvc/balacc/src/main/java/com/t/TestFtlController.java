@@ -48,6 +48,12 @@ public class TestFtlController {
     }
 
 
+    @RequestMapping("/")
+    public String getPage(){
+
+        return "index";
+    }
+
 }
 
 
