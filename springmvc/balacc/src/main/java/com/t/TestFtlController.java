@@ -56,11 +56,9 @@ public class TestFtlController {
     }
 
     @RequestMapping("/page/{uri}")
-    @ResponseBody
-    public Object getPage(@PathVariable("uri") String uri){
+    public String getPage(@PathVariable("uri") String uri){
         System.out.println(uri);
-        ModelAndView mav = new ModelAndView(uri);
-        return mav;
+        return uri;
     }
 
 }

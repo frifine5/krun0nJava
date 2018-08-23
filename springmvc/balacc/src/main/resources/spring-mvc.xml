@@ -50,12 +50,14 @@
     <!-- 针对freemarker的视图解析器配置 -->
     <bean id="viewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
         <property name="viewClass" value="org.springframework.web.servlet.view.freemarker.FreeMarkerView"/>
-        <property name="viewNames">
+      <!--  <property name="viewNames">
             <array>
                 <value>*.ftl</value>
             </array>
-        </property>
+        </property>-->
+        <property name="cache" value="true" />
         <property name="prefix" value=""/>
+        <property name="suffix" value=".ftl" />
         <property name="contentType" value="text/html;charset=utf-8"/>
         <property name="requestContextAttribute" value="request"/>
         <property name="exposeRequestAttributes" value="true"/>

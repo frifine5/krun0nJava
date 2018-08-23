@@ -54,7 +54,7 @@
                 </li>
 
                 <li>
-                    <a onclick="changeInner('/page/c/main');event.returnValue=false;" href="javascript:void(0)">
+                    <a onclick="changeInner('/page/main');event.returnValue=false;" href="javascript:void(0)">
                         <i class="fa fa-desktop"></i> 菜单一</a>
                 </li>
                 <li>
@@ -132,13 +132,11 @@
     }
 
     function changeInner(url) {
-        alert(1);
         jQuery.ajax({
-            dataType: "application/text",
             url: url,
-            timeout: 10,
+            cache: false,
             success: function (data) {
-                $("#page-inner").innerHTML=data;
+                $("#page-inner").html(data);
             },
             error: function () {
                 alert("fail");

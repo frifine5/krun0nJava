@@ -1,4 +1,4 @@
-<#include "../common.ftl" >
+<#include "common.ftl" >
 <html>
 <head>
     <meta charset="UTF-8">
@@ -13,7 +13,6 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="col-lg-9">
-                    <form role="form" action="javascript: conditionQuery()">
                         <div class="col-lg-3 form-group has-success">
                             <label class="control-label" for="sealCode">印章编码</label>
                             <input type="text" class="form-control" id="sealCode">
@@ -27,9 +26,8 @@
                             <input type="text" class="form-control" id="unitName">
                         </div>
                         <div class="col-lg-2 form-group pull-right">
-                            <input type="submit" class="form-control" id="submit">
+                            <input type="button" class="form-control" value="查询" onclick="conditionQuery();event.returnValue=false;">
                         </div>
-                    </form>
                 </div>
             </div>
         </div>
@@ -43,7 +41,7 @@
             </div>
             <div class="panel-body">
                 <div class="table-responsive">
-                    <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                    <table class="table table-striped table-bordered table-hover" id="sealTbl">
                         <thead>
                         <tr>
                             <th>序号</th>
@@ -73,7 +71,6 @@
                             </#list>
                             </tbody>
                         <#else >
-                            <p>无结果</p>
                         </#if>
 
                     </table>
@@ -90,19 +87,23 @@
 
     function conditionQuery() {
 
-        var data = {
-            "code": $("#sealCode"),
-            "name": $("#sealName"),
-            "unit": $("#unitName")
-        };
+        // var data = {
+        //     "code": $("#sealCode"),
+        //     "name": $("#sealName"),
+        //     "unit": $("#unitName")
+        // };
+        var req = "1";
+        alert(req);
         jQuery.ajax({
+            async: false,
             type: "post",
-            data: data,
+            data: req,
+            cache: false,
             dataType: "json",
             url: "/seal/querySealList",
-            timeout: 10,
             success: function (data) {
-                alert(data);
+                alert(data.sealList);
+                sealList = data.sealList;
             },
             error: function () {
                 alert("fail");

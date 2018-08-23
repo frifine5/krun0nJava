@@ -1,25 +1,24 @@
 package com.cyk.controller;
 
 import com.cyk.ev.Seal;
-import org.springframework.stereotype.Controller;
+import net.sf.json.JSONObject;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
-@Controller
+@RestController
 public class SealController {
 
     @RequestMapping("/seal/querySealList")
-    public Object getFirstPage(HttpServletRequest request) {
+    public @ResponseBody Object getFirstPage(HttpServletRequest request ) {
 
         String code = request.getParameter("code");
         String name = request.getParameter("name");
         String unit = request.getParameter("unit");
         System.out.printf("code=%s, name=%s, unit=%s\n", code, name, unit);
-
-        ModelAndView mav = new ModelAndView();
 
         // seal demo
         Seal seal = new Seal();
@@ -38,14 +37,11 @@ public class SealController {
 
         Map<String,Object> data = new HashMap<>();
         data.put("sealList", sealList);
+        String json = JSONObject.fromObject(data).toString();
+        System.out.println(json);
 
-        mav.addAllObjects(data);
+        return data;
 
-        Map<String,Object> map = new HashMap<>();
-        map.put("code", 0);
-        map.put("message", "success");
-
-        return map;
     }
 
 
