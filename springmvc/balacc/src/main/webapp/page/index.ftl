@@ -54,7 +54,7 @@
                 </li>
 
                 <li>
-                    <a onclick="changeInner('/page/c/main.ftl');event.returnValue=false;" href="javascript:void(0)">
+                    <a onclick="changeInner('/page/c/main');event.returnValue=false;" href="javascript:void(0)">
                         <i class="fa fa-desktop"></i> 菜单一</a>
                 </li>
                 <li>
@@ -68,6 +68,7 @@
         </div>
 
     </nav>
+
     <!-- /. NAV SIDE  -->
     <div id="page-wrapper">
         <div id="page-inner">
@@ -124,11 +125,27 @@
     /**
      * 跳转右侧页面
      */
-    function changeInner(url) {
+    function changeInner1(url) {
         $("#page-inner").load(url, function () {
             $("#page-inner").fadeIn(100);
         });
     }
+
+    function changeInner(url) {
+        alert(1);
+        jQuery.ajax({
+            dataType: "application/text",
+            url: url,
+            timeout: 10,
+            success: function (data) {
+                $("#page-inner").innerHTML=data;
+            },
+            error: function () {
+                alert("fail");
+            }
+        });
+    }
+
     function doLogin() {
         alert('go to login');
     }

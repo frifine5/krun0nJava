@@ -1,7 +1,9 @@
 package com.t;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
@@ -50,8 +52,15 @@ public class TestFtlController {
 
     @RequestMapping("/")
     public String getPage(){
-
         return "index";
+    }
+
+    @RequestMapping("/page/{uri}")
+    @ResponseBody
+    public Object getPage(@PathVariable("uri") String uri){
+        System.out.println(uri);
+        ModelAndView mav = new ModelAndView(uri);
+        return mav;
     }
 
 }
