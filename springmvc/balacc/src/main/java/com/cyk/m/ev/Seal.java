@@ -1,4 +1,6 @@
-package com.cyk.ev;
+package com.cyk.m.ev;
+
+import java.util.Date;
 
 public class Seal {
     private String code;
@@ -7,7 +9,7 @@ public class Seal {
     private String unit;
     private String lp;
     private String optr;
-    private String st;
+    private Date st;
     private String pic;
 
     public String getCode() {
@@ -58,11 +60,11 @@ public class Seal {
         this.optr = optr;
     }
 
-    public String getSt() {
+    public Date getSt() {
         return st;
     }
 
-    public void setSt(String st) {
+    public void setSt(Date st) {
         this.st = st;
     }
 

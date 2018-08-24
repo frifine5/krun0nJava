@@ -83,4 +83,16 @@ select {
 	width:3px;height:100%; 
 	overflow:hidden;background:#E6E6E6; 
 	cursor:e-resize;border-left:1px solid #E6E6E6;border-right:1px solid #E6E6E6; 
-} 
+}
+
+.font-lg{
+	font-size:24px;
+}
+
+.font-md{
+	font-size:20px;
+}
+
+.font-sl{
+	font-size:16px;
+}

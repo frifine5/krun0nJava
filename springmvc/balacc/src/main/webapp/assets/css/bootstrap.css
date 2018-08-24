@@ -5120,14 +5120,19 @@ button.close {
   -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
           box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
 }
-.modal-backdrop {
+/*模态框底色淡化*/
+/*.modal-backdrop {
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
   z-index: 1040;
-  background-color: #000;
+  background-color: #e8e8e8;
+}*/
+.modal-backdrop {
+  opacity: 0 !important;
+  filter: alpha(opacity=0) !important;
 }
 .modal-backdrop.fade {
   filter: alpha(opacity=0);

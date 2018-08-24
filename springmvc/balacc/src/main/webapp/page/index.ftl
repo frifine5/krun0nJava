@@ -1,5 +1,5 @@
-<html>
 <#include "common.ftl" >
+<html>
 <head>
     <title>
         首页
@@ -29,12 +29,12 @@
                          <li><a href="#"><i class="fa fa-user fa-fw"></i>账户信息</a>
                          </li>
                          <li class="divider"></li>
-                         <li><a href="#"><i class="fa fa-sign-out fa-fw"></i> 退出系统</a>
+                         <li><a href="#"><i class="glyphicon glyphicon-log-out fa-fw"></i> 退出系统</a>
                          </li>
                      </ul>
                  <#else >
-                     <a onclick="doLogin();event.returnValue=false;" href="javascript:void(0)">
-                        <i class="fa fa-user fa-fw"></i>
+                     <a data-toggle="modal" data-target="#loginModal">
+                        <i class="glyphicon glyphicon-log-in fa-fw"></i>
                         <span>登录</span>
                     </a>
 
@@ -50,16 +50,12 @@
             <ul class="nav" id="main-menu">
 
                 <li>
-                    <a class="active-menu" href="#"><i class="fa fa-dashboard"></i>首页</a>
+                    <a class="active-menu" onclick="changeInner('/page/home') " href="javascript:void(0)" ><i class="fa fa-dashboard"></i>首页</a>
                 </li>
 
                 <li>
-                    <a onclick="changeInner('/page/main');event.returnValue=false;" href="javascript:void(0)">
-                        <i class="fa fa-desktop"></i> 菜单一</a>
-                </li>
-                <li>
-                    <a onclick="changeInner(<@s.url'/pages/log/main.html'/>)" href="javascript:void(0)"><i
-                            class="fa fa-bar-chart-o"></i> 菜单二</a>
+                    <a onclick="changeInner('/page/main');conditionQuery() " href="javascript:void(0)" >
+                        <i class="fa fa-desktop"></i> 印章管理</a>
                 </li>
 
 
@@ -73,80 +69,60 @@
     <div id="page-wrapper">
         <div id="page-inner">
 
-            <div class="row">
-                <div class="col-md-12">
-                    <h2 class="page-header">
-                        用水说明
-                        <small>Summary of how to use this machine.</small>
-                    </h2>
-                </div>
-            </div>
-
-
-            <!-- /. ROW  -->
-            <div class="row col-xs-12">
-                <div>&nbsp;</div>
-                <div class="col-md-8 col-sm-12 col-xs-12">
-                    <div class="panel panel-primary text-center no-boder bg-color-green">
-                        <div class="panel-body">
-                            <img id="middleImage" src="/images/priceList.png"/>
-                        </div>
-                        <div id="middleTitle" class="panel-footer back-footer-green">
-                            水费计价规则
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4 col-sm-12 col-xs-12">
-                    <div><br/>
-                        <button class="col-xs-9 btn btn-info" onclick="mainDo(1)">显示水质</button>
-                        <br/><br/>
-                        <button class="col-xs-9 btn btn-info" onclick="mainDo(2)">查询余额</button>
-                        <br/><br/>
-                        <button class="col-xs-9 btn btn-info" onclick="mainDo(3)">自助服务</button>
-                        <br/><br/>
-                        <button class="col-xs-9 btn btn-warning" onclick="mainDo(4)">挂失</button>
-                        <br/><br/>
-                    </div>
-
-                </div>
-            </div>
-
-
         </div>
         <!-- /. PAGE INNER  -->
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" role="document" aria-labelledby="loginModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title text-center" id="loginModalLabel">登录</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="panel-body">
+                        <div class="col-lg-9">
+                            <div class="col-lg-3 form-group has-success ">
+                                <label class="control-label large" for="account">账号</label>
+                            </div>
+                            <div class="col-lg-8 form-group ">
+                                <input type="text" class="form-control" id="account">
+                            </div>
+                            <div class="col-lg-3 form-group  has-success ">
+                                <label class="control-label large" for="pwd">密码</label>
+                            </div>
+                            <div class="col-lg-8 form-group ">
+                                <input type="password" class="form-control" id="pwd">
+                            </div>
+                            <div class="col-lg-3  form-group  has-success ">
+                                <label class="control-label large" for="vCode">验证码</label>
+                            </div>
+                            <div class="col-lg-8 form-group ">
+                                <input type="text" class="form-control" id="vCode">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-primary" value="登录" id="loginBtn"
+                           onclick="doLogin();event.returnValue=false;">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- /. PAGE WRAPPER  -->
 </div>
 
 
 <script type="text/javascript">
-
-    /**
-     * 跳转右侧页面
-     */
-    function changeInner1(url) {
-        $("#page-inner").load(url, function () {
-            $("#page-inner").fadeIn(100);
-        });
+    window.onload  = function(){
+        changeInner('/page/home');
     }
 
-    function changeInner(url) {
-        jQuery.ajax({
-            url: url,
-            cache: false,
-            success: function (data) {
-                $("#page-inner").html(data);
-            },
-            error: function () {
-                alert("fail");
-            }
-        });
-    }
-
-    function doLogin() {
-        alert('go to login');
-    }
 </script>
 
 </body>
