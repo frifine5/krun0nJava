@@ -58,6 +58,10 @@
                         <i class="fa fa-desktop"></i> 印章管理</a>
                 </li>
 
+                <li>
+                    <a onclick="changeInner('/test')" href="javascript:void(0)" >
+                        <i class="fa fa-desktop"></i> 测试跳页</a>
+                </li>
 
             </ul>
 

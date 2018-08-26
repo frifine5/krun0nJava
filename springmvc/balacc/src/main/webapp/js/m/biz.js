@@ -14,7 +14,12 @@ function changeInner(url) {
 }
 
 function doLogin() {
-    alert('go to login');
+    var url="/doLogin?";
+    url += "account="+$("#account").val();
+    url += "&pwd="+$("#pwd").val();
+    url += "&vCode="+$("#vCode").val();
+    alert('go to login: ' + url);
+    window.location.href=url;
 }
 
 
