@@ -89,10 +89,14 @@ select {
 	font-size:24px;
 }
 
-.font-md{
+.font-bg{
 	font-size:20px;
 }
 
-.font-sl{
+.font-md{
 	font-size:16px;
+}
+
+.font-sl{
+	font-size:12px;
 }

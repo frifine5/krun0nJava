@@ -63,6 +63,11 @@
                         <i class="fa fa-desktop"></i> 测试跳页</a>
                 </li>
 
+                <li>
+                    <a onclick="changeInner('/seal'); doQuery()" href="javascript:void(0)" >
+                        <i class="fa fa-desktop"></i> ftl的印章页</a>
+                </li>
+
             </ul>
 
         </div>

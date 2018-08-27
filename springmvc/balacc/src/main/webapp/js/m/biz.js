@@ -18,10 +18,29 @@ function doLogin() {
     url += "account="+$("#account").val();
     url += "&pwd="+$("#pwd").val();
     url += "&vCode="+$("#vCode").val();
-    alert('go to login: ' + url);
     window.location.href=url;
 }
 
+
+
+function doQuery() {
+    var url = "/seal?";
+    url += "code=" + $("#sealCode").val();
+    url += "&name=" + $("#sealName").val();
+    url += "&unit=" + $("#unitName").val();
+    jQuery.ajax({
+        async: false,
+        url: url,
+        cache: false,
+        success: function (data) {
+            $("#page-inner").html(data);
+            uptCacheUrl(url);
+        },
+        error: function () {
+            alert("fail");
+        }
+    });
+}
 
 
 function conditionQuery() {
@@ -77,6 +96,29 @@ function conditionQuery() {
 $('body').on('hidden.bs.modal', '.modal', function () {
     $(this).removeData('bs.modal');
 });
+
+
+
+/* 缓存的请求参数 同一时间只缓存一个 用于翻页 */
+var cacheUrl;
+
+function uptCacheUrl(url){
+    cacheUrl = url;
+}
+
+function chgPage(pageNo, pageSize) {
+    jQuery.ajax({
+        async: false,
+        url: cacheUrl+"&pageNo="+pageNo+"&pageSize="+pageSize,
+        cache: false,
+        success: function (data) {
+            $("#page-inner").html(data);
+        },
+        error: function () {
+            alert("fail");
+        }
+    });
+}
 
 
 
