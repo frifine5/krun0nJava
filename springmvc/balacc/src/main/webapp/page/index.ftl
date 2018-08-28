@@ -67,6 +67,10 @@
                     <a onclick="changeInner('/seal'); doQuery()" href="javascript:void(0)" >
                         <i class="fa fa-desktop"></i> ftl的印章页</a>
                 </li>
+                <li>
+                    <a onclick="changeInner('/page/district'); getDist(1)" href="javascript:void(0)" >
+                        <i class="fa fa-desktop"></i> 统一区划代码</a>
+                </li>
 
             </ul>
 
