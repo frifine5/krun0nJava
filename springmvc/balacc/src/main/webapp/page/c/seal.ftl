@@ -106,32 +106,8 @@
                         </#if>
                     </table>
                     <div>
- <#if total gt 0 >
-    <ul class="pagination">
+                        <#include "../pagediv.ftl">
 
-        <#if pageNo == 1 >
-        <li class="disabled"><a >&laquo;</a></li>
-        <#else>
-        <li><a onclick="chgPage(1, ${pageSize})">&laquo;</a></li>
-        </#if>
-        <#assign pe = (total/pageSize)?ceiling>
-        <#list 1..pe as i>
-            <#if i == pageNo>
-                <li class="disabled"><a  onclick="chgPage(${i}, ${pageSize})">${i}</a></li>
-            <#else>
-                <li ><a  onclick="chgPage(${i}, ${pageSize})">${i}</a></li>
-            </#if>
-
-        </#list>
-        <#if pageNo == pe >
-        <li class="disabled"><a >&raquo;</a></li>
-        <#else>
-        <li><a onclick="chgPage(${pe}, ${pageSize})">&raquo;</a></li>
-        </#if>
-
-     </ul>
-
- </#if>
                     </div>
                 </div>
 

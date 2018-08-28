@@ -1,32 +1,35 @@
-<#include "common.ftl" >
-<div>
-    <#if total?c >0 >
-    <ul class="pagination">
 
-        <#if pageNo?c == 1 >
-        <li class="disabled"><a >&laquo;</a></li>
+<div class="pull-left">
+
+ <#if total gt 0 && pageSize gt 0>
+     <#assign pe = (total/pageSize)?ceiling>
+     <ul class="pagination">
+         <li><a>第${pageNo}页/共${pe}页</a></li>
+        <#if pageNo == 1 >
+        <li class="disabled"><a class="disabled" >&laquo;</a></li>
         <#else>
         <li><a onclick="chgPage(1, ${pageSize})">&laquo;</a></li>
         </#if>
-        <#list 1..pageNo?c as i>
-            <#if i == ${pageNo}>
-                <li class="disabled"><a  onclick="chgPage(i, ${pageSize})">i</a></li>
+        <#list 1..pe as i>
+            <#if i lt pageNo-2 || i gt pageNo+2 >
+            <#else >
+                <#if i == pageNo>
+                <li class="active"><a class="disabled" onclick="chgPage(${i}, ${pageSize})">${i}</a></li>
+                <#else>
+                <li ><a  onclick="chgPage(${i}, ${pageSize})">${i}</a></li>
+                </#if>
             </#if>
-                <li ><a  onclick="chgPage(i, ${pageSize})">i</a></li>
+
         </#list>
-        <li><a onclick="chgPage('+${total}/${pageSize}+', ${pageSize})">&raquo;</a></li>
-    </ul>
+        <#if pageNo == pe >
+        <li class="disabled" ><a class="disabled" >&raquo;</a></li>
+        <#else>
+        <li><a onclick="chgPage(${pe}, ${pageSize})">&raquo;</a></li>
+        </#if>
 
-     </#if>
+     </ul>
 
-    <ul class="pagination">
-        <li><a href="#">&laquo;</a></li>
-        <li class="active"><a href="#">1</a></li>
-        <li class="disabled"><a href="#">2</a></li>
-        <li><a href="#">3</a></li>
-        <li><a href="#">4</a></li>
-        <li><a href="#">5</a></li>
-        <li><a href="#">&raquo;</a></li>
-    </ul>
+
+ </#if>
 
 </div>

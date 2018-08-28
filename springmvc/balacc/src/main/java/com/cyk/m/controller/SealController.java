@@ -60,6 +60,14 @@ public class SealController {
 
         log.info(String.format("code=%s, name=%s, unit=%s", code, name, unit));
         log.info(String.format("pageNo=%s, pageSize=%s", pageNo, pageSize));
+
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("c/seal");
+
+        if("em".equals(name)){
+            mv.addObject("total", 0);
+            return mv;
+        }
         // seal demo
         Seal seal = new Seal();
         seal.setCode("10215048");
@@ -75,8 +83,7 @@ public class SealController {
             sealList.add(seal);
         }
 
-        ModelAndView mv = new ModelAndView();
-        mv.setViewName("c/seal");
+
 
         mv.addObject("code", 0);
         mv.addObject("message", "执行完毕");
