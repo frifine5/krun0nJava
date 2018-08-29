@@ -9,6 +9,14 @@ public class District {
     private String dCode;
     private String dName;
 
+    public District() {
+    }
+
+    public District(String dCode, String dName) {
+        this.dCode = dCode;
+        this.dName = dName;
+    }
+
     public String getdCode() {
         return dCode;
     }

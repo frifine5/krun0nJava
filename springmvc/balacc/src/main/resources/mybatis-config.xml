@@ -10,5 +10,7 @@
 	</settings>
 	<mappers>
 		<!--<mapper resource="com/liuwenjian/mappers/userMapper.xml" />-->
+		<package name="com.cyk.m.dao" />
+		<package name="com.cyk.m.*.dao" />
 	</mappers>
 </configuration>
