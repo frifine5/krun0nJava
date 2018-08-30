@@ -5,7 +5,14 @@
         首页
     </title>
 </head>
+<style>
+    .page-inner{
+        width:100%;
+        overflow:hidden;
 
+    }
+
+</style>
 
 <body>
 
@@ -72,6 +79,11 @@
                         <i class="fa fa-desktop"></i> 统一区划代码</a>
                 </li>
 
+                <li>
+                    <a onclick="changeInner('/page/addSeal')" href="javascript:void(0)" >
+                        <i class="fa fa-desktop"></i> 锚点测试</a>
+                </li>
+
             </ul>
 
         </div>
@@ -80,7 +92,7 @@
 
     <!-- /. NAV SIDE  -->
     <div id="page-wrapper">
-        <div id="page-inner">
+        <div id="page-inner" class="page-inner">
 
         </div>
         <!-- /. PAGE INNER  -->
