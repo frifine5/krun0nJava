@@ -1,60 +1,60 @@
 <div id="addSeal">
 
 
-    <div class="panel panel-default addSeal" id="firPage">
+    <div class="col-lg-10 panel panel-default addSeal" id="firPage">
         <div class="panel-heading">
             用章单位信息
         </div>
         <div class="panel-body">
 
-            <div class="col-lg-6">
+            <div class="col-lg-4">
                 <div class="col-lg-3 form-group has-success">
                     <label class="control-label font-sl" for="entname">*单位名称</label>
                 </div>
-                <div class="col-lg-8 input-group has-success">
+                <div class="col-lg-8 form-group has-success">
                     <input class="form-control" type="text" placeholder="请输入单位名称" id="entname">
                 </div>
             </div>
 
-            <div class="col-lg-6">
+            <div class="col-lg-4">
                 <div class="col-lg-3 form-group has-success">
                     <label class="control-label font-sl" for="uniscid">*统一社会信用代码</label>
                 </div>
-                <div class="col-lg-8 input-group has-success">
+                <div class="col-lg-8 form-group has-success">
                     <input class="form-control" type="text" placeholder="请输入统一社会信用代码" id="uniscid">
                 </div>
             </div>
 
-            <div class="col-lg-6">
+            <div class="col-lg-4">
                 <div class="col-lg-3 form-group has-success">
                     <label class="control-label font-sl" for="lgname">*法定代表人</label>
                 </div>
-                <div class="col-lg-8 input-group has-success">
+                <div class="col-lg-8 form-group has-success">
                     <input class="form-control" type="text" placeholder="请输入法定代表人" id="lgname">
                 </div>
             </div>
 
-            <div class="col-lg-6">
+            <div class="col-lg-4">
                 <div class="col-lg-3 form-group has-success">
                     <label class="control-label font-sl" for="opscope">*经营范围</label>
                 </div>
 
-                <div class="col-lg-8 input-group has-success">
+                <div class="col-lg-8 form-group has-success">
                     <input class="form-control" type="text" placeholder="请输入经营范围" id="opscope">
                 </div>
             </div>
 
-            <div class="col-lg-6">
+            <div class="col-lg-4">
                 <div class="col-lg-3 form-group has-success">
                     <label class="control-label font-sl" for="address">*单位/公司详细地址</label>
                 </div>
 
-                <div class="col-lg-8 input-group has-success">
+                <div class="col-lg-8 form-group has-success">
                     <input class="form-control" type="text" placeholder="请输入详细地址" id="address">
                 </div>
             </div>
 
-            <div class="col-lg-6">
+            <div class="col-lg-4">
                 <div class="col-lg-3 form-group has-success">
                     <label class="control-label font-sl" for="estdate">*成立日期</label>
                 </div>
@@ -64,14 +64,6 @@
                         <span class="add-on"><i class="fa fa-calendar"></i></span>
                     </div>
 
-                    <#--<input type="text" class="form-control form-filter input-sm" name="StartTime" disabled/>
-                    <span class="input-group date form_datetime margin-bottom-10" id="StartTime">
-                        <span class="input-group-btn" style="width: 5%">
-                            <button class="btn default" type="button">
-                                <i class="fa fa-calendar"></i>
-                            </button>
-                        </span>
-                    </span>-->
                 </div>
             </div>
 
@@ -106,7 +98,8 @@
 
         </div>
     </div>
-    <div class="panel panel-default addSeal" id="secPage">第二页
+
+    <div class="col-lg-10 panel panel-default addSeal" id="secPage">第二页
         <div class="panel-body">
             <a onclick="swapAnchor('#firPage')"> func 上一步</a><span> | </span>
             <a href="#firPage"> 上一步</a>
@@ -114,7 +107,7 @@
         </div>
     </div>
 
-    <div class="panel panel-default addSeal" id="thiPage">第三页
+    <div class="col-lg-10 panel panel-default addSeal" id="thiPage">第三页
         <div class="panel-body">
             <a href="#secPage"> 上一步</a>
             <a href="#firPage"> 跳第一页</a>
