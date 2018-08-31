@@ -5,7 +5,15 @@
         首页
     </title>
 </head>
+<style>
+    #page-inner{
+        width:100%;
+        height: 600px;
+        overflow:hidden;
 
+    }
+
+</style>
 
 <body>
 
