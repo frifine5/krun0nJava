@@ -1,3 +1,7 @@
+/* 锚点跳转 传入#值*/
+function swapAnchor(loc) {
+    window.location.href = loc;
+}
 
 function changeInner(url) {
     jQuery.ajax({
