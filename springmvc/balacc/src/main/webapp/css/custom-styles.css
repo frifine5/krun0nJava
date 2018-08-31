@@ -8,6 +8,7 @@ body {
  #wrapper {
     width: 100%;
     background:#09192A;
+    height:650px;
 }
 
 #page-wrapper {
@@ -21,7 +22,7 @@ body {
     margin:10px 20px 10px 0px;
     background-color:transparent;
     padding:10px;
-    min-height:600px;
+    height:600px;
 }
 
 .text-center {
