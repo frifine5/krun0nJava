@@ -1,4 +1,10 @@
-﻿
+﻿body{
+    background:#D2E0F2;
+}
+
+.head a{color:White;text-decoration:underline;}
+
+
 .icon{ background:url(images/tabicons.png) no-repeat;width:18px; line-height:18px; display:inline-block;}
 .icon-sys{ background-position:0px -200px;}
 .icon-set{ background-position:-380px -200px;}

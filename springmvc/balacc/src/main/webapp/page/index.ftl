@@ -5,14 +5,7 @@
         首页
     </title>
 </head>
-<style>
-    .page-inner{
-        width:100%;
-        overflow:hidden;
 
-    }
-
-</style>
 
 <body>
 

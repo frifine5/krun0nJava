@@ -11,6 +11,8 @@
     <link rel="stylesheet" type="text/css" href="<@s.url '/assets/js/morris/morris-0.4.3.min.css'/>"/>
     <!-- Custom Styles-->
     <link rel="stylesheet" type="text/css" href="<@s.url '/assets/css/custom-styles.css'/>"/>
+    <!-- time style-->
+    <link rel="stylesheet" type="text/css" href="<@s.url '/assets/css/bootstrap-datetimepicker.min.css'/>"/>
     <!-- body style-->
     <link rel="stylesheet" type="text/css" href="<@s.url '/css/body.css'/>"/>
 
@@ -24,11 +26,16 @@
     <script type="text/javascript" src="<@s.url '/assets/js/morris/morris.js'/>"></script>
     <!-- Custom Js -->
     <script type="text/javascript" src="<@s.url '/assets/js/custom-scripts.js'/>"></script>
+    <!-- picktimer -->
+    <script type="text/javascript" src="<@s.url '/assets/js/bootstrap-datetimepicker.min.js'/>"></script>
+    <script type="text/javascript" src="<@s.url '/assets/js/bootstrap-datetimepicker.zh-CN.js'/>"></script>
+
 
 
     <!--  业务功能 js  -->
 
     <script type="text/javascript" src="<@s.url '/js/m/biz.js'/>"></script>
+
 
 </head>
 </html>
