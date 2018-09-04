@@ -8,7 +8,7 @@
             </div>
             <div class="panel-body">
 
-                <div class="col-lg-4">
+                <div class="col-lg-5">
                     <div class="col-lg-3 form-group has-success">
                         <label class="control-label font-sl" for="entname">*单位名称</label>
                     </div>
@@ -17,7 +17,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-4">
+                <div class="col-lg-5">
                     <div class="col-lg-3 form-group has-success">
                         <label class="control-label font-sl" for="uniscid">*统一社会信用代码</label>
                     </div>
@@ -26,7 +26,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-4">
+                <div class="col-lg-5">
                     <div class="col-lg-3 form-group has-success">
                         <label class="control-label font-sl" for="lgname">*法定代表人</label>
                     </div>
@@ -35,7 +35,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-4">
+                <div class="col-lg-5">
                     <div class="col-lg-3 form-group has-success">
                         <label class="control-label font-sl" for="opscope">*经营范围</label>
                     </div>
@@ -45,7 +45,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-4">
+                <div class="col-lg-5">
                     <div class="col-lg-3 form-group has-success">
                         <label class="control-label font-sl" for="address">*单位/公司详细地址</label>
                     </div>
@@ -55,20 +55,40 @@
                     </div>
                 </div>
 
-                <div class="col-lg-4">
-                    <div class="col-lg-3 form-group has-success">
-                        <label class="control-label font-sl" for="estdate">*成立日期</label>
-                    </div>
-                    <div class="col-lg-7 input-group has-success" style="display: -webkit-inline-box">
-                        <div class="input-append date form_datetime">
-                            <input size="16" type="text" value="" readonly>
-                            <span class="add-on"><i class="fa fa-calendar"></i></span>
+                <div class="col-lg-5">
+                    <div class="col-lg-12>">
+                        <div class="col-lg-7 input-group has-success" style="display: -webkit-inline-box">
+                            <label class="control-label font-sl" for="estdate">*成立日期</label>
+                            <div class="input-append date form_datetime">
+                                <input size="16" type="text" id="estdate" value="" readonly>
+                                <span class="add-on"><i class="fa fa-calendar"></i></span>
+                            </div>
                         </div>
+                    </div>
+                    <div class="col-lg-12>">
+                        <div class="col-lg-7 input-group has-success" style="display: -webkit-inline-box">
+                            <label class="control-label font-sl" for="apprdate">*核准日期</label>
+                            <div class="input-append date form_datetime">
+                                <input size="16" type="text" id="apprdate" value="" readonly>
+                                <span class="add-on"><i class="fa fa-calendar"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
+                <div class="col-lg-5">
+                    <div class="col-lg-12 form-group has-success">
+                        <button class="form-control" value="重置"
+                                onclick="clearPageWhich(1);event.returnValue=false;">重置</button>
+                    </div>
+                    <div class="col-lg-12 form-group has-success">
+                        <button class="form-control" value="查询获得企业信息"
+                                onclick="getEntrOnline()">查询获得企业信息</button>
                     </div>
                 </div>
 
 
+    <div class="col-lg-12"><a onclick="showdate()">show date</a></div>
             <#--
                     /**
                     * entname	主体名称
@@ -134,9 +154,10 @@
 
     </style>
 
-    <script>
 
 
+<script>
+        /* 日期组件*/
         $(".form_datetime").datetimepicker({
             format: 'yyyy-mm-dd',
             language: 'zh-CN',  //日期
@@ -147,6 +168,7 @@
             todayBtn: true
         });
 
-    </script>
+
+</script>
 
 

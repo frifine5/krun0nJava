@@ -1,7 +1,58 @@
+
+
+
+
+
+
+
+/***********************************************  */
 /* 锚点跳转 传入#值*/
 function swapAnchor(loc) {
     window.location.href = loc;
 }
+
+
+function getEntrOnline() {
+    var entname = $("#entname").val();
+    var uniscid = $("#uniscid").val();
+    var r = confirm("是否从法人库获取["+entname+","+uniscid+"]企业信息");
+    if(r == true){
+        var url = "/page/addSeal?";
+        url += "entname=" + entname;
+        url += "&uniscid=" + uniscid;
+        jQuery.ajax({
+            async: false,
+            url: url,
+            cache: false,
+            success: function (data) {
+                $("#page-inner").html(data);
+            },
+            error: function () {
+                alert("fail");
+            }
+        });
+    }
+
+}
+
+
+function clearPageWhich(no) {
+    switch (no){
+        case 1:
+            $("#firPage :input").val("");break;
+        case 2:
+            $("#secPage :input").val("");break;
+        case 3:
+            $("#thiPage :input").val("");break;
+    }
+}
+
+function showdate(){
+    var msg = "date1="+$("#estdate").val()+",date2="+$("#apprdate").val();
+
+    alert(msg);
+}
+/***********************************************  */
 
 function changeInner(url) {
     jQuery.ajax({
