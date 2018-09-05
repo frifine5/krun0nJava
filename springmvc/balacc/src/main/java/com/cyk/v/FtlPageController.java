@@ -17,7 +17,7 @@ public class FtlPageController {
         return "index";
     }
 
-    @RequestMapping("/page/{uri}")
+    @RequestMapping("/chgr/{uri}")
     public String getPage(@PathVariable("uri") String uri){
         log.info(uri);
         return "/c/"+uri;

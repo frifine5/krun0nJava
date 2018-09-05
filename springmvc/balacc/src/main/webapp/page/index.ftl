@@ -58,11 +58,11 @@
             <ul class="nav" id="main-menu">
 
                 <li>
-                    <a class="active-menu" onclick="changeInner('/page/home') " href="javascript:void(0)" ><i class="fa fa-dashboard"></i>首页</a>
+                    <a class="active-menu" onclick="changeInner('/chgr/home') " href="javascript:void(0)" ><i class="fa fa-dashboard"></i>首页</a>
                 </li>
 
                 <li>
-                    <a onclick="changeInner('/page/main');conditionQuery() " href="javascript:void(0)" >
+                    <a onclick="changeInner('/chgr/main');conditionQuery() " href="javascript:void(0)" >
                         <i class="fa fa-desktop"></i> 印章管理</a>
                 </li>
 
@@ -76,12 +76,12 @@
                         <i class="fa fa-desktop"></i> ftl的印章页</a>
                 </li>
                 <li>
-                    <a onclick="changeInner('/page/district'); getDist(1)" href="javascript:void(0)" >
+                    <a onclick="changeInner('/chgr/district'); getDist(1)" href="javascript:void(0)" >
                         <i class="fa fa-desktop"></i> 统一区划代码</a>
                 </li>
 
                 <li>
-                    <a onclick="changeInner('/page/addSeal')" href="javascript:void(0)" >
+                    <a onclick="changeInner('/chgr/addSeal')" href="javascript:void(0)" >
                         <i class="fa fa-desktop"></i> 锚点测试</a>
                 </li>
 
@@ -146,7 +146,7 @@
 
 <script type="text/javascript">
     window.onload  = function(){
-        changeInner('/page/home');
+        changeInner('/chgr/home');
     }
 
 </script>

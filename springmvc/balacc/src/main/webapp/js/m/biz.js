@@ -17,7 +17,7 @@ function getEntrOnline() {
     var uniscid = $("#uniscid").val();
     var r = confirm("是否从法人库获取["+entname+","+uniscid+"]企业信息");
     if(r == true){
-        var url = "/page/addSeal?";
+        var url = "/chgr/addSeal?";
         url += "entname=" + entname;
         url += "&uniscid=" + uniscid;
         jQuery.ajax({

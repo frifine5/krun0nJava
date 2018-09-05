@@ -112,7 +112,21 @@
               -->
 
             </div>
-
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                ** 材料 **
+            </div>
+            <div class="panel-body">
+                <div class="col-lg-8">
+                    <div class="col-lg-3 form-group has-success">
+                        <label class="control-label font-sl" for="ccc">材料说明</label>
+                    </div>
+                    <div class="col-lg-8 form-group has-success">
+                        <input class="form-control" type="text" id="ccc">
+                    </div>
+                </div>
+            </div>
             <div class="panel-footer">
                 <a href="#secPage"> 下一步</a><span> | </span>
                 <a onclick="swapAnchor('#secPage')">func 下一步</a>
@@ -163,9 +177,9 @@
             language: 'zh-CN',  //日期
             minView: 'month',
             minuteStep: 5,
-            autoclose: true, //今日按钮
-            clearBtn: true, //清除按钮
-            todayBtn: true
+            autoclose: true,
+            clearBtn: true,     //清除按钮
+            todayBtn: true      //今日按钮
         });
 
 
