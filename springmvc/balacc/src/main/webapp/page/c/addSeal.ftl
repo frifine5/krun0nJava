@@ -126,6 +126,27 @@
                         <input class="form-control" type="text" id="ccc">
                     </div>
                 </div>
+                <div class="col-lg-8">
+                    <div class="col-lg-3 form-group has-success">
+                        <label class="control-label font-sl" for="uppic1">选择上传图片</label>
+                    </div>
+                    <div class="col-lg-5 input-group has-success">
+                        <input class="form-control" type="file" id="uppic1">
+                    </div>
+                    <div class="col-lg-2 form-group has-success">
+                        <button class="form-control" onclick="shpic()">预览</button>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="col-lg-3 form-group has-success" id="ttpic">
+                    </div>
+                    <div class="col-lg-3 form-group has-success">
+                       
+                    </div>
+                    <div class="col-lg-3 form-group has-success">
+                        
+                    </div>
+                </div>
             </div>
             <div class="panel-footer">
                 <a href="#secPage"> 下一步</a><span> | </span>

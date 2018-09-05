@@ -1,7 +1,15 @@
 
+/***********************************************  */
 
+$("#uppic1").onchange=function(){
 
+    var img=new Image()  ;
 
+   img.scr=window.URL.cteateObejectURL(this.files[0]) ;
+
+   $("#ttpic").appendChild(img);
+
+}
 
 
 
