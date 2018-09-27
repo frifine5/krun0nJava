@@ -1,0 +1,37 @@
+
+
+spring:
+  application:
+    name: pe-service
+    index: ${INSTANCE_INDEX}
+
+  profiles:
+    active: dev
+    #${spring.profiles.active}
+
+eureka:
+  client:
+    serviceUrl:
+#      defaultZone: http://register1:8889/eureka
+#      defaultZone: http://192.168.6.238:8761/eureka/
+#       defaultZone: http://10.100.4.6:8761/eureka/
+       defaultZone: http://registerserver-pool.dev.baiwang-inner.com:8889/eureka
+
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ipAddress}:${server.port}
+
+server:
+  port: 11001
+  tomcat:
+    accept-count: 2000
+    max-connections: 2000
+    max-threads: 2000
+  connection-timeout: 60000
+
+mybatis:
+  mapper-locations: classpath*:mapper/*.xml
+  type-aliases-package: com.gomain.makesealseal.*.bean
+management:
+  security:
+    enabled: false
