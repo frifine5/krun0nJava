@@ -250,9 +250,10 @@ public class GMTSM2 {
         System.out.println(String.format("r:len[%s]\t%s\ns:len[%s]\t%s", sgig[0].bitLength(), sgig[0], sgig[1].bitLength(), sgig[1]));
         System.out.println(String.format("r:<hex>\t%s\ns:<hex>\t%s", StrUtil.bigIntegerToHex(sgig[0]), StrUtil.bigIntegerToHex(sgig[1])));
 
-        byte[] x = StrUtil.hexToByte(StrUtil.bigIntegerToHex(sgig[0]));
-        byte[] y = StrUtil.hexToByte(StrUtil.bigIntegerToHex(sgig[1]));
+        byte[] x = sgig[0].toByteArray();
+        byte[] y = sgig[1].toByteArray();
         byte[] sv = new byte[64];
+        System.out.println(String.format("r:\t%s\ns:\t%s", StrUtil.byteToHex(x), StrUtil.byteToHex(y)));
         System.arraycopy(x, 0, sv, 0, 32);
         System.arraycopy(y, 0, sv, 32, 32);
         System.out.println(String.format("sv:<hex>\t%s", StrUtil.byteToHex(sv)));
