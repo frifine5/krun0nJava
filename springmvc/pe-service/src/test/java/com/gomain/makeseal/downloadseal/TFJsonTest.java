@@ -19,6 +19,7 @@ import org.junit.Test;
 import java.io.*;
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.sql.Struct;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -370,6 +371,16 @@ public class TFJsonTest {
         System.out.println(StrUtil.byteToHex(rnd));
 
         System.out.println(StrUtil.bigIntegerToHex(new BigInteger(256, random)));
+
+    }
+
+
+    @Test
+    public void test24(){
+        String prik = "3690655E33D5EA3D9A4AE1A1ADD766FDEA045CDEAA43A9206FB8C430CEFE0D94";
+        BigInteger ti = new BigInteger(StrUtil.hexToByte(prik));
+        System.out.println(ti);
+        System.out.println(StrUtil.byteToHex(ti.toByteArray()));
 
     }
 

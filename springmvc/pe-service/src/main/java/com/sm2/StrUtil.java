@@ -35,7 +35,7 @@ public class StrUtil {
     }
 
     public static String bigIntegerToHex(BigInteger in){
-        return in.toString(16);
+        return byteToHex(in.toByteArray());
     }
 
 }
