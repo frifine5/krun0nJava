@@ -1,6 +1,9 @@
 package com.sm2;
 
+import com.cer.SM2CaCert;
+import com.common.utils.FileUtil;
 import com.sm3.SM3Digest;
+import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
@@ -11,7 +14,20 @@ import org.bouncycastle.math.ec.ECPoint;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.sql.Struct;
+import java.util.Base64;
 
+
+/**
+ * java
+ */
+
+/**
+ * java 实现的GMT 0003.1 2 的SM2签名验签
+ *
+ * @author WangChengyu
+ * 2018/9/28 10:45
+ */
 public class GMTSM2 {
     private static GMTSM2 instance;
 
@@ -97,9 +113,39 @@ public class GMTSM2 {
     public String[] genPairOnString() {
         // 产生随机数
         BigInteger da = genKinN();
-        String hexPrivateKey = da.toString(16);
+        byte[] skarr = da.toByteArray();
+        byte[] bsk = new byte[32];
+        int lsk = skarr.length;
+        if (lsk < 32) {
+            System.arraycopy(skarr, 0, bsk, 32 - lsk, lsk);
+        } else {
+            System.arraycopy(skarr, skarr.length - 32, bsk, 0, 32);
+        }
+        String hexPrivateKey = StrUtil.byteToHex(bsk);
+//        System.out.println("bit len:sk= "+da.bitLength());
+
         ECPoint p = ecc_bc_spec.getG().multiply(da);
-        String hexPublicKey = "04" + p.getX().toBigInteger().toString(16) + p.getY().toBigInteger().toString(16);
+        byte[] bpx = p.getX().toBigInteger().toByteArray();
+        byte[] bpy = p.getY().toBigInteger().toByteArray();
+        byte[] bpk = new byte[64];
+//        System.out.println(String.format("bit len:x = %s, y = %s",
+//                p.getX().toBigInteger().bitLength(),
+//                p.getY().toBigInteger().bitLength()));
+//        System.out.println(String.format("len:x = %s, y = %s", bpx.length, bpy.length));
+//        System.out.println(String.format("gen pk:\n%s\n%s", StrUtil.byteToHex(bpx), StrUtil.byteToHex(bpy)));
+        int lx = bpx.length;
+        if (lx < 32) {
+            System.arraycopy(bpx, 0, bpk, 32 - lx, lx);
+        } else {
+            System.arraycopy(bpx, lx - 32, bpk, 0, 32);
+        }
+        int ly = bpy.length;
+        if (ly < 32) {
+            System.arraycopy(bpy, 0, bpk, 32 - ly, ly);
+        } else {
+            System.arraycopy(bpy, ly - 32, bpk, 32, 32);
+        }
+        String hexPublicKey = "04" + StrUtil.byteToHex(bpk);
         return new String[]{hexPublicKey, hexPrivateKey};
     }
 
@@ -110,7 +156,7 @@ public class GMTSM2 {
      * @param pvk
      * @return
      */
-    private ECPoint peFromPvk(String pvk) {
+    private ECPoint calcPa(String pvk) {
         return ecc_bc_spec.getG().multiply(new BigInteger(pvk, 16));
     }
 
@@ -127,7 +173,7 @@ public class GMTSM2 {
         do {// generate k in 0 ~ n, mean da for privateKey
             do {
                 da = new BigInteger(256, random);
-            } while (da.equals(ZERO));
+            } while (da.compareTo(ZERO) <= 0);//da.equals(ZERO));
         } while (da.compareTo(ecc_n) >= 0);
         return da;
     }
@@ -159,6 +205,66 @@ public class GMTSM2 {
         return hashData;
     }
 
+    //    public byte[] sm2Sign(byte[] hashData, byte[] pvk) {
+    public BigInteger[] sm2Sign2(byte[] hashData, byte[] pvk) {
+        // check before calc
+        if (hashData.length != 32) {
+            throw new IllegalArgumentException("input digest length error: export 32, actual " + hashData.length);
+        }
+        if (pvk.length != 32) {
+            throw new IllegalArgumentException("input key length error: export 32, actual " + pvk.length);
+        }
+        // e
+        BigInteger e = new BigInteger(hashData);
+        // k
+        BigInteger k = null;
+        ECPoint kp = null;
+        BigInteger r = null;// 签名出参 r
+        BigInteger s = null;// 签名出参 s
+        BigInteger userD = new BigInteger(pvk);// 私钥d
+        BigInteger ecc_n = this.ecc_n;
+        do {
+            do {
+                // 随机数取点k in 0-n
+                k = genKinN();
+                kp = calcPa(k.toString(16)); // 得到kp(x,y)
+                // 计算: r = (e+x) mod n
+                r = e.add(kp.getX().toBigInteger());
+                r = r.mod(ecc_n);
+                // 结果r等于0或（r+k）等于n则重算
+            } while (r.equals(BigInteger.ZERO) || r.add(k).equals(ecc_n));
+
+            // s=  (((1 + dA)~-1)  *  (k - r*da )) mod n
+            BigInteger da_1 = userD.add(BigInteger.ONE);
+            da_1 = da_1.modInverse(ecc_n);
+            s = r.multiply(userD);
+            s = k.subtract(s).mod(ecc_n);
+            s = da_1.multiply(s).mod(ecc_n);
+            // 结果s等于0则重算
+        } while (s.equals(BigInteger.ZERO));
+
+        byte[] x = r.toByteArray();
+        byte[] y = s.toByteArray();
+        byte[] sv = new byte[64];
+        int lx = x.length;
+        int ly = y.length;
+        if (lx < 32) {
+            System.arraycopy(x, 0, sv, 32 - lx, lx);
+        } else {
+            System.arraycopy(x, lx - 32, sv, 0, 32);
+        }
+        if (ly < 32) {
+            System.arraycopy(y, 0, sv, 32 - ly, ly);
+        } else {
+            System.arraycopy(y, ly - 32, sv, 32, 32);
+        }
+//        System.out.println(String.format("is\nr:%s\ns:%s",StrUtil.bigIntegerToHex(r), StrUtil.bigIntegerToHex(s)));
+//        System.out.println(String.format("is:: r.length:%s\ts.length:%s",StrUtil.bigIntegerToHex(r).length(), StrUtil.bigIntegerToHex(s).length()));
+//        return sv;
+        return new BigInteger[]{r, s};
+    }
+
+
     /**
      * 签名（摘要，私钥）
      */
@@ -171,26 +277,25 @@ public class GMTSM2 {
             throw new IllegalArgumentException("input key length error: export 32, actual " + pvk.length);
         }
         // e
-        BigInteger e = new BigInteger(StrUtil.byteToHex(hashData), 16);
+        BigInteger e = new BigInteger(hashData);
         // k
         BigInteger k = null;
         ECPoint kp = null;
-        BigInteger r = null;
-        BigInteger s = null;
-        BigInteger userD = null;
+        BigInteger r = null;// 签名出参 r
+        BigInteger s = null;// 签名出参 s
+        BigInteger userD = new BigInteger(pvk);// 私钥d
         BigInteger ecc_n = this.ecc_n;
         do {
             do {
                 // 随机数取点k in 0-n
-                k = new BigInteger(256, new SecureRandom());
-                kp = peFromPvk(k.toString(16)); // 得到kp(x,y)
+                k = genKinN();
+                kp = calcPa(k.toString(16)); // 得到kp(x,y)
                 // 计算: r = (e+x) mod n
                 r = e.add(kp.getX().toBigInteger());
                 r = r.mod(ecc_n);
                 // 结果r等于0或（r+k）等于n则重算
             } while (r.equals(BigInteger.ZERO) || r.add(k).equals(ecc_n));
 
-            userD = new BigInteger(pvk);
             // s=  (((1 + dA)~-1)  *  (k - r*da )) mod n
             BigInteger da_1 = userD.add(BigInteger.ONE);
             da_1 = da_1.modInverse(ecc_n);
@@ -199,11 +304,22 @@ public class GMTSM2 {
             s = da_1.multiply(s).mod(ecc_n);
             // 结果s等于0则重算
         } while (s.equals(BigInteger.ZERO));
+
         byte[] x = r.toByteArray();
         byte[] y = s.toByteArray();
         byte[] sv = new byte[64];
-        System.arraycopy(x, x.length - 32, sv, 0, 32);
-        System.arraycopy(y, y.length - 32, sv, 32, 32);
+        int lx = x.length;
+        int ly = y.length;
+        if (lx < 32) {
+            System.arraycopy(x, 0, sv, 32 - lx, lx);
+        } else {
+            System.arraycopy(x, lx - 32, sv, 0, 32);
+        }
+        if (ly < 32) {
+            System.arraycopy(y, 0, sv, 32 - ly, ly);
+        } else {
+            System.arraycopy(y, ly - 32, sv, 32, 32);
+        }
 //        System.out.println(String.format("is\nr:%s\ns:%s",StrUtil.bigIntegerToHex(r), StrUtil.bigIntegerToHex(s)));
 //        System.out.println(String.format("is:: r.length:%s\ts.length:%s",StrUtil.bigIntegerToHex(r).length(), StrUtil.bigIntegerToHex(s).length()));
         return sv;
@@ -224,15 +340,15 @@ public class GMTSM2 {
             throw new IllegalArgumentException("input publicKey length error: export 65, actual " + pk.length);
         }
         // e
-        BigInteger e = new BigInteger(StrUtil.byteToHex(hashData), 16);
+        BigInteger e = new BigInteger(hashData);
 
         // r s
         byte[] svx = new byte[32];
         byte[] svy = new byte[32];
         System.arraycopy(sv, 0, svx, 0, 32);
         System.arraycopy(sv, 32, svy, 0, 32);
-        BigInteger r = new BigInteger(StrUtil.byteToHex(svx), 16);
-        BigInteger s = new BigInteger(StrUtil.byteToHex(svy), 16);
+        BigInteger r = new BigInteger(1, svx);
+        BigInteger s = new BigInteger(1, svy);
 //        System.out.println(String.format("vs\nr:%s\ns:%s",StrUtil.bigIntegerToHex(r), StrUtil.bigIntegerToHex(s)));
         // k
         ECPoint k;
@@ -246,108 +362,15 @@ public class GMTSM2 {
         byte[] by = new byte[32];
         System.arraycopy(pk, 1, bx, 0, 32);
         System.arraycopy(pk, 33, by, 0, 32);
-        BigInteger x = new BigInteger(StrUtil.byteToHex(bx), 16);
-        BigInteger y = new BigInteger(StrUtil.byteToHex(by), 16);
-        Pa = new ECPoint.Fp(this.ecc_curve, new ECFieldElement.Fp(ecc_p, x), new ECFieldElement.Fp(ecc_p, y));
+        BigInteger x = new BigInteger(1, bx);
+        BigInteger y = new BigInteger(1, by);
 
-        G = this.ecc_bc_spec.getG();
-        ecc_n = this.ecc_n;
-
-        if (r.equals(BigInteger.ONE) || r.equals(ecc_n)) {
-            return false;
-        }
-        if (s.equals(BigInteger.ONE) || s.equals(ecc_n)) {
-            return false;
-        }
-
-        t = r.add(s).mod(ecc_n);
-        if (t.equals(BigInteger.ZERO)) {
-            return false;
-        }
-
-        //计算: k(x,y) = s*G + t*Pa
-        k = G.multiply(s).add(Pa.multiply(t));
-
-        //计算: R = (e+k.x) mod n
-        R = e.add(k.getX().toBigInteger()).mod(ecc_n);
-        //验证: R == r  true
-        if (R.equals(r)) return true;
-        return false;
-    }
-
-
-    // ----=====================================================----
-    public BigInteger[] sm2Sign(byte[] md, BigInteger pvk) {
-        SM3Digest sm3 = new SM3Digest();
-        byte[] hashData = new byte[32];
-        sm3.update(md, 0, md.length);
-        sm3.doFinal(hashData, 0);
-// e
-        BigInteger e = new BigInteger(1, hashData);
-// k
-        BigInteger k = null;
-        ECPoint kp = null;
-        BigInteger r = null;
-        BigInteger s = null;
-        BigInteger userD = null;
-        BigInteger ecc_n = this.ecc_n;
-        do {
-            do {
-                // 随机数取点
-                k = new BigInteger(256, new SecureRandom());
-                kp = peFromPvk(k.toString(16)); // 得到kp(x,y)
-                System.out.println("kp.x:\t" + StrUtil.bigIntegerToHex(kp.getX().toBigInteger()));
-                // 计算
-                // r = (e+x) mod n
-                r = e.add(kp.getX().toBigInteger());
-                r = r.mod(ecc_n);
-                // 结果r等于0或（r+k）等于n则重算
-            } while (r.equals(BigInteger.ZERO) || r.add(k).equals(ecc_n));
-
-            userD = pvk;
-            // s=  (((1 + dA)~-1)  *  (k - r*da )) mod n
-            BigInteger da_1 = userD.add(BigInteger.ONE);
-            da_1 = da_1.modInverse(ecc_n);
-            s = r.multiply(userD);
-            s = k.subtract(s).mod(ecc_n);
-            s = da_1.multiply(s).mod(ecc_n);
-            // 结果s等于0则重算
-        } while (s.equals(BigInteger.ZERO));
-        return new BigInteger[]{r, s};
-    }
-
-    public boolean sm2Verify(byte[] md, BigInteger r, BigInteger s, byte[] pk) {
-        SM3Digest sm3 = new SM3Digest();
-        byte[] hashData = new byte[32];
-        sm3.update(md, 0, md.length);
-        sm3.doFinal(hashData, 0);
-        // e
-        BigInteger e = new BigInteger(1, hashData);
-        // k
-        ECPoint k;
-        ECPoint G = null;
-        ECPoint Pa = null;
-        BigInteger t = null;
-        BigInteger R = null;
-        BigInteger ecc_n = null;
-//        Pa = peFromPvk(prik.toString(16)); // 私钥生成公钥的方式
-
-        byte[] bx = new byte[32];
-        byte[] by = new byte[32];
-        System.out.println("pk.len= " + pk.length);
-        System.arraycopy(pk, 1, bx, 0, 32);
-        System.arraycopy(pk, 33, by, 0, 32);
-
-        BigInteger x = new BigInteger(StrUtil.byteToHex(bx), 16);
-        BigInteger y = new BigInteger(StrUtil.byteToHex(by), 16);
 
         Pa = new ECPoint.Fp(this.ecc_curve, new ECFieldElement.Fp(ecc_p, x), new ECFieldElement.Fp(ecc_p, y));
-        System.out.println("input pk:" + StrUtil.byteToHex(pk));
-        System.out.println("input x:" + x.toString(16));
-        System.out.println("check pa.x:" + Pa.getX().toBigInteger().toString(16));
+//        Pa = ecc_curve.decodePoint(pk);
+
 
         G = this.ecc_bc_spec.getG();
-
         ecc_n = this.ecc_n;
 
         if (r.equals(BigInteger.ONE) || r.equals(ecc_n)) {
@@ -365,7 +388,79 @@ public class GMTSM2 {
         //k(x,y) = s*G + t*Pa
         k = G.multiply(s).add(Pa.multiply(t));
 
-        System.out.println("k.x:\t" + StrUtil.bigIntegerToHex(k.getX().toBigInteger()));
+        //R = (e+k.x) mod n
+        R = e.add(k.getX().toBigInteger()).mod(ecc_n);
+        //R == r  true
+        if (R.equals(r)) return true;
+        return false;
+    }
+
+
+    // ----=====================================================----
+    public BigInteger[] sm2Sign(byte[] hashData, ECPrivateKeyParameters ecpriv) {
+        // e
+        BigInteger e = new BigInteger(1, hashData);
+        // k
+        BigInteger k = null;
+        ECPoint kp = null;
+        BigInteger r = null;
+        BigInteger s = null;
+        BigInteger userD = null;
+        BigInteger ecc_n = this.ecc_n;
+        do {
+            do {
+                // 随机数取点
+                k = genKinN();
+                kp = calcPa(k.toString(16)); // 得到kp(x,y)
+                // 计算  r = (e+x) mod n
+                r = e.add(kp.getX().toBigInteger());
+                r = r.mod(ecc_n);
+                // 结果r等于0或（r+k）等于n则重算
+            } while (r.equals(BigInteger.ZERO) || r.add(k).equals(ecc_n));
+            userD = ecpriv.getD();
+            // s=  (((1 + dA)~-1)  *  (k - r*da )) mod n
+            BigInteger da_1 = userD.add(BigInteger.ONE);
+            da_1 = da_1.modInverse(ecc_n);
+            s = r.multiply(userD);
+            s = k.subtract(s).mod(ecc_n);
+            s = da_1.multiply(s).mod(ecc_n);
+            // 结果s等于0则重算
+        } while (s.equals(BigInteger.ZERO));
+        return new BigInteger[]{r, s};
+    }
+
+    public boolean sm2Verify(byte[] hashData, BigInteger[] sv, ECPublicKeyParameters ecpub) {
+        // e
+        BigInteger e = new BigInteger(1, hashData);
+        // k
+        ECPoint k;
+        ECPoint G = null;
+        ECPoint Pa = null;
+        BigInteger t = null;
+        BigInteger R = null;
+        BigInteger ecc_n = null;
+//        Pa = calcPa(prik.toString(16)); // 私钥生成公钥的方式
+
+        Pa = ecpub.getQ();
+        G = this.ecc_bc_spec.getG();
+        ecc_n = this.ecc_n;
+
+        BigInteger r = sv[0];
+        BigInteger s = sv[1];
+        if (r.equals(BigInteger.ONE) || r.equals(ecc_n)) {
+            return false;
+        }
+        if (s.equals(BigInteger.ONE) || s.equals(ecc_n)) {
+            return false;
+        }
+
+        t = r.add(s).mod(ecc_n);
+        if (t.equals(BigInteger.ZERO)) {
+            return false;
+        }
+
+        //k(x,y) = s*G + t*Pa
+        k = G.multiply(s).add(Pa.multiply(t));
 
         //R = (e+k.x) mod n
         R = e.add(k.getX().toBigInteger()).mod(ecc_n);
@@ -375,9 +470,189 @@ public class GMTSM2 {
     }
 
     public static void main(String[] args) {
-//        testSign();
+
 //        testSign2();
+//        testSign3();
 //        testvs();
+//        testpkget();
+//        System.out.println(testSign4());
+
+        fooTest();
+
+//        test4();
+//        try {
+//            chcert1();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
+//        testSign5();
+
+    }
+
+    private static boolean testSign5() {
+        GMTSM2 sm2Instance = GMTSM2.getInstance();
+        AsymmetricCipherKeyPair key = sm2Instance.genPairOnBouncycastle();
+        ECPrivateKeyParameters ecpriv = (ECPrivateKeyParameters) key.getPrivate();
+        ECPublicKeyParameters ecpub = (ECPublicKeyParameters) key.getPublic();
+
+//        System.out.println(StrUtil.byteToHex(sm2Instance.sm3Degest("1234567890ffffff".getBytes())));
+        // 测试用摘要
+        String hxDm = "B6C95B4228A338ACCDEF23D2CF7F548C06974479DB4BB0630479FE3A43DD2386";
+        BigInteger[] svs = sm2Instance.sm2Sign(StrUtil.hexToByte(hxDm), ecpriv);
+        boolean right1 = sm2Instance.sm2Verify(StrUtil.hexToByte(hxDm), svs, ecpub);
+
+//        System.out.println(String.format("vs:: 1-%s", right1));
+        // sv and pk change;
+        String bsvr = StrUtil.byteToHex(svs[0].toByteArray());
+        String bsvs = StrUtil.byteToHex(svs[1].toByteArray());
+
+        String hexsv = bsvr.substring(bsvr.length()-64, bsvr.length()) + bsvs.substring(bsvs.length()-64, bsvs.length());
+        System.out.println("hexsv:\t  "+hexsv);
+
+        String bpkx = StrUtil.byteToHex(ecpub.getQ().getX().toBigInteger().toByteArray());
+        String bpky = StrUtil.byteToHex(ecpub.getQ().getY().toBigInteger().toByteArray());
+
+        String hexpk = "04"+bpkx.substring(bpkx.length()-64, bpkx.length()) + bpky.substring(bpky.length()-64, bpky.length());
+        System.out.println("hexpk:\t"+hexpk);
+
+        boolean right2 = sm2Instance.sm2Verify(StrUtil.hexToByte(hxDm), StrUtil.hexToByte(hexsv), StrUtil.hexToByte(hexpk));
+
+        System.out.println(String.format("vs:: 1-%s, 2-%s", right1, right2));
+
+
+        return right1 && right2;
+
+    }
+
+
+    private static void chcert1() throws Exception {
+        String p = "C:\\Users\\49762\\Desktop\\绵竹市残疾人联合会_2019.cer";
+        String r_p = "C:\\Users\\49762\\Desktop\\root.cer";
+        byte[] dcert = FileUtil.fromDATfile(p);
+        byte[] rcer = FileUtil.fromDATfile(r_p);
+//        dcert = rcer;
+
+//        String rrb = "MIICRjCCAeqgAwIBAgIIESIzRFVmd4gwDAYIKoEcz1UBg3UFADB2MR8wHQYDVQQLDBZEZXZlbG9wbWVudCBEZXBhcnRtZW50MREwDwYDVQQKDAhTZWN1cml0eTEQMA4GA1UECAwHQmVpSmluZzEQMA4GA1UEBwwHQmVpSmluZzEPMA0GA1UEAwwGR29tYWluMQswCQYDVQQGDAJDTjAeFw0xODA5MjgwMzUwMjNaFw0yODA5MjUwMzUwMjNaMHYxHzAdBgNVBAsMFkRldmVsb3BtZW50IERlcGFydG1lbnQxETAPBgNVBAoMCFNlY3VyaXR5MRAwDgYDVQQIDAdCZWlKaW5nMRAwDgYDVQQHDAdCZWlKaW5nMQ8wDQYDVQQDDAZHb21haW4xCzAJBgNVBAYMAkNOMFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAEOs4LoKmyRfZA0peDoAZdiaZa7mCx6mznbRjm9SN17EZHA/TDw/X0zjpFk9ce64kdLERcy1abTqwMRQOI3z5/OqNgMF4wDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQU2jmj7l5rSw0yVb/vlWAYkK/YBwkwHwYDVR0jBBgwFoAU2jmj7l5rSw0yVb/vlWAYkK/YBwkwCwYDVR0PBAQDAgXgMAwGCCqBHM9VAYN1BQADSAAwRQIgC6IBUqiKLf6skiNgcxFqi1qnWHKjluEs6lPhHqPwsl0CIQCYdWd8mO4Lkcrg4Lt4mDgzuselqD/1es99kNfW7Gd6rA==";
+//        dcert = Base64.getDecoder().decode(rrb);
+
+        byte[] data = SM2CaCert.getSM2TBSCertificateDate(dcert);
+        byte[] dpk = SM2CaCert.getSM2PublicKey(dcert);
+        byte[] bsv = SM2CaCert.getSM2signatureValue(dcert);
+
+        dpk = SM2CaCert.getSM2PublicKey(rcer); // 根证公钥
+
+        GMTSM2 sm2 = GMTSM2.getInstance();
+        byte[] md = sm2.sm3Degest(data);
+
+        System.out.println(StrUtil.byteToHex(dpk));
+        System.out.println(StrUtil.byteToHex(bsv));
+
+        boolean right = sm2.sm2Verify(md, bsv, dpk);
+        System.out.println(right);
+
+
+    }
+
+    private static boolean testSign4() {
+        GMTSM2 sm2Instance = GMTSM2.getInstance();
+        AsymmetricCipherKeyPair key = sm2Instance.genPairOnBouncycastle();
+        ECPrivateKeyParameters ecpriv = (ECPrivateKeyParameters) key.getPrivate();
+        ECPublicKeyParameters ecpub = (ECPublicKeyParameters) key.getPublic();
+
+//        System.out.println(StrUtil.byteToHex(sm2Instance.sm3Degest("1234567890ffffff".getBytes())));
+        // 测试用摘要
+        String hxDm = "B6C95B4228A338ACCDEF23D2CF7F548C06974479DB4BB0630479FE3A43DD2386";
+        BigInteger[] svs = sm2Instance.sm2Sign(StrUtil.hexToByte(hxDm), ecpriv);
+        boolean right = sm2Instance.sm2Verify(StrUtil.hexToByte(hxDm), svs, ecpub);
+        return right;
+
+    }
+
+
+    private static void test4() {
+        GMTSM2 sm2 = GMTSM2.getInstance();
+        BigInteger bi = sm2.genKinN();
+        System.out.println(String.format("bit len:%s, v:%s", bi.bitLength(), bi));
+        System.out.println(String.format("len:%s, v:%s", bi.toString().length(), bi));
+        System.out.println(new BigInteger(bi.toString(), 10).compareTo(bi) == 0);
+        System.out.println(new BigInteger(bi.toString(), 10).compareTo(new BigInteger(bi.toByteArray())) == 0);
+        System.out.println(new BigInteger(bi.toString(), 10).compareTo(new BigInteger(bi.toString(16), 16)) == 0);
+        System.out.println();
+        byte[] arr = bi.toByteArray();
+        byte[] newArr = new byte[arr.length + 2];
+        System.arraycopy(arr, 0, newArr, 2, arr.length);
+        System.out.println(bi.compareTo(new BigInteger(newArr)) == 0);
+
+    }
+
+    private static void fooTest() {
+        long st = System.currentTimeMillis();
+        int foo = 10;
+        int suc = 0;
+        int ex = 0;
+        for (int i = 0; i < foo; i++) {
+            try {
+                boolean r = testSign5();
+                if (r) suc++;
+            } catch (Exception e) {
+                e.printStackTrace();
+                ex++;
+                continue;
+            }
+        }
+        long et = System.currentTimeMillis();
+        System.out.println(String.format("execute:%s, success:%s, exception:%s", foo, suc, ex));
+        System.out.println(String.format("execute time = %s(ms)", (et - st)));
+    }
+
+    private static void testpkget() {
+        String pk = "04F6E0C3345AE42B51E06BF50B98834988D54EBC7460FE135A48171BC0629EAE205EEDE253A530608178A98F1E19BB737302813BA39ED3FA3C51639D7A20C7391A";
+        //00F6E0C3345AE42B51E06BF50B98834988D54EBC7460FE135A48171BC0629EAE20
+        //5EEDE253A530608178A98F1E19BB737302813BA39ED3FA3C51639D7A20C7391A
+        GMTSM2 sm2Instance = GMTSM2.getInstance();
+        ECPoint p = sm2Instance.ecc_curve.decodePoint(StrUtil.hexToByte(pk));
+        System.out.println(StrUtil.byteToHex(p.getX().toBigInteger().toByteArray()));
+        System.out.println(StrUtil.byteToHex(p.getY().toBigInteger().toByteArray()));
+    }
+
+    private static boolean testSign3() {
+        GMTSM2 sm2Instance = GMTSM2.getInstance();
+        AsymmetricCipherKeyPair key = sm2Instance.genPairOnBouncycastle();
+        ECPrivateKeyParameters ecpriv = (ECPrivateKeyParameters) key.getPrivate();
+        ECPublicKeyParameters ecpub = (ECPublicKeyParameters) key.getPublic();
+
+        byte[] esk = ecpriv.getD().toByteArray();
+        int lsk = esk.length + 32;
+        byte[] newPrik = new byte[lsk];
+        System.arraycopy(esk, 0, newPrik, lsk - esk.length, esk.length);
+
+        byte[] epkx = ecpub.getQ().getX().toBigInteger().toByteArray();
+        byte[] epky = ecpub.getQ().getY().toBigInteger().toByteArray();
+        int lpkx = epkx.length + 32;
+        int lpky = epky.length + 32;
+        byte[] nepkx = new byte[lpkx];
+        byte[] nepky = new byte[lpky];
+        System.arraycopy(epkx, 0, nepkx, lpkx - epkx.length, epkx.length);
+        System.arraycopy(epky, 0, nepky, lpky - epky.length, epky.length);
+        String prik = StrUtil.byteToHex(newPrik).substring(lsk * 2 - 64, lsk * 2);
+
+        String pubk = "04" + StrUtil.byteToHex(nepkx).substring(lpkx * 2 - 64, lpkx * 2)
+                + StrUtil.byteToHex(nepky).substring(lpky * 2 - 64, lpky * 2);
+
+        String plain = "234567890xxxxxxxxxx";
+
+        // hashData
+        byte[] hashData = sm2Instance.sm3Degest(plain.getBytes());
+        // sign
+        byte[] sv = sm2Instance.sm2Sign(hashData, StrUtil.hexToByte(prik));
+//        System.out.println("signValue:\t" + StrUtil.byteToHex(sv));
+//        System.out.println("signValue length:\t" + sv.length);
+//        System.out.println("signValue input hex length:\t" + StrUtil.byteToHex(sv).length());
+
+        boolean right = sm2Instance.sm2Verify(hashData, sv, StrUtil.hexToByte(pubk));
+//        System.out.println("verifySign:\t" + right);
+        return right;
 
     }
 
@@ -400,7 +675,7 @@ public class GMTSM2 {
 
     }
 
-    private static void testSign2() {
+    private static boolean testSign2() {
         // 国密规范正式私钥
         String prik = "3690655E33D5EA3D9A4AE1A1ADD766FDEA045CDEAA43A9206FB8C430CEFE0D94";
         // 国密规范正式公钥
@@ -421,32 +696,7 @@ public class GMTSM2 {
         System.out.println("verifySign:\t" + right);
 
 
-    }
-
-    private static void testSign() {
-        // 国密规范正式私钥
-        String prik = "3690655E33D5EA3D9A4AE1A1ADD766FDEA045CDEAA43A9206FB8C430CEFE0D94";
-        // 国密规范正式公钥
-        String pubk = "04F6E0C3345AE42B51E06BF50B98834988D54EBC7460FE135A48171BC0629EAE205EEDE253A530608178A98F1E19BB737302813BA39ED3FA3C51639D7A20C7391A";
-
-
-        GMTSM2 sm2Instance = GMTSM2.getInstance();
-        String plain = "234567890xxxxxxxxxx";
-        BigInteger[] sgig = sm2Instance.sm2Sign(plain.getBytes(), new BigInteger(prik, 16));
-
-        System.out.println(String.format("r:len[%s]\t%s\ns:len[%s]\t%s", sgig[0].bitLength(), sgig[0], sgig[1].bitLength(), sgig[1]));
-        System.out.println(String.format("r:<hex>\t%s\ns:<hex>\t%s", StrUtil.bigIntegerToHex(sgig[0]), StrUtil.bigIntegerToHex(sgig[1])));
-
-        byte[] x = sgig[0].toByteArray();
-        byte[] y = sgig[1].toByteArray();
-        byte[] sv = new byte[64];
-        System.out.println(String.format("r:\t%s\ns:\t%s", StrUtil.byteToHex(x), StrUtil.byteToHex(y)));
-        System.arraycopy(x, 0, sv, 0, 32);
-        System.arraycopy(y, 0, sv, 32, 32);
-        System.out.println(String.format("sv:<hex>\t%s", StrUtil.byteToHex(sv)));
-
-        boolean vs = sm2Instance.sm2Verify(plain.getBytes(), sgig[0], sgig[1], StrUtil.hexToByte(pubk));
-        System.out.println(vs);
+        return right;
     }
 
 

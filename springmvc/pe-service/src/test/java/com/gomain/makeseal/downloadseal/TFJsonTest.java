@@ -384,4 +384,19 @@ public class TFJsonTest {
 
     }
 
+    @Test
+    public void test25(){
+
+        String bs = "0000aa";
+        BigInteger ti = new BigInteger(bs, 16);
+        System.out.println(ti);
+        System.out.println(StrUtil.byteToHex(ti.toByteArray()));
+        System.out.println(new BigInteger(StrUtil.byteToHex(ti.toByteArray()), 16));
+
+        byte[] bbi = ti.toByteArray();
+
+        System.out.println( new BigInteger("-1"));
+        System.out.println( (new BigInteger("-127")).toString(16));
+    }
+
 }
