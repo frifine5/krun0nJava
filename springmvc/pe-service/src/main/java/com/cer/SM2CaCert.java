@@ -24,14 +24,7 @@ public class SM2CaCert {
 			byte[] pk = new byte[65];
 			pk[0] = 0x04;
 			int len = bitString.length;
-			byte[] flag = new byte[1];
-			flag[0] = bitString[len-33];
-			if(0 == flag[0]){
-				System.arraycopy(bitString, len-67, pk, 1, 32);
-			}else{
-				System.arraycopy(bitString, len-66, pk, 1, 32);
-			}
-			System.arraycopy(bitString, len-32, pk, 32, 32);
+			System.arraycopy(bitString, len-64, pk, 1, 64);
 			return pk;
 		} catch (IOException e) {
 			throw new IOException("不符合SM2证书的格式，获取主体公钥信息失败", e);
