@@ -1,9 +1,7 @@
 package com.sm2;
 
 import com.cer.SM2CaCert;
-import com.common.utils.FileUtil;
 import com.sm3.SM3Digest;
-import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
@@ -14,13 +12,8 @@ import org.bouncycastle.math.ec.ECPoint;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.sql.Struct;
 import java.util.Base64;
 
-
-/**
- * java
- */
 
 /**
  * java 实现的GMT 0003.1 2 的SM2签名验签
@@ -277,13 +270,13 @@ public class GMTSM2 {
             throw new IllegalArgumentException("input key length error: export 32, actual " + pvk.length);
         }
         // e
-        BigInteger e = new BigInteger(hashData);
+        BigInteger e = new BigInteger(1, hashData);
         // k
         BigInteger k = null;
         ECPoint kp = null;
         BigInteger r = null;// 签名出参 r
         BigInteger s = null;// 签名出参 s
-        BigInteger userD = new BigInteger(pvk);// 私钥d
+        BigInteger userD = new BigInteger(1, pvk);// 私钥d
         BigInteger ecc_n = this.ecc_n;
         do {
             do {
@@ -340,7 +333,7 @@ public class GMTSM2 {
             throw new IllegalArgumentException("input publicKey length error: export 65, actual " + pk.length);
         }
         // e
-        BigInteger e = new BigInteger(hashData);
+        BigInteger e = new BigInteger(1, hashData);
 
         // r s
         byte[] svx = new byte[32];
@@ -477,14 +470,15 @@ public class GMTSM2 {
 //        testpkget();
 //        System.out.println(testSign4());
 
-        fooTest();
+//        fooTest();
 
 //        test4();
-//        try {
-//            chcert1();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+
+        try {
+            chcert1();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 //        testSign5();
 
@@ -502,6 +496,12 @@ public class GMTSM2 {
         BigInteger[] svs = sm2Instance.sm2Sign(StrUtil.hexToByte(hxDm), ecpriv);
         boolean right1 = sm2Instance.sm2Verify(StrUtil.hexToByte(hxDm), svs, ecpub);
 
+//        for (int i = 0; i < 10; i++) {
+//            System.out.printf("%s ",sm2Instance.sm2Verify(StrUtil.hexToByte(hxDm), svs, ecpub));
+//        }
+//        System.out.println();
+
+
 //        System.out.println(String.format("vs:: 1-%s", right1));
         // sv and pk change;
         String bsvr = StrUtil.byteToHex(svs[0].toByteArray());
@@ -518,7 +518,11 @@ public class GMTSM2 {
 
         boolean right2 = sm2Instance.sm2Verify(StrUtil.hexToByte(hxDm), StrUtil.hexToByte(hexsv), StrUtil.hexToByte(hexpk));
 
+
+
         System.out.println(String.format("vs:: 1-%s, 2-%s", right1, right2));
+
+
 
 
         return right1 && right2;
@@ -527,32 +531,35 @@ public class GMTSM2 {
 
 
     private static void chcert1() throws Exception {
-        String p = "C:\\Users\\49762\\Desktop\\绵竹市残疾人联合会_2019.cer";
-        String r_p = "C:\\Users\\49762\\Desktop\\root.cer";
-        byte[] dcert = FileUtil.fromDATfile(p);
-        byte[] rcer = FileUtil.fromDATfile(r_p);
-//        dcert = rcer;
+//        String p = "C:\\Users\\49762\\Desktop\\a.cer"; // C:\Users\49762\Desktop\
+//        byte[] dcert = FileUtil.fromDATfile(p);
 
-//        String rrb = "MIICRjCCAeqgAwIBAgIIESIzRFVmd4gwDAYIKoEcz1UBg3UFADB2MR8wHQYDVQQLDBZEZXZlbG9wbWVudCBEZXBhcnRtZW50MREwDwYDVQQKDAhTZWN1cml0eTEQMA4GA1UECAwHQmVpSmluZzEQMA4GA1UEBwwHQmVpSmluZzEPMA0GA1UEAwwGR29tYWluMQswCQYDVQQGDAJDTjAeFw0xODA5MjgwMzUwMjNaFw0yODA5MjUwMzUwMjNaMHYxHzAdBgNVBAsMFkRldmVsb3BtZW50IERlcGFydG1lbnQxETAPBgNVBAoMCFNlY3VyaXR5MRAwDgYDVQQIDAdCZWlKaW5nMRAwDgYDVQQHDAdCZWlKaW5nMQ8wDQYDVQQDDAZHb21haW4xCzAJBgNVBAYMAkNOMFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAEOs4LoKmyRfZA0peDoAZdiaZa7mCx6mznbRjm9SN17EZHA/TDw/X0zjpFk9ce64kdLERcy1abTqwMRQOI3z5/OqNgMF4wDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQU2jmj7l5rSw0yVb/vlWAYkK/YBwkwHwYDVR0jBBgwFoAU2jmj7l5rSw0yVb/vlWAYkK/YBwkwCwYDVR0PBAQDAgXgMAwGCCqBHM9VAYN1BQADSAAwRQIgC6IBUqiKLf6skiNgcxFqi1qnWHKjluEs6lPhHqPwsl0CIQCYdWd8mO4Lkcrg4Lt4mDgzuselqD/1es99kNfW7Gd6rA==";
-//        dcert = Base64.getDecoder().decode(rrb);
 
-        byte[] data = SM2CaCert.getSM2TBSCertificateDate(dcert);
-        byte[] dpk = SM2CaCert.getSM2PublicKey(dcert);
-        byte[] bsv = SM2CaCert.getSM2signatureValue(dcert);
-
-        dpk = SM2CaCert.getSM2PublicKey(rcer); // 根证公钥
+        String subCert = "MIICADCCAaSgAwIBAgIIEQArR8Mi0b0wDAYIKoEcz1UBg3UFADB2MQ8wDQYDVQQDDAZHb21haW4xCzAJBgNVBAYMAkNOMRAwDgYDVQQHDAdCZWlKaW5nMRAwDgYDVQQIDAdCZWlKaW5nMREwDwYDVQQKDAhTZWN1cml0eTEfMB0GA1UECwwWRGV2ZWxvcG1lbnQgRGVwYXJ0bWVudDAeFw0xODA5MjgxMDQ0MzJaFw0xOTA5MjgxMDQ0MzJaMIGRMSQwIgYDVQQDDBvnu7Xnq7nluILmrovnlr7kurrogZTlkIjkvJoxFTATBgNVBAcMDOWbm+W3nea1i+ivlTEVMBMGA1UECAwM5Zub5bed5rWL6K+VMSQwIgYDVQQKDBvnu7Xnq7nluILmrovnlr7kurrogZTlkIjkvJoxFTATBgNVBAsMDOWbm+W3nea1i+ivlTBZMBMGByqGSM49AgEGCCqBHM9VAYItA0IABGn5Jlt0R0811aOjLvT/+RIJGUOxAdrobn/A2OPF4lEBEcutjjsD5hdZwVHqemnl3M/yOrGxrOfBNR691o4Uj7swDAYIKoEcz1UBg3UFAANIADBFAiAIsIxcvnTkQBixnqDsoEBmFNmmFZl1x5Pe6Wt9LAYT7gIhANaFQsuvVYPqwYEtmKPCd4vyvd78pnzRoxXUN9+gltkD";
+        String rootCert = "MIICRjCCAeqgAwIBAgIIESIzRFVmd4gwDAYIKoEcz1UBg3UFADB2MR8wHQYDVQQLDBZEZXZlbG9wbWVudCBEZXBhcnRtZW50MREwDwYDVQQKDAhTZWN1cml0eTEQMA4GA1UECAwHQmVpSmluZzEQMA4GA1UEBwwHQmVpSmluZzEPMA0GA1UEAwwGR29tYWluMQswCQYDVQQGDAJDTjAeFw0xODA5MjgwMzUwMjNaFw0yODA5MjUwMzUwMjNaMHYxHzAdBgNVBAsMFkRldmVsb3BtZW50IERlcGFydG1lbnQxETAPBgNVBAoMCFNlY3VyaXR5MRAwDgYDVQQIDAdCZWlKaW5nMRAwDgYDVQQHDAdCZWlKaW5nMQ8wDQYDVQQDDAZHb21haW4xCzAJBgNVBAYMAkNOMFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAEOs4LoKmyRfZA0peDoAZdiaZa7mCx6mznbRjm9SN17EZHA/TDw/X0zjpFk9ce64kdLERcy1abTqwMRQOI3z5/OqNgMF4wDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQU2jmj7l5rSw0yVb/vlWAYkK/YBwkwHwYDVR0jBBgwFoAU2jmj7l5rSw0yVb/vlWAYkK/YBwkwCwYDVR0PBAQDAgXgMAwGCCqBHM9VAYN1BQADSAAwRQIgC6IBUqiKLf6skiNgcxFqi1qnWHKjluEs6lPhHqPwsl0CIQCYdWd8mO4Lkcrg4Lt4mDgzuselqD/1es99kNfW7Gd6rA==";
+        byte[] asnBtSubCert = Base64.getDecoder().decode(subCert);
+        byte[] asnBtRootCert = Base64.getDecoder().decode(rootCert);
 
         GMTSM2 sm2 = GMTSM2.getInstance();
-        byte[] md = sm2.sm3Degest(data);
+        // root cert verify sign
+        byte[] data0 = SM2CaCert.getSM2TBSCertificateDate(asnBtRootCert);
+        byte[] dpk0 = SM2CaCert.getSM2PublicKey(asnBtRootCert);
+        byte[] bsv0 = SM2CaCert.getSM2signatureValue(asnBtRootCert);
+        byte[] md = sm2.sm3Degest(data0);
+        boolean rootRight = sm2.sm2Verify(md, bsv0, dpk0);
+        System.out.println("根证书验证："+ rootRight);
 
-        System.out.println(StrUtil.byteToHex(dpk));
-        System.out.println(StrUtil.byteToHex(bsv));
-
-        boolean right = sm2.sm2Verify(md, bsv, dpk);
-        System.out.println(right);
+        // sub cert verify sign
+        byte[] data1  = SM2CaCert.getSM2TBSCertificateDate(asnBtSubCert);
+        byte[] dpk1 = SM2CaCert.getSM2PublicKey(asnBtRootCert);// 公钥取根证书的
+        byte[] bsv1 = SM2CaCert.getSM2signatureValue(asnBtSubCert);
+        byte[] md1 = sm2.sm3Degest(data1);
+        boolean subRight = sm2.sm2Verify(md1, bsv1, dpk1);
+        System.out.println("子证书验证："+ subRight);
 
 
     }
+
 
     private static boolean testSign4() {
         GMTSM2 sm2Instance = GMTSM2.getInstance();
@@ -593,7 +600,7 @@ public class GMTSM2 {
         int ex = 0;
         for (int i = 0; i < foo; i++) {
             try {
-                boolean r = testSign5();
+                boolean r = testSign3();
                 if (r) suc++;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -698,6 +705,9 @@ public class GMTSM2 {
 
         return right;
     }
+
+
+
 
 
 }
