@@ -93,7 +93,7 @@ public class SM2EncUtil {
 //        generateKeyPair();
         System.out.println("-------------- split --------------");
 
-        String plainText = "ererfeiisgod";
+        String plainText = "xiaoqi test some context | 这里是中文";
         byte[] sourceData = plainText.getBytes();
 
         //下面的秘钥可以使用generateKeyPair()生成的秘钥内容
@@ -108,12 +108,19 @@ public class SM2EncUtil {
         pubk = "04DA576036B8657CC8F3DF35F6112D8ED721CECEEF25A3B43EA03FF260110AD96C93B28E18ED9DAA41658B4A720D3A9F691E4DD1C5CA6C78BC9EAB6FD447F712EF";
         prik = "00D7BCD1984B1B53788E9A9322F52D69FB72F0984617890D9C4FFC9F1623DB17F2";
 
+
+        GMTSM2 sm2 = GMTSM2.getInstance();
+        String[] strPair = sm2.genPairOnString();
+        pubk = strPair[0];
+        prik = strPair[1];
+
+        System.out.println("加密前: \t"+plainText);
         System.out.println("加密: ");
         String cipherText = SM2EncUtil.encrypt(StrUtil.hexToByte(pubk), sourceData);
         System.out.println(cipherText);
         System.out.println("解密: ");
-        plainText = new String(SM2EncUtil.decrypt(StrUtil.hexToByte(prik), StrUtil.hexToByte(cipherText)));
-        System.out.println(plainText);
+        String decText = new String(SM2EncUtil.decrypt(StrUtil.hexToByte(prik), StrUtil.hexToByte(cipherText)));
+        System.out.println(decText);
 
     }
 }
