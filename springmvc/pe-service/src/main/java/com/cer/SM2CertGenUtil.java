@@ -2,10 +2,11 @@ package com.cer;
 
 import org.bouncycastle.asn1.*;
 
+import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.Date;
 
-public class CertGenUtil {
+public class SM2CertGenUtil {
 
 
 
@@ -75,17 +76,25 @@ public class CertGenUtil {
 
 
     /**
-     * 证书主体， 签名算法， 签名值 ==》 证书结构体
-     * @param tbsc
-     * @param signOid
-     * @param signHexValue
+     * 证书主体， 签名值 ==》 证书结构体 | 指定为SM2算法oid
      * @return
      */
-    public static DERSequence makeCert(DERSequence tbsc, String signOid, String signHexValue){
+    public static DERSequence makeSM2Cert(DERSequence tbsc, byte[] signValue)throws Exception{
+        DERObjectIdentifier oid = new DERObjectIdentifier(CertOidEnum.SM2.oid);
+        ASN1Encodable[] oidArr = {oid, new DERNull()};
+        DERSequence derOid = new DERSequence(oidArr);// 算法域
 
-
-
-        return null;
+        byte[] x = new byte[32];
+        byte[] y = new byte[32];
+        System.arraycopy(signValue, 0, x, 0, 32);
+        System.arraycopy(signValue, 32, y, 0, 32);
+        DERInteger r = new DERInteger(new BigInteger(x));
+        DERInteger s = new DERInteger(new BigInteger(y));
+        ASN1Encodable[] rsArr = {r, s};
+        DERSequence derBitStringSV = new DERSequence(rsArr);
+        DERBitString derSV = new DERBitString(derBitStringSV.getEncoded());// 签名值域
+        ASN1Encodable[] asnCertArr = {tbsc, derOid, derSV};
+        return new DERSequence(asnCertArr);
     }
 
 

@@ -3,13 +3,15 @@ package com.gomain.makeseal.downloadseal;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.cer.CertGenUtil;
+import com.cer.SM2CaCert;
+import com.cer.SM2CertGenUtil;
 import com.common.utils.FileUtil;
 import com.common.utils.ParamsUtil;
 import com.common.utils.RegularConst;
 import com.pe.entity.ApySealObj;
 import com.pe.entity.Enterprice;
 import com.pe.entity.SealItem;
+import com.sm2.GMTSM2;
 import com.sm2.StrUtil;
 import com.sm3.SM3Util;
 import org.bouncycastle.asn1.DERSequence;
@@ -19,7 +21,6 @@ import org.junit.Test;
 import java.io.*;
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.sql.Struct;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -330,7 +331,7 @@ public class TFJsonTest {
     public void test21(){
         String hexPK = "83BE371D2F06625FEA4ED1AD667C50F028795143EC6249C74B5C86244362512E4019AC1C382EF4BEA6F38D524B349F4B8636D9ED9B6FFF4036B82D04A32AA29F";
 
-        DERSequence tbs = CertGenUtil.generateCertTBSCert(1, 2334323,
+        DERSequence tbs = SM2CertGenUtil.generateCertTBSCert(1, 2334323,
                 "SM2", "机构测试", 2, StrUtil.hexToByte(hexPK));
 
         try {
@@ -398,5 +399,44 @@ public class TFJsonTest {
         System.out.println( new BigInteger("-1"));
         System.out.println( (new BigInteger("-127")).toString(16));
     }
+
+    @Test
+    public void test26() throws Exception{
+
+        GMTSM2 sm2 = GMTSM2.getInstance();
+        String[] pair = sm2.genPairOnString();
+
+        DERSequence tbsc = SM2CertGenUtil.generateCertTBSCert(1, 1234567890,
+                "测试章", "", 2, StrUtil.hexToByte(pair[0]));
+        byte[] md = sm2.sm3Degest(tbsc.getEncoded());
+        byte[] certSV = sm2.sm2Sign(md, StrUtil.hexToByte(pair[1]));
+        System.out.println("签名验证:\t"+sm2.sm2Verify(md, certSV, StrUtil.hexToByte(pair[0])));
+
+        DERSequence derCert = SM2CertGenUtil.makeSM2Cert(tbsc, certSV);
+        System.out.println(Base64.getEncoder().encodeToString(derCert.getEncoded()));
+
+    }
+    @Test
+    public void test27() throws Exception{
+
+        String rootCert =
+                "MIIBrDCCAVGgAwIBAQIESZYC0jAMBggqgRzPVQGDdQUAMGoxETAPBgNVBCkMCOeOi+W4iENBMREwDwYDVQQKDAhDQeacuuaehDERMA8GA1UECQwIeHjooZfpgZMxDzANBgNVBAgMBuWMl+S6rDEeMBwGA1UECAwV5Lit5Y2O5Lq65rCR5YWx5ZKM5Zu9MB4XDTE4MDkzMDAyNTExMFoXDTIwMDkzMDAyNTExMFowTzEJMAcGA1UEKQwAMREwDwYDVQQJDAh4eOihl+mBkzEPMA0GA1UECAwG5YyX5LqsMR4wHAYDVQQIDBXkuK3ljY7kurrmsJHlhbHlkozlm70wWTATBgcqhkjOPQIBBggqgRzPVQGCLQNCAAQFAdgMFb4B3zcpqZde8tGaj5ClevSMmDMX7A7VPMlXDsLlROo2hPapR42PHsPzi+GoGCcs43NEBC+t1F8+/WTLMAwGCCqBHM9VAYN1BQADRwAwRAIgyi94wVGkCoCCX/SZ+Jt63XE35Ou/pOVw+pA6P8f1EHoCINJ1Q2VWfVmMfde0LykFQH8NqsGqzntL1nJysoONINn1";
+
+        byte[] asnBtRootCert = Base64.getDecoder().decode(rootCert);
+
+        GMTSM2 sm2 = GMTSM2.getInstance();
+        // root cert verify sign
+        byte[] data0 = SM2CaCert.getSM2TBSCertificateDate(asnBtRootCert);
+        byte[] dpk0 = SM2CaCert.getSM2PublicKey(asnBtRootCert);
+        byte[] bsv0 = SM2CaCert.getSM2signatureValue(asnBtRootCert);
+        byte[] md = sm2.sm3Degest(data0);
+        boolean rootRight = sm2.sm2Verify(md, bsv0, dpk0);
+        System.out.println("根证书验证："+ rootRight);
+
+    }
+
+
+
+
 
 }
