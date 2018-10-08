@@ -2,16 +2,16 @@ package com.pe.entity;
 
 public class Enterprice {
 
-    String entname;
-    String uniscid;
-    String lgname;
-    String opscope;
-    String address;
-    String estdate;
-    String apprdate;
-    String entel;
-    String opfrom;
-    String opto;
+    String entname;// 企业名称
+    String uniscid;// 统一社会信用代码
+    String lgname;// 法定代表人
+    String opscope;// 经营范围
+    String address;// 地址
+    String estdate;// 成立日期
+    String apprdate;// 审批日期
+    String entel;// 电话
+    String opfrom;// 经营期限起
+    String opto;// 经营期限止
 
     public String getEntname() {
         return entname;

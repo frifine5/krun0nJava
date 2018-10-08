@@ -2,10 +2,10 @@ package com.pe.entity;
 
 public class SealItem {
 
-    String sealName;
-    String sealCoce;
-    String sealType;
-    int age;
+    String sealName;// 印章名称
+    String sealCode;// 印章编码
+    String sealType;// 印章类型
+    int age;// 有效期
 
     public String getSealName() {
         return sealName;
@@ -15,12 +15,12 @@ public class SealItem {
         this.sealName = sealName;
     }
 
-    public String getSealCoce() {
-        return sealCoce;
+    public String getSealCode() {
+        return sealCode;
     }
 
-    public void setSealCoce(String sealCoce) {
-        this.sealCoce = sealCoce;
+    public void setSealCode(String sealCode) {
+        this.sealCode = sealCode;
     }
 
     public String getSealType() {
