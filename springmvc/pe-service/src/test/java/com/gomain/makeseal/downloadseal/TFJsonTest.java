@@ -350,7 +350,7 @@ public class TFJsonTest {
         SealItem st1 = new SealItem();
         st1.setAge(2);
         st1.setSealName("印章名称项");
-        st1.setSealCoce("印章编码项");
+        st1.setSealCode("印章编码项");
         st1.setSealType("印章类型项");
         list.add(st1);
         obj.setSeaList(list);
@@ -416,6 +416,7 @@ public class TFJsonTest {
         System.out.println(Base64.getEncoder().encodeToString(derCert.getEncoded()));
 
     }
+
     @Test
     public void test27() throws Exception{
 
@@ -435,8 +436,23 @@ public class TFJsonTest {
 
     }
 
+    @Test
+    public void test28() throws Exception {
 
+        String rootCert =
+                "MIIBrDCCAVGgAwIBAQIESZYC0jAMBggqgRzPVQGDdQUAMGoxETAPBgNVBCkMCOeOi+W4iENBMREwDwYDVQQKDAhDQeacuuaehDERMA8GA1UECQwIeHjooZfpgZMxDzANBgNVBAgMBuWMl+S6rDEeMBwGA1UECAwV5Lit5Y2O5Lq65rCR5YWx5ZKM5Zu9MB4XDTE4MDkzMDAyNTExMFoXDTIwMDkzMDAyNTExMFowTzEJMAcGA1UEKQwAMREwDwYDVQQJDAh4eOihl+mBkzEPMA0GA1UECAwG5YyX5LqsMR4wHAYDVQQIDBXkuK3ljY7kurrmsJHlhbHlkozlm70wWTATBgcqhkjOPQIBBggqgRzPVQGCLQNCAAQFAdgMFb4B3zcpqZde8tGaj5ClevSMmDMX7A7VPMlXDsLlROo2hPapR42PHsPzi+GoGCcs43NEBC+t1F8+/WTLMAwGCCqBHM9VAYN1BQADRwAwRAIgyi94wVGkCoCCX/SZ+Jt63XE35Ou/pOVw+pA6P8f1EHoCINJ1Q2VWfVmMfde0LykFQH8NqsGqzntL1nJysoONINn1";
 
+        Date[] valids = SM2CaCert.getSM2ValidTime(Base64.getDecoder().decode(rootCert));
+        System.out.println(String.format("有效期从%s到%s", ParamsUtil.formatTime19(valids[0]),  ParamsUtil.formatTime19(valids[1])));
+
+        Calendar cld  = Calendar.getInstance();
+        cld.setTime(valids[0]);
+        int stYear = cld.get(Calendar.YEAR);
+        cld.setTime(valids[1]);
+        int age = cld.get(Calendar.YEAR) - stYear;
+        System.out.println(String.format("有效期%d年", age) );
+
+    }
 
 
 }
