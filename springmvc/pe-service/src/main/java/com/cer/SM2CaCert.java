@@ -1,9 +1,10 @@
 package com.cer;
 
 import java.io.IOException;
-import org.bouncycastle.asn1.ASN1Encodable;
-import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.DERBitString;
+import java.text.ParseException;
+import java.util.Date;
+
+import org.bouncycastle.asn1.*;
 
 
 public class SM2CaCert {
@@ -74,9 +75,35 @@ public class SM2CaCert {
 			throw new IOException("不符合SM2证书的格式，获取证书主体信息失败", e);
 		} 
 	}
-	
-	
-	
+
+	/**
+	 * 输入证书字节，返回有效期格式
+	 */
+	public static Date[] getSM2ValidTime(byte[] src) throws IOException, ParseException {
+		try {
+			ASN1Encodable at0 = ASN1Sequence.getInstance((ASN1Sequence.fromByteArray(src))).getObjectAt(0);
+			ASN1Encodable at04 = ASN1Sequence.getInstance(at0).getObjectAt(4);
+			ASN1Encodable at040 = ASN1Sequence.getInstance(at04).getObjectAt(0);
+			ASN1Encodable at041 = ASN1Sequence.getInstance(at04).getObjectAt(1);
+			Date st = null;
+			Date et = null;
+			if(at040 instanceof ASN1GeneralizedTime){
+				st = DERGeneralizedTime.getInstance(at040).getDate();
+			}else if(at040 instanceof ASN1UTCTime){
+				st= DERUTCTime.getInstance(at040).getDate();
+			}
+			if(at041 instanceof ASN1GeneralizedTime){
+				et = DERGeneralizedTime.getInstance(at041).getDate();
+			}else if(at041 instanceof ASN1UTCTime){
+				et= DERUTCTime.getInstance(at041).getDate();
+			}
+			return new Date[]{st, et};
+		} catch (IOException e) {
+			throw new IOException("不符合SM2证书的格式，获取证书有效期信息失败", e);
+		}catch (ParseException e) {
+			throw new ParseException("证书有效期转换时间格式失败", e.getErrorOffset());
+		}
+	}
 	
 	
 
