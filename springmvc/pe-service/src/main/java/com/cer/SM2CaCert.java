@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
 
+import com.common.utils.ParamsUtil;
+import com.sm2.StrUtil;
 import org.bouncycastle.asn1.*;
+import org.bouncycastle.util.encoders.Hex;
 
 
 public class SM2CaCert {
@@ -102,6 +105,21 @@ public class SM2CaCert {
 			throw new IOException("不符合SM2证书的格式，获取证书有效期信息失败", e);
 		}catch (ParseException e) {
 			throw new ParseException("证书有效期转换时间格式失败", e.getErrorOffset());
+		}
+	}
+
+	/**
+	 * 获取sm2证书序列号，输出16进制
+	 */
+	public static String getSm2HexSerial(byte[] src)throws IOException{
+		try {
+			ASN1Encodable at0 = ASN1Sequence.getInstance((ASN1Sequence.fromByteArray(src))).getObjectAt(0);
+			ASN1Encodable at01 = ASN1Sequence.getInstance(at0).getObjectAt(1);
+			ASN1Integer derSerial = ASN1Integer.getInstance(at01);
+//			return StrUtil.byteToHex(derSerial.getValue().toByteArray());
+			return new String(Hex.encode(derSerial.getValue().toByteArray()));
+		}catch (IOException e){
+			throw new IOException("不符合SM2证书的格式，获取证书序列号信息失败", e);
 		}
 	}
 	

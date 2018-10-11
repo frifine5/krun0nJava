@@ -455,4 +455,14 @@ public class TFJsonTest {
     }
 
 
+    @Test
+    public void test29()throws Exception{
+        String p = "D:\\work documents\\钉钉map\\董力风\\绵竹市残疾人联合会_2019.cer";
+        byte[] dcert = FileUtil.fromDATfile(p);
+        String sm2HexSerial = SM2CaCert.getSm2HexSerial(dcert);
+        System.out.println(sm2HexSerial);
+
+
+    }
+
 }
