@@ -14,7 +14,7 @@ import com.pe.entity.SealItem;
 import com.sm2.GMTSM2;
 import com.sm2.StrUtil;
 import com.sm3.SM3Util;
-import org.bouncycastle.asn1.DERSequence;
+import org.bouncycastle.asn1.*;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.Test;
 
@@ -462,6 +462,25 @@ public class TFJsonTest {
         String sm2HexSerial = SM2CaCert.getSm2HexSerial(dcert);
         System.out.println(sm2HexSerial);
 
+
+    }
+
+    @Test
+    public void test30()throws Exception {
+        String p = "D:\\work documents\\钉钉map\\王凯\\subSystemAttr.txt";
+        byte[] dcert = FileUtil.fromDATfile(p);
+        byte[] cert1= null;
+        try {
+            ASN1Encodable at0 = ASN1Sequence.getInstance((ASN1Sequence.fromByteArray(dcert))).getObjectAt(0);
+            DERBitString dc1 = DERBitString.getInstance(at0);
+            ASN1Sequence derCert1 = ASN1Sequence.getInstance(dc1.getBytes());
+            FileUtil.writeInFiles("c:\\Users\\49762\\Desktop\\cert1.cer",  derCert1);
+            cert1 = dc1.getBytes();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        System.out.println(SM2CaCert.getSm2HexSerial(cert1));
 
     }
 
