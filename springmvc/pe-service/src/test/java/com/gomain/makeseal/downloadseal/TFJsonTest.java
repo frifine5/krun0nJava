@@ -421,18 +421,42 @@ public class TFJsonTest {
     public void test27() throws Exception{
 
         String rootCert =
+                // 四川CA根
                 "MIIBrDCCAVGgAwIBAQIESZYC0jAMBggqgRzPVQGDdQUAMGoxETAPBgNVBCkMCOeOi+W4iENBMREwDwYDVQQKDAhDQeacuuaehDERMA8GA1UECQwIeHjooZfpgZMxDzANBgNVBAgMBuWMl+S6rDEeMBwGA1UECAwV5Lit5Y2O5Lq65rCR5YWx5ZKM5Zu9MB4XDTE4MDkzMDAyNTExMFoXDTIwMDkzMDAyNTExMFowTzEJMAcGA1UEKQwAMREwDwYDVQQJDAh4eOihl+mBkzEPMA0GA1UECAwG5YyX5LqsMR4wHAYDVQQIDBXkuK3ljY7kurrmsJHlhbHlkozlm70wWTATBgcqhkjOPQIBBggqgRzPVQGCLQNCAAQFAdgMFb4B3zcpqZde8tGaj5ClevSMmDMX7A7VPMlXDsLlROo2hPapR42PHsPzi+GoGCcs43NEBC+t1F8+/WTLMAwGCCqBHM9VAYN1BQADRwAwRAIgyi94wVGkCoCCX/SZ+Jt63XE35Ou/pOVw+pA6P8f1EHoCINJ1Q2VWfVmMfde0LykFQH8NqsGqzntL1nJysoONINn1";
 
+        // Liuran
+        rootCert = "MIICajCCAg6gAwIBAgIIESIzRFVmd4gwDAYIKoEcz1UBg3UFADCBhzEfMB0GA1UECwwWRGV2ZWxvcG1lbnQgRGVwYXJ0bWVudDERMA8GA1UECgwIU2VjdXJpdHkxEDAOBgNVBAgMB0JlaUppbmcxEDAOBgNVBAcMB0JlaUppbmcxDzANBgNVBAMMBkdvbWFpbjELMAkGA1UEBgwCQ04xDzANBgNVBAQMBkEwMDEwMTAeFw0xODEwMTYwNTE5NTNaFw0yODEwMTMwNTE5NTNaMIGHMR8wHQYDVQQLDBZEZXZlbG9wbWVudCBEZXBhcnRtZW50MREwDwYDVQQKDAhTZWN1cml0eTEQMA4GA1UECAwHQmVpSmluZzEQMA4GA1UEBwwHQmVpSmluZzEPMA0GA1UEAwwGR29tYWluMQswCQYDVQQGDAJDTjEPMA0GA1UEBAwGQTAwMTAxMFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAEOs4LoKmyRfZA0peDoAZdiaZa7mCx6mznbRjm9SN17EZHA/TDw/X0zjpFk9ce64kdLERcy1abTqwMRQOI3z5/OqNgMF4wDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQU2jmj7l5rSw0yVb/vlWAYkK/YBwkwHwYDVR0jBBgwFoAU2jmj7l5rSw0yVb/vlWAYkK/YBwkwCwYDVR0PBAQDAgXgMAwGCCqBHM9VAYN1BQADSAAwRQIgCVF2nWtw/vGeMpHAyS37L1f0xKIpFiEU4RUoxP+gtRICIQCPAWWi3KdReNOT+a8zBAaAvhBr7Yzc/Dr7Rpc6UamX3w==";
+
         byte[] asnBtRootCert = Base64.getDecoder().decode(rootCert);
+
+//
+//        byte[] asnBtRootCert =  FileUtil.fromDATfile("D:\\work documents\\钉钉map\\董力风\\root.cer");
+//
+//        String p = "D:\\work documents\\钉钉map\\董力风\\绵竹市残疾人联合会_2019.cer";
+//        byte[] subCert = FileUtil.fromDATfile(p);
+
+//        String rootStr = Base64.getEncoder().encodeToString(asnBtRootCert);
+//        String subStr = Base64.getEncoder().encodeToString(subCert);
+//        System.out.println(rootStr);
+//        System.out.println();
+//        System.out.println(subStr);
+//        System.out.println();
+
 
         GMTSM2 sm2 = GMTSM2.getInstance();
         // root cert verify sign
         byte[] data0 = SM2CaCert.getSM2TBSCertificateDate(asnBtRootCert);
         byte[] dpk0 = SM2CaCert.getSM2PublicKey(asnBtRootCert);
         byte[] bsv0 = SM2CaCert.getSM2signatureValue(asnBtRootCert);
+        // SUB
+//        byte[] data0 = SM2CaCert.getSM2TBSCertificateDate(subCert);
+//        byte[] dpk0 = SM2CaCert.getSM2PublicKey(asnBtRootCert);
+//        byte[] bsv0 = SM2CaCert.getSM2signatureValue(subCert);
+
         byte[] md = sm2.sm3Degest(data0);
         boolean rootRight = sm2.sm2Verify(md, bsv0, dpk0);
-        System.out.println("根证书验证："+ rootRight);
+//        System.out.println("根证书验证："+ rootRight);
+        System.out.println("子证书验证："+ rootRight);
 
     }
 
