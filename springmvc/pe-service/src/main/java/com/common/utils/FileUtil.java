@@ -1,8 +1,6 @@
 package com.common.utils;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1InputStream;
@@ -77,6 +75,41 @@ public class FileUtil {
         ins.read(data, 0, fl);
         ins.close();
         return data;
+    }
+
+
+    /**
+     * 向指定路径的文件追加写某些内容
+     *
+     * @param path 文件路径
+     * @param ctx  追加内容
+     * @throws IOException
+     */
+    public static void appendCtx2File1(String path, String ctx) throws IOException {
+        FileWriter fw = new FileWriter(new File(path), true);//如果文件存在，则追加内容；如果文件不存在，则创建文件
+        PrintWriter pw = new PrintWriter(new FileWriter(new File(path), true));
+        pw.println(ctx);
+        pw.flush();
+        pw.close();
+    }
+
+    public static void appendCtx2File2(String path, String ctx) throws IOException {
+        BufferedWriter out = new BufferedWriter(
+                new OutputStreamWriter(
+                        new FileOutputStream(path, true)));
+        out.write(ctx+"\r\n");// 内容后面不自动加换行， 如需写完换行则在内容后面加上"\r\n"字符
+        out.close();
+    }
+
+    public static void appendCtx2File3(String path, String ctx) throws IOException {
+        // 打开一个随机访问文件流，按读写方式
+        RandomAccessFile randomFile = new RandomAccessFile(path, "rw");
+        // 文件长度，字节数
+        long fileLength = randomFile.length();
+        // 将写文件指针移到文件尾。
+        randomFile.seek(fileLength);
+        randomFile.writeBytes(ctx+"\r\n");// 内容后面不自动加换行， 如需写完换行则在内容后面加上"\r\n"字符 (+"\r\n")
+        randomFile.close();
     }
 
 
