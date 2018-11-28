@@ -466,7 +466,7 @@ public class GMTSM2 {
 
 //        testSign2();
 //        testSign3();
-//        testvs();
+        testvs();
 //        testpkget();
 //        System.out.println(testSign4());
 
@@ -474,11 +474,11 @@ public class GMTSM2 {
 
 //        test4();
 
-        try {
-            chcert1();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            chcert1();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
 //        testSign5();
 
@@ -678,6 +678,12 @@ public class GMTSM2 {
                 StrUtil.hexToByte(hsv.replaceAll(" ", "")),
                 StrUtil.hexToByte(hpk.replaceAll(" ", "")));
         System.out.println(right);
+
+        String bpk = Base64.getEncoder().encodeToString(StrUtil.hexToByte(hpk.replaceAll(" ", "")));
+        String bsv = Base64.getEncoder().encodeToString(StrUtil.hexToByte(hsv.replaceAll(" ", "")));
+        String bdg = Base64.getEncoder().encodeToString(StrUtil.hexToByte(hmd.replaceAll(" ", "")));
+
+        System.out.println(String.format("公钥:\t%s\n摘要:\t%s\n签名值:\t%s", bpk, bdg, bsv));
 
 
     }
