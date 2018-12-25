@@ -159,4 +159,25 @@ public class ParamsUtil {
     }
 
 
+    /**
+     * 十六进制字符检查
+     */
+    public static boolean isHexString(String in){
+        String reg = "^[0-9abcdefABCDEF]+";
+        if(in.matches(reg)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
+    /**
+     * Base64字符检查
+     */
+    public static boolean isBase64Str(String in){
+        String base64Pattern = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$";
+        return Pattern.matches(base64Pattern, in);
+    }
+
 }

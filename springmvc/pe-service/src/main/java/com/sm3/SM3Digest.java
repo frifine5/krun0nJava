@@ -136,10 +136,10 @@ public class SM3Digest
 		return BYTE_LENGTH;
 	}
 	
-	public static void main(String[] args) 
+	public static void main(String[] args) throws Exception
 	{
 		byte[] md = new byte[32];
-		byte[] msg1 = "中文00000000111111".getBytes();
+		byte[] msg1 = "中文00000000111111".getBytes("UTF-8");
 		SM3Digest sm3 = new SM3Digest();
 		sm3.update(msg1, 0, msg1.length);
 		sm3.doFinal(md, 0);
