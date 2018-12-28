@@ -19,6 +19,7 @@ public class ESealPreController {
 
     @RequestMapping(value = "/onsst")
     public Object queryInfoOnsystem(){
+        System.out.println("I got you in time: "+new Date());
         String s = "seal pyl ss";
         return s;
     }
