@@ -93,6 +93,11 @@ public class SM4Util {
         }
     }
 
+    /**
+     * 解密后以十六进制字符串传递
+     * @param cipherText
+     * @return
+     */
     public String decryptData_ECB(String cipherText)
     {
         try
@@ -114,7 +119,8 @@ public class SM4Util {
             SM4 sm4 = new SM4();
             sm4.sm4_setkey_dec(ctx, keyBytes);
             byte[] decrypted = sm4.sm4_crypt_ecb(ctx, new BASE64Decoder().decodeBuffer(cipherText));
-            return new String(decrypted, "GBK");
+//            return new String(decrypted, "GBK");
+            return Util.byteToHex(decrypted);
         }
         catch (Exception e)
         {
