@@ -27,7 +27,7 @@ public class SM2CertGenUtil {
         ASN1Encodable[] issueOrg = {new DERObjectIdentifier(CertOidEnum.ORGANIZATION.oid), new DERUTF8String("CA机构")};
         ASN1Encodable[] issueDN = {new DERObjectIdentifier(CertOidEnum.STREET.oid), new DERUTF8String("xx街道")};
         ASN1Encodable[] issueCity = {new DERObjectIdentifier(CertOidEnum.STATE.oid), new DERUTF8String("北京")};
-        ASN1Encodable[] issueCountry = {new DERObjectIdentifier(CertOidEnum.STATE.oid), new DERUTF8String("中华人民共和国")};
+        ASN1Encodable[] issueCountry = {new DERObjectIdentifier(CertOidEnum.COUNTRY.oid), new DERUTF8String("中华人民共和国")};
         issueVector.add(new DERSet(new DERSequence(issueName)));
         issueVector.add(new DERSet(new DERSequence(issueOrg)));
         issueVector.add(new DERSet(new DERSequence(issueDN)));
@@ -53,7 +53,7 @@ public class SM2CertGenUtil {
         ASN1Encodable[] subjectName = {new DERObjectIdentifier(CertOidEnum.NAME.oid), new DERUTF8String(subject)};
         ASN1Encodable[] subjectDN = {new DERObjectIdentifier(CertOidEnum.STREET.oid), new DERUTF8String("xx街道")};
         ASN1Encodable[] subjectCity = {new DERObjectIdentifier(CertOidEnum.STATE.oid), new DERUTF8String("北京")};
-        ASN1Encodable[] subjectCountry = {new DERObjectIdentifier(CertOidEnum.STATE.oid), new DERUTF8String("中华人民共和国")};
+        ASN1Encodable[] subjectCountry = {new DERObjectIdentifier(CertOidEnum.COUNTRY.oid), new DERUTF8String("中华人民共和国")};
         subjectVector.add(new DERSet(new DERSequence(subjectName)));
         subjectVector.add(new DERSet(new DERSequence(subjectDN)));
         subjectVector.add(new DERSet(new DERSequence(subjectCity)));
