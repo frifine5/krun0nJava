@@ -34,6 +34,28 @@ public class SM2CaCert {
 			throw new IOException("不符合SM2证书的格式，获取主体公钥信息失败", e);
 		}
 	}
+	/**
+	 * 从csr中解析sm2证书
+	 * @param src
+	 * 			csr结构体
+	 * @return byte[] SM2公钥
+	 * @throws IOException
+	 */
+	public static byte[] getSM2PublicKeyFromCSR(byte[] src) throws IOException {
+		try {
+			ASN1Encodable at0 = ASN1Sequence.getInstance((ASN1Sequence.fromByteArray(src))).getObjectAt(0);
+			ASN1Encodable at02 = ASN1Sequence.getInstance(at0).getObjectAt(2);
+			ASN1Encodable at021 = ASN1Sequence.getInstance(at02).getObjectAt(1);
+			byte[] bitString = DERBitString.getInstance(at021).getBytes();
+			byte[] pk = new byte[65];
+			pk[0] = 0x04;
+			int len = bitString.length;
+			System.arraycopy(bitString, len-64, pk, 1, 64);
+			return pk;
+		} catch (IOException e) {
+			throw new IOException("不符合SM2证书的格式，获取主体公钥信息失败", e);
+		}
+	}
 	
 	
 	/**
