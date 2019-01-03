@@ -88,8 +88,8 @@ public class SM2CertGenUtil {
         byte[] y = new byte[32];
         System.arraycopy(signValue, 0, x, 0, 32);
         System.arraycopy(signValue, 32, y, 0, 32);
-        DERInteger r = new DERInteger(new BigInteger(x));
-        DERInteger s = new DERInteger(new BigInteger(y));
+        DERInteger r = new DERInteger(new BigInteger(1, x));
+        DERInteger s = new DERInteger(new BigInteger(1, y));
         ASN1Encodable[] rsArr = {r, s};
         DERSequence derBitStringSV = new DERSequence(rsArr);
         DERBitString derSV = new DERBitString(derBitStringSV.getEncoded());// 签名值域
