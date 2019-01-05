@@ -101,7 +101,7 @@ public class GMTSM2 {
     /**
      * 生成密钥对 （Hex字符串的结果）
      *
-     * @return
+     * @return {puk, pvk}
      */
     public String[] genPairOnString() {
         // 产生随机数
@@ -187,7 +187,7 @@ public class GMTSM2 {
 
         // 1
         String pre1 = hentl+hid+ha+hb+hgx+hgy+hpk.substring(2);
-        System.out.println(pre1);
+//        System.out.println(pre1);
         byte[] z = sm3Degest(StrUtil.hexToByte(pre1));
 
         // 2

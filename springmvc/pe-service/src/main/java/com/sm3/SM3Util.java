@@ -30,7 +30,7 @@ public class SM3Util {
         String hpk = Util.byteToHex(pk);
 
         String pre1 = hentl+hid+ha+hb+hgx+hgy+hpk.substring(2);
-        System.out.println(pre1);
+//        System.out.println(pre1);
         byte[] z = sm3Digest(Util.hexToByte(pre1));
 
         byte[] zm = Util.hexToByte(Util.byteToHex(z)+Util.byteToHex(in));
