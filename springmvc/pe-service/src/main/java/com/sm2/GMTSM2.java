@@ -142,6 +142,30 @@ public class GMTSM2 {
         return new String[]{hexPublicKey, hexPrivateKey};
     }
 
+    /**
+     * 根据私钥生成公钥
+     */
+    public String calcPkfrSk(byte[] sk){
+        BigInteger da = new BigInteger(1, sk);
+        ECPoint p = ecc_bc_spec.getG().multiply(da);
+        byte[] bpx = p.getX().toBigInteger().toByteArray();
+        byte[] bpy = p.getY().toBigInteger().toByteArray();
+        byte[] bpk = new byte[64];
+        int lx = bpx.length;
+        if (lx < 32) {
+            System.arraycopy(bpx, 0, bpk, 32 - lx, lx);
+        } else {
+            System.arraycopy(bpx, lx - 32, bpk, 0, 32);
+        }
+        int ly = bpy.length;
+        if (ly < 32) {
+            System.arraycopy(bpy, 0, bpk, 32 - ly, ly);
+        } else {
+            System.arraycopy(bpy, ly - 32, bpk, 32, 32);
+        }
+        return "04" + StrUtil.byteToHex(bpk);
+    }
+
 
     /**
      * from P = k * G 得出曲线上的点（x, y）
