@@ -28,6 +28,11 @@ server:
     max-connections: 2000
     max-threads: 2000
   connection-timeout: 60000
+  ssl:
+    key-store: D:\\tomcat.key
+    key-store-type: JKS
+    key-alias: tomcat
+    key-store-password: hf201901xy
 
 mybatis:
   mapper-locations: classpath*:mapper/*.xml

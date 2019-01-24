@@ -168,6 +168,12 @@
             <scope>compile</scope>
         </dependency>
 
+		<dependency>
+			<groupId>com.gomain.ca</groupId>
+			<artifactId>caapi</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
 
     </dependencies>
 
