@@ -1,8 +1,8 @@
 package com.common.utils;
 
-import net.sf.json.JSONObject;
-
+import javax.crypto.Cipher;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -178,6 +178,33 @@ public class ParamsUtil {
     public static boolean isBase64Str(String in){
         String base64Pattern = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$";
         return Pattern.matches(base64Pattern, in);
+    }
+
+    public static byte[] padding(byte[] src, int eod){
+        int len = src.length;
+        if(eod == Cipher.ENCRYPT_MODE){// 加密前补码
+            int p = 16 - len % 16;
+            byte[] out = new byte[len + p];
+            System.arraycopy(src, 0, out, 0, len);
+            for(int i= 0; i < p; i++){
+                out[len + i]= (byte)p;
+            }
+            return out;
+        }else{
+            // 检查是否满足已补码的规则
+            int p = src[len-1];
+            if(p>16 || p<1){
+                throw new RuntimeException("数据不符合补位规则，无法去除补位");
+            }else{
+                for(int i = len-1; i >= len - p; i--){
+                    if(p != src[i]){
+                        throw new RuntimeException("数据不符合补位规则，无法去除补位");
+                    }
+                }
+                // 截取有效部分
+                return Arrays.copyOfRange(src, 0, len-p);
+            }
+        }
     }
 
 }
