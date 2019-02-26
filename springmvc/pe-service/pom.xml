@@ -126,6 +126,15 @@
 
 
 
+		<!-- https://mvnrepository.com/artifact/QRCode/QRCode -->
+		<dependency>
+			<groupId>QRCode</groupId>
+			<artifactId>QRCode</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+
+
+
 
 
 
@@ -201,6 +210,7 @@
 		</plugins>
 	</build>
 
+
 <!--	<repositories>
 		<repository>
 			<id>spring-milestones</id>
@@ -217,4 +227,8 @@
 	 		http://mvn.dev.baiwang-inner.com:8081/nexus/content/repositories/thirdparty/
 
 	 		 -->
+
+	<!-- for QRCode url:
+	 <url>http://develop.centit.com/nexus/content/repositories/centit-releases/</url>
+	 -->
 </project>
