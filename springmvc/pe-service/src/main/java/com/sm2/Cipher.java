@@ -27,7 +27,7 @@ public class Cipher {
         this.sm3keybase = new SM3Digest();
         this.sm3c3 = new SM3Digest();
 
-        byte p[] = Util.byteConvert32Bytes(p2.getX().toBigInteger());
+        byte p[] = Util.byteConvert32Bytes(p2.getXCoord().toBigInteger());
         this.sm3keybase.update(p, 0, p.length);
         this.sm3c3.update(p, 0, p.length);
 
