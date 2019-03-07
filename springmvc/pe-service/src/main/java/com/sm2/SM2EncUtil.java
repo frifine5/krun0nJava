@@ -18,7 +18,7 @@ public class SM2EncUtil {
         BigInteger privateKey = ecpriv.getD();
         ECPoint publicKey = ecpub.getQ();
 
-        System.out.println("公钥: " + StrUtil.byteToHex(publicKey.getEncoded()));
+        System.out.println("公钥: " + StrUtil.byteToHex(publicKey.getEncoded(false)));
         System.out.println("私钥: " + StrUtil.byteToHex(privateKey.toByteArray()));
     }
 
@@ -48,7 +48,7 @@ public class SM2EncUtil {
 //      System.out.println("C2 " + Util.byteToHex(source));
 //      System.out.println("C3 " + Util.byteToHex(c3));
         //C1 C2 C3拼装成加密字串
-        return StrUtil.byteToHex(c1.getEncoded()) + StrUtil.byteToHex(source) + StrUtil.byteToHex(c3);
+        return StrUtil.byteToHex(c1.getEncoded(false)) + StrUtil.byteToHex(source) + StrUtil.byteToHex(c3);
 
     }
 
