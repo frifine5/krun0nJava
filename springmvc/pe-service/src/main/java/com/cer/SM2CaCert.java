@@ -1,6 +1,7 @@
 package com.cer;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.Date;
 
@@ -130,6 +131,17 @@ public class SM2CaCert {
 		}
 	}
 
+
+	public static ASN1Integer getSm2Serial(byte[] src)throws IOException{
+		try {
+			ASN1Encodable at0 = ASN1Sequence.getInstance((ASN1Sequence.fromByteArray(src))).getObjectAt(0);
+			ASN1Encodable at01 = ASN1Sequence.getInstance(at0).getObjectAt(1);
+			return ASN1Integer.getInstance(at01);
+		}catch (IOException e){
+			throw new IOException("不符合SM2证书的格式，获取证书序列号信息失败", e);
+		}
+	}
+
 	/**
 	 * 获取sm2证书序列号，输出16进制
 	 */
@@ -144,7 +156,35 @@ public class SM2CaCert {
 			throw new IOException("不符合SM2证书的格式，获取证书序列号信息失败", e);
 		}
 	}
-	
+
+	/**
+	 * 获取sm2证书序列号，输出16进制
+	 */
+	public static BigInteger getSm2IntegerSerial(byte[] src)throws IOException{
+		try {
+			ASN1Encodable at0 = ASN1Sequence.getInstance((ASN1Sequence.fromByteArray(src))).getObjectAt(0);
+			ASN1Encodable at01 = ASN1Sequence.getInstance(at0).getObjectAt(1);
+			ASN1Integer derSerial = ASN1Integer.getInstance(at01);
+			return new BigInteger(1, derSerial.getValue().toByteArray());
+		}catch (IOException e){
+			throw new IOException("不符合SM2证书的格式，获取证书序列号信息失败", e);
+		}
+	}
+
+
+	public static ASN1Sequence getSm2Issuer(byte[] src)throws IOException{
+		try {
+			ASN1Encodable at0 = ASN1Sequence.getInstance((ASN1Sequence.fromByteArray(src))).getObjectAt(0);
+			ASN1Sequence at03 = (ASN1Sequence)ASN1Sequence.getInstance(at0).getObjectAt(3);
+
+//			System.out.println(at03);
+
+			return at03;
+
+		}catch (IOException e){
+			throw new IOException("不符合SM2证书的格式，获取颁发者信息失败", e);
+		}
+	}
 	
 
 }
