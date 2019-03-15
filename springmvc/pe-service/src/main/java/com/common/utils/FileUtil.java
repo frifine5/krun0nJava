@@ -113,4 +113,13 @@ public class FileUtil {
     }
 
 
+    public static byte[] writeInFiles(String path, String txt) throws IOException {
+        OutputStream out = new FileOutputStream(new File(path));
+        out.write(txt.getBytes());
+        out.flush();
+        out.close();
+        return txt.getBytes();
+    }
+
+
 }
