@@ -185,6 +185,28 @@ public class SM2CaCert {
 			throw new IOException("不符合SM2证书的格式，获取颁发者信息失败", e);
 		}
 	}
+
+	public static ASN1Sequence getSm2OwnerDN(byte[] src)throws IOException{
+		try {
+			ASN1Encodable at0 = ASN1Sequence.getInstance((ASN1Sequence.fromByteArray(src))).getObjectAt(0);
+			ASN1Sequence at05 = (ASN1Sequence)ASN1Sequence.getInstance(at0).getObjectAt(5);
+
+			return at05;
+
+		}catch (IOException e){
+			throw new IOException("不符合SM2证书的格式，获取颁发者信息失败", e);
+		}
+	}
+
+	public static ASN1Sequence getSm2PkStruct(byte[] src)throws IOException{
+		try {
+			ASN1Encodable at0 = ASN1Sequence.getInstance((ASN1Sequence.fromByteArray(src))).getObjectAt(0);
+			ASN1Sequence at06 = (ASN1Sequence)ASN1Sequence.getInstance(at0).getObjectAt(6);
+			return at06;
+		}catch (IOException e){
+			throw new IOException("不符合SM2证书的格式，获取颁发者信息失败", e);
+		}
+	}
 	
 
 }
