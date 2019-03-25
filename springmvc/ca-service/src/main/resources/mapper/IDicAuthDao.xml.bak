@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gomain.makeseal.sealapply.dao.IDicAuthDao">
+    <resultMap id="addrMap" type="com.gomain.makeseal.sealapply.entity.DicAddr">
+        <result property="service" column="DIC_SERVER_NAME" jdbcType="VARCHAR"/>
+        <result property="url" column="SERVER_URL" jdbcType="VARCHAR"/>
+        <result property="appKey" column="APP_KEY" jdbcType="VARCHAR"/>
+        <result property="userName" column="USERNAME" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+    <!-- 企业基本信息查询服务地址 -->
+    <select id="getEnterpriseAddr" resultMap="addrMap" parameterType="java.lang.String">
+        select DIC_SERVER_NAME, SERVER_URL, APP_KEY, USERNAME
+        from DIC_SERVER
+        where DIC_SERVER_NAME = "queryEnterpriseInfo"
+    </select>
+
+    <!-- 社会团体信息查询地址 -->
+    <select id="getGroupAddr" resultMap="addrMap" parameterType="java.lang.String">
+        select DIC_SERVER_NAME, SERVER_URL, APP_KEY, USERNAME
+        from DIC_SERVER
+        where DIC_SERVER_NAME = "queryGroupInfo"
+    </select>
+
+
+</mapper>
+
