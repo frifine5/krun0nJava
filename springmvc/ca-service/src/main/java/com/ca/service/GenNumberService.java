@@ -1,5 +1,6 @@
-package com.number;
+package com.ca.service;
 
+import com.number.SnowFlakeGenerator;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;

@@ -11,7 +11,7 @@ import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboar
 
 @EnableEurekaClient
 @EnableDiscoveryClient
-@SpringBootApplication(scanBasePackages = {"com.http", "com.ca"})
+@SpringBootApplication(scanBasePackages = {"com.http", "com.ca", "com.*.service"})
 @EnableFeignClients
 @EnableHystrix
 @EnableHystrixDashboard
