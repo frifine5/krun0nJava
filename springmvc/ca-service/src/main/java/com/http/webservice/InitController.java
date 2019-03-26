@@ -41,6 +41,7 @@ public class InitController {
                 if(!initStepRt){
                     return new Result<>(-103, "初始化未完成", "系统密钥校验失败，请求联系密管中心KMC");
                 }
+                // 改变初始化状态 init status --> 0
                 return new Result<>(0, "初始化完成", null);
             }
 
