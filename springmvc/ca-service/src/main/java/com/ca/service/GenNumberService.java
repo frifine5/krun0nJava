@@ -1,6 +1,8 @@
 package com.ca.service;
 
 import com.number.SnowFlakeGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -18,11 +20,18 @@ public class GenNumberService {
         numSelector.put("0-0", new SnowFlakeGenerator.Factory().create(0, 0));
     }
 
+    @Value("${number.generator.idc:0}")
+    int idcId;
+
+    @Value("${number.generator.machine:0}")
+    int machineId;
+
+
     /**
-     * 未指定数据中心ID和机器ID时获取默认的0-0的发号器
-     * @return long
+     * 未指定数据中心ID和机器ID时获取默认的0-0的发号器| 0-0 作为中心发号器
+     * @return
      */
-    public long getNumberDefault(){
+    public long getCenterDefault(){
         return numSelector.get("0-0").nextId();
     }
 
@@ -34,7 +43,19 @@ public class GenNumberService {
      */
     public long getNumber(int idcId, int machineId){
         String key = ""+idcId+"-"+machineId;
-        if(null == numSelector.get(key)){
+        if(!numSelector.containsKey(key)){
+            numSelector.put(key, new SnowFlakeGenerator.Factory().create(idcId, machineId));
+        }
+        return numSelector.get(key).nextId();
+    }
+
+    /**
+     * 按配置文件中的数据中心ID和机器ID，获取发号器；如果该发号器未初始化，则自动初始化
+     * @return long
+     */
+    public long getNumber(){
+        String key = ""+idcId+"-"+machineId;
+        if(!numSelector.containsKey(key)){
             numSelector.put(key, new SnowFlakeGenerator.Factory().create(idcId, machineId));
         }
         return numSelector.get(key).nextId();

@@ -10,10 +10,12 @@ public class CertReqRdEntity {
     private long id;            // 证书序列号，来自系统发号
     private String reqTime;     // 申请时间
     private int status;         // 申请状态
+    private String certName;    // 证书名称
     private String unitName;    // 申请单位/组织名称
     private String unitUCode;   // 申请单位统一社会信用代码
     private String unitDisCode; // 申请单位地区编码（到县区一级的行政区划代码）
     private String unitAddr;    // 申请单位详细地址
+    private String unitTelephone;//单位电话号码
     private String validStart;  // 有效期起 时间
     private String validEnd;    // 有效期止 时间
     private int age;            // 有效年期
@@ -42,6 +44,14 @@ public class CertReqRdEntity {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getCertName() {
+        return certName;
+    }
+
+    public void setCertName(String certName) {
+        this.certName = certName;
     }
 
     public String getUnitName() {
@@ -74,6 +84,14 @@ public class CertReqRdEntity {
 
     public void setUnitAddr(String unitAddr) {
         this.unitAddr = unitAddr;
+    }
+
+    public String getUnitTelephone() {
+        return unitTelephone;
+    }
+
+    public void setUnitTelephone(String unitTelephone) {
+        this.unitTelephone = unitTelephone;
     }
 
     public String getValidStart() {

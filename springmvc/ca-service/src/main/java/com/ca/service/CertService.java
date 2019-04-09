@@ -27,11 +27,7 @@ public class CertService {
     SysService sysService;
 
 
-    @Value("${number.generator.idc:0}")
-    int idcId;
 
-    @Value("${number.generator.machine:0}")
-    int machineId;
 
 
 
@@ -45,7 +41,7 @@ public class CertService {
 
     public byte[] generateCertByPk(byte[] pk, int age){
 
-        long serial = genNumberService.getNumber(idcId, machineId);
+        long serial = genNumberService.getNumber();
         byte[] tbsc = SM2CertGenUtil.generateCertTBSCert(1, serial, "test", age, pk);
         GMTSM2 sm2 = GMTSM2.getInstance();
         String[] kp = sysService.getSysKPair();

@@ -52,7 +52,7 @@ public class SM2CaCert {
 			System.arraycopy(bitString, len-64, pk, 1, 64);
 			return pk;
 		} catch (IOException e) {
-			throw new IOException("不符合SM2证书的格式，获取主体公钥信息失败", e);
+			throw new IOException("不符合p10申请结构", e);
 		}
 	}
 	
