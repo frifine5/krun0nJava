@@ -11,7 +11,7 @@ import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboar
 
 @EnableEurekaClient
 @EnableDiscoveryClient
-@SpringBootApplication(scanBasePackages = {"com.http", "com.ca", "com.*.service"})
+@SpringBootApplication(scanBasePackages = {"com.http", "com.ca", "com.*.service", "com.config" })
 @EnableFeignClients
 @EnableHystrix
 @EnableHystrixDashboard
@@ -20,6 +20,7 @@ public class CAServiceStart {
     public static void main(String[] args) {
         SpringApplication.run(CAServiceStart.class, args);
     }
+
 
 //    @Bean
 //    public MapperScannerConfigurer apperScannerConfigurer() {

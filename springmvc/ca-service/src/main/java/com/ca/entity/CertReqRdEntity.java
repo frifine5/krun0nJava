@@ -1,18 +1,24 @@
 package com.ca.entity;
 
+/**
+ * 证书申请表：
+ * @author WangChengyu
+ * 2019/4/9 11:28
+ */
 public class CertReqRdEntity {
 
-    private long id;
-    private String reqTime;
-    private int status;
-    private String unitName;
-    private String unitUCode;
-    private String unitAddr;
-    private String validStart;
-    private String validEnd;
-    private int age;
-    private String pk;
-    private byte[] p10;
+    private long id;            // 证书序列号，来自系统发号
+    private String reqTime;     // 申请时间
+    private int status;         // 申请状态
+    private String unitName;    // 申请单位/组织名称
+    private String unitUCode;   // 申请单位统一社会信用代码
+    private String unitDisCode; // 申请单位地区编码（到县区一级的行政区划代码）
+    private String unitAddr;    // 申请单位详细地址
+    private String validStart;  // 有效期起 时间
+    private String validEnd;    // 有效期止 时间
+    private int age;            // 有效年期
+    private String pk;          // 申请的签名公钥
+    private byte[] p10;         // 申请的签名公钥的p10结构
 
     public long getId() {
         return id;
@@ -52,6 +58,14 @@ public class CertReqRdEntity {
 
     public void setUnitUCode(String unitUCode) {
         this.unitUCode = unitUCode;
+    }
+
+    public String getUnitDisCode() {
+        return unitDisCode;
+    }
+
+    public void setUnitDisCode(String unitDisCode) {
+        this.unitDisCode = unitDisCode;
     }
 
     public String getUnitAddr() {

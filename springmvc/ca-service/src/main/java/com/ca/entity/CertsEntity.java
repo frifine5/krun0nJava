@@ -1,14 +1,18 @@
 package com.ca.entity;
 
+/**
+ * 证书（单证书）实体
+ * @author WangChengyu
+ * 2019/4/9 11:43
+ */
 public class CertsEntity {
 
-    private long id;
-    private int type;
-    private String dn;
-    private byte[] prtkey;
-    private long fatherId;
-    private byte[] cert;
-    private String rdTime;
+    private long id;            // 证书序列号
+    private int type;           // 证书类型： 0-签名证书， 1-加密证书
+    private long fatherId;      // 上级证书序列号
+    private long status;        // 证书状态： 0-使用， 1-提前吊销
+    private String cert;        // 证书数据
+    private String rdTime;      // 记录时间
 
     public long getId() {
         return id;
@@ -26,22 +30,6 @@ public class CertsEntity {
         this.type = type;
     }
 
-    public String getDn() {
-        return dn;
-    }
-
-    public void setDn(String dn) {
-        this.dn = dn;
-    }
-
-    public byte[] getPrtkey() {
-        return prtkey;
-    }
-
-    public void setPrtkey(byte[] prtkey) {
-        this.prtkey = prtkey;
-    }
-
     public long getFatherId() {
         return fatherId;
     }
@@ -50,11 +38,19 @@ public class CertsEntity {
         this.fatherId = fatherId;
     }
 
-    public byte[] getCert() {
+    public long getStatus() {
+        return status;
+    }
+
+    public void setStatus(long status) {
+        this.status = status;
+    }
+
+    public String getCert() {
         return cert;
     }
 
-    public void setCert(byte[] cert) {
+    public void setCert(String cert) {
         this.cert = cert;
     }
 

@@ -7,6 +7,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * 证书申请表dao
+ * @author WangChengyu
+ * 2019/4/9 11:39
+ */
 @Repository
 @Mapper
 public interface CertReqRdDao {
@@ -14,18 +19,19 @@ public interface CertReqRdDao {
 
 
     @Select("SELECT ID, REQTIME, STATUS, UNIT_NAME, UNIT_UCODE, UNIT_ADDRESS, VALIDSTART, VALIDEND, " +
-            " AGE, PK, P10  FROM DLCERT_REQUEST ORDER BY RDTIME DESC LIMIT #{several}")
+            " AGE, PK, P10  FROM CERT_APPLY ORDER BY RDTIME DESC LIMIT #{several}")
     @ResultMap("certReq")
     List<CertReqRdEntity> queryRndListRecentSeveral(int several);
 
-    @Select("SELECT ID, REQTIME, STATUS, UNIT_NAME, UNIT_UCODE, UNIT_ADDRESS, VALIDSTART, VALIDEND," +
-            " AGE, PK, P10  FROM DLCERT_REQUEST WHERE ID = #{id}")
+    @Select("SELECT ID, REQTIME, STATUS, UNIT_NAME, UNIT_UCODE, UNIT_DISCODE, UNIT_ADDRESS, VALIDSTART, VALIDEND," +
+            " AGE, PK, P10  FROM CERT_APPLY WHERE ID = #{id}")
     @Results(id = "certReq", value = {
             @Result(property = "id", column = "ID"),
             @Result(property = "reqTime", column = "REQTIME"),
             @Result(property = "status", column = "STATUS"),
             @Result(property = "unitName", column = "UNIT_NAME"),
             @Result(property = "unitUCode", column = "UNIT_UCODE"),
+            @Result(property = "unitDisCode", column = "UNIT_DISCODE"),
             @Result(property = "unitAddr", column = "UNIT_ADDRESS"),
             @Result(property = "validStart", column = "VALIDSTART"),
             @Result(property = "validEnd", column = "VALIDEND"),
@@ -35,17 +41,18 @@ public interface CertReqRdDao {
     })
     CertReqRdEntity getRndByCode(String id);
 
-    @Insert("INSERT INTO DLCERT_REQUEST(ID, REQTIME, STATUS, UNIT_NAME, UNIT_UCODE, UNIT_ADDRESS, " +
+    @Insert("INSERT INTO CERT_APPLY(ID, REQTIME, STATUS, UNIT_NAME, UNIT_UCODE, UNIT_DISCODE, UNIT_ADDRESS, " +
             " VALIDSTART, VALIDEND, AGE, PK, P10) " +
             " VALUES( #{id}, #{reqTime}, #{status}, #{unitName}, #{unitUCode}, #{unitAddr}, " +
             " #{validStart}, #{validEnd}, #{age}, #{pk}, #{p10} )")
     int addRnd(CertsEntity nrd);
 
-    @Update("UPDATE DLCERT_REQUEST SET STATUS = #{status} WHERE ID = #{id}")
+    @Update("UPDATE CERT_APPLY SET STATUS = #{status} WHERE ID = #{id}")
     int uptRndSts(@Param("id") long id, @Param("status")int status);
 
-    @Update("UPDATE DLCERT_REQUEST SET STATUS=#{status}, REQTIME=#{reqTime}, UNIT_NAME=#{unitName}, UNIT_UCODE=#{unitUCode}, " +
-            " UNIT_ADDRESS=#{unitAddr}, VALIDSTART=#{validStart}, VALIDEND=#{validEnd}, AGE=#{age}, PK=#{pk}, P10=#{p10} " +
+    @Update("UPDATE CERT_APPLY SET STATUS=#{status}, REQTIME=#{reqTime}, UNIT_NAME=#{unitName}, " +
+            " UNIT_UCODE=#{unitUCode}, UNIT_DISCODE=#{unitDisCode}, UNIT_ADDRESS=#{unitAddr}, " +
+            " VALIDSTART=#{validStart}, VALIDEND=#{validEnd}, AGE=#{age}, PK=#{pk}, P10=#{p10} " +
             " WHERE ID = #{id}")
     int uptRnd(CertsEntity nrd);
 

@@ -2,6 +2,7 @@ package com.ca.service;
 
 import com.ca.dao.CertReqRdDao;
 import com.ca.dao.CertsDao;
+import com.cer.SM2CaCert;
 import com.cer.SM2CertGenUtil;
 import com.sm2.GMTSM2;
 import com.sm3.SM3Util;
@@ -42,7 +43,7 @@ public class CertService {
     }
 
 
-    public byte[] generateCert(byte[] pk, int age){
+    public byte[] generateCertByPk(byte[] pk, int age){
 
         long serial = genNumberService.getNumber(idcId, machineId);
         byte[] tbsc = SM2CertGenUtil.generateCertTBSCert(1, serial, "test", age, pk);
@@ -52,13 +53,24 @@ public class CertService {
         byte[] ssk = Util.hexStringToBytes(kp[1]);
 
 
-        byte[] md = SM3Util.sm3Digest(tbsc, pk);
+        byte[] md = SM3Util.sm3Digest(tbsc, spk);
         byte[] sv = sm2.sm2Sign(md, ssk);
 
         byte[] bytCert = SM2CertGenUtil.makeSM2Cert(tbsc, sv);
 
         return bytCert;
     }
+
+    public byte[] generateCertByCsr(byte[] csr, int age){
+        byte[] pk;
+        try{
+            pk = SM2CaCert.getSM2PublicKeyFromCSR(csr);
+        }catch (Exception e){
+            throw new RuntimeException("p10结构错误", e);
+        }
+        return generateCertByPk(pk, age);
+    }
+
 
 
 
