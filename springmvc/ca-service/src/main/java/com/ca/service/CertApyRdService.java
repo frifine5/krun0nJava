@@ -33,16 +33,16 @@ public class CertApyRdService {
 
     /**
      *
-     * @param apyNrd
-     * @return
+     * @param apyNrd 申请内容
+     * @return 添加结果
      */
-    public int rdApplyRnd(CertReqRdEntity apyNrd){
+    public boolean rdApplyRnd(CertReqRdEntity apyNrd){
         CertReqRdEntity oldRnd = reqRdDao.getRndByName(apyNrd.getCertName());
         if(null != oldRnd){
             throw new RuntimeException("申请的证书名称["+apyNrd.getCertName()+"]记录已经存在");
         }
-        reqRdDao.addRnd(apyNrd);
-        return 0;
+        int a = reqRdDao.addRnd(apyNrd);
+        return a>0;
     }
 
 

@@ -42,14 +42,14 @@ public interface CertReqRdDao {
     @ResultMap("certReq")
     CertReqRdEntity getRndByName(String certName);
 
-    @Select("SELECT ID, REQTIME, STATUS, CERT_NAME, UNIT_NAME, UNIT_UCODE, UNIT_ADDRESS, UNIT_TELEPHONE, VALIDSTART, VALIDEND, " +
+    @Select("SELECT ID, REQTIME, STATUS, CERT_NAME, UNIT_NAME, UNIT_UCODE, UNIT_DISCODE, UNIT_ADDRESS, UNIT_TELEPHONE, VALIDSTART, VALIDEND, " +
             " AGE, PK, P10  FROM CERT_APPLY ORDER BY RDTIME DESC LIMIT #{several}")
     @ResultMap("certReq")
     List<CertReqRdEntity> queryRndListRecentSeveral(int several);
 
     @Insert("INSERT INTO CERT_APPLY(ID, REQTIME, STATUS, CERT_NAME, UNIT_NAME, UNIT_UCODE, UNIT_DISCODE, UNIT_ADDRESS, " +
             " UNIT_TELEPHONE, VALIDSTART, VALIDEND, AGE, PK, P10) " +
-            " VALUES( #{id}, #{reqTime}, #{status}, #{certName}, #{unitName}, #{unitUCode}, #{unitAddr}, " +
+            " VALUES( #{id}, #{reqTime}, #{status}, #{certName}, #{unitName}, #{unitUCode}, #{unitDisCode},  #{unitAddr}, " +
             " #{unitTelephone}, #{validStart}, #{validEnd}, #{age}, #{pk}, #{p10} )")
     int addRnd(CertReqRdEntity nrd);
 

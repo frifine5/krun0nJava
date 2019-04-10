@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
@@ -95,21 +96,24 @@ public class CertApplyController {
             return new Result<>( -1, "上传的文件解析失败", e.getMessage());
         }
         // 服务处理
-        try{
+        try {
             String bpkStr = certApyRdService.parsePk(fileType, txt);
-            if(null == bpkStr){
-                return new Result<>( -1, "上传的文件解析公钥为空", null);
-            }else{
+            if (null == bpkStr) {
+                return new Result<>(-1, "上传的文件解析公钥为空", null);
+            } else {
                 apyRnd.setPk(bpkStr);
-                if("1".equals(fileType)){
+                if ("1".equals(fileType)) {
                     apyRnd.setP10(Base64.getDecoder().decode(txt));
                 }
             }
-            certApyRdService.rdApplyRnd(apyRnd);
+            boolean isRd = certApyRdService.rdApplyRnd(apyRnd);
+            if (!isRd) {
+                return new Result<>(-1, "申请信息添加失败", null);
+            }
         }catch (Exception e){
             return new Result<>(-1, e.getMessage(), null);
         }
-        return new Result<>( 0, "申请单上传成功", null);
+        return new Result<>( 0, "申请单上传成功", apyRnd.getId()+"");
     }
 
     CertReqRdEntity parseParam2ApyReq(String params){
@@ -131,6 +135,7 @@ public class CertApplyController {
                     // 检查统一社会信用代码规则
                     if(!scid.matches(RegularConst.M_UCODE_gm)){
                        log.info(">>>> scid={}不符合统一社会信用代码的规则", scid);
+//                        throw new RuntimeException("统一社会信用代码格式错误");
                     }
                     long apyId = numberService.getNumber();
                     nrd.setId(apyId);
@@ -138,13 +143,12 @@ public class CertApplyController {
                     nrd.setUnitUCode(scid);
                     nrd.setUnitAddr(address);
                 }
-                if(root.containsKey("certName")){
-                    nrd.setCertName(root.getString("certName"));
-                }else{
+                if(!root.containsKey("certName")||ParamsUtil.checkNull(root.getString("certName"))){
                     String certName = scid +""+ entName;
                     nrd.setCertName(certName);
+                }else{
+                    nrd.setCertName(root.getString("certName"));
                 }
-
             }
             // 地区项
             if(!root.containsKey("province") ||!root.containsKey("city") ||!root.containsKey("county") ){
@@ -161,7 +165,7 @@ public class CertApplyController {
             }
 
             // 选必项
-            if(root.containsKey("validEnd")){
+            if(root.containsKey("validEnd")&&!ParamsUtil.checkNull(root.getString("validEnd"))){
                 String validEnd = root.getString("validEnd");
                 // 检验日期格式
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -191,6 +195,10 @@ public class CertApplyController {
                 nrd.setUnitTelephone(tel);
             }
             // 返回申请实例
+            String nDt = ParamsUtil.formatTime19(new Date());
+            nrd.setReqTime(nDt);
+            nrd.setValidStart(nDt);
+
             return nrd;
         }catch (JSONException je){
             throw new RuntimeException("参数格式错误", je);
