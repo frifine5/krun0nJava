@@ -11,6 +11,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,6 +130,54 @@ public class HttpUtils {
     public static String httpSendAndReceive(String jsonRequest, String url) {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost httppost = new HttpPost(url);
+
+
+        StringEntity strEntity;
+        try {
+            strEntity = new StringEntity(jsonRequest, "UTF-8");
+            httppost.setEntity(strEntity);
+            System.out.println("executing request " + httppost.getURI());
+            CloseableHttpResponse response = httpClient.execute(httppost);
+            try {
+                HttpEntity entity = response.getEntity();
+                String rtn = "";
+                if (entity != null) {
+                    String jsonBody = EntityUtils.toString(entity, "UTF-8");
+                    if(!jsonBody.trim().startsWith("{")){
+                        rtn = jsonBody;
+                    }else {
+                        rtn = JSONObject.fromObject(jsonBody).toString();
+                    }
+                    log.info("Response content: " + rtn);
+                }
+                return rtn;
+            } finally {
+                response.close();
+            }
+        } catch (ClientProtocolException e) {
+            log.error("httpclient 请求异常：客户端协议", e);
+        } catch (UnsupportedEncodingException e) {
+            log.error("httpclient 请求异常：字符集编码", e);
+        } catch (IOException e) {
+            log.error("httpclient 请求异常：I/O异常", e);
+        } finally {
+            // 关闭连接,释放资源
+            try {
+                httpClient.close();
+            } catch (IOException e) {
+            }
+        }
+        return null;
+    }
+
+
+
+    public static String httpSendAndReceiveByMethod(String jsonRequest, String url) {
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        HttpPost httppost = new HttpPost(url);
+        httppost.addHeader(HTTP.CONTENT_TYPE, "application/json;charset=utf-8");
+        httppost.addHeader(HTTP.CONN_DIRECTIVE, "close");
+
         StringEntity strEntity;
         try {
             strEntity = new StringEntity(jsonRequest, "UTF-8");
