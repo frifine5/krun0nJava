@@ -133,8 +133,45 @@
 			<version>3.0.0</version>
 		</dependency>
 
+		<!-- 广东 深圳CA的相关包 start -->
+		<dependency>
+			<groupId>gm.net.szca</groupId>
+			<artifactId>szcaGenSm2P10</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>gm.net.szca</groupId>
+			<artifactId>szcaservice</artifactId>
+			<version>1.0.1</version>
+		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/dom4j/dom4j -->
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<version>1.6.1</version>
+		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/jdom/jdom -->
+		<dependency>
+			<groupId>jdom</groupId>
+			<artifactId>jdom</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/wsdl4j/wsdl4j -->
+		<dependency>
+			<groupId>wsdl4j</groupId>
+			<artifactId>wsdl4j</artifactId>
+			<version>1.6.2</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.codehaus.xfire/xfire-all -->
+		<dependency>
+			<groupId>org.codehaus.xfire</groupId>
+			<artifactId>xfire-spring</artifactId>
+			<version>1.2.6</version>
+		</dependency>
 
 
 
