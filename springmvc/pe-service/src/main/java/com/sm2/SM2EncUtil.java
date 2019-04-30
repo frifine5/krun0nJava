@@ -93,7 +93,7 @@ public class SM2EncUtil {
 //        generateKeyPair();
         System.out.println("-------------- split --------------");
 
-        String plainText = "xiaoqi test some context | 这里是中文";
+        String plainText = "xiaoqi test some context | 这里是中文 | *** you guess length limit did ***";
         byte[] sourceData = plainText.getBytes();
 
         //下面的秘钥可以使用generateKeyPair()生成的秘钥内容
@@ -114,7 +114,8 @@ public class SM2EncUtil {
         pubk = strPair[0];
         prik = strPair[1];
 
-        System.out.println("加密前: \t"+plainText);
+        System.out.println("加密前: \n"+plainText);
+        System.out.println(plainText.length());
         System.out.println("加密: ");
         String cipherText = SM2EncUtil.encrypt(StrUtil.hexToByte(pubk), sourceData);
         System.out.println(cipherText);
