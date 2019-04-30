@@ -38,6 +38,11 @@ public class ImportFileController {
             logger.info("导入的文件内容类型：ContentType=" + contentType);
             logger.info("导入的文件内容：Content=" + txt);
 
+
+            if(!fileName.trim().endsWith(".txt")){
+                return  "上传的文件不是支持的格式{"+fileName+"}";
+            }
+
             // 解析获得： 签名值和Base64字符
             if (ParamsUtil.checkNull(txt)) {
                 return "上传的文件为空";
