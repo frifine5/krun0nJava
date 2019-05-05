@@ -131,6 +131,7 @@ public class HttpUtils {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost httppost = new HttpPost(url);
 
+        httppost.setHeader(HTTP.CONTENT_TYPE, "application/json");
 
         StringEntity strEntity;
         try {
