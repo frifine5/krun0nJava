@@ -17,10 +17,19 @@ public class AppTestController {
     }
 
 
+    @RequestMapping(value = "/app/revIp", method = {RequestMethod.GET,RequestMethod.POST})
+    public Object revMsg4lApp2(HttpServletRequest request){
+        String s = "I got you in time: "+new Date();
+
+        String remoteAddr = request.getRemoteAddr();
+        System.out.println(String.format("客户端IP = %s", remoteAddr));
 
 
-
-
-
-
+        return s +"\n"+ remoteAddr;
     }
+
+
+
+
+
+}
