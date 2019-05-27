@@ -1,16 +1,21 @@
 package com.common.utils;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 
+/**
+ * 利用反射返回对象的属性值（map字符串形式）
+ */
 public class ReflectStringUtil {
 
-    static StringBuffer sb = new StringBuffer();
+    private static Map<String, Object> propsMap = null;
 
-    public static String toStringUtil(Object clazs,boolean isOutputNull) {
-
+    public static String toStringUtil(Object clazs, boolean isOutputNull) {
+        propsMap = new HashMap<>();
         getParamAndValue(clazs, clazs.getClass(), isOutputNull);
 
-        return sb.toString();
+        return propsMap.toString();
     }
 
     private static void getParamAndValue(Object clazs, Class<?> clazz, boolean isOutputNull){
@@ -24,7 +29,7 @@ public class ReflectStringUtil {
             f.setAccessible(true);
             try {
                 if (null != f.get(clazs)||isOutputNull){
-                    sb.append(f.getName() + "=" + f.get(clazs) + "\n");
+                    propsMap.put(f.getName(), f.get(clazs));
                 }
             } catch (IllegalArgumentException | IllegalAccessException e) {
                 e.printStackTrace();
