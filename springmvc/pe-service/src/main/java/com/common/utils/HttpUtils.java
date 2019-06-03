@@ -133,6 +133,11 @@ public class HttpUtils {
 
         httppost.setHeader(HTTP.CONTENT_TYPE, "application/json");
 
+        String localAuthIp = "60.216.5.244";
+//        httppost.setHeader("AuthIP", localAuthIp);
+
+
+
         StringEntity strEntity;
         try {
             strEntity = new StringEntity(jsonRequest, "UTF-8");
