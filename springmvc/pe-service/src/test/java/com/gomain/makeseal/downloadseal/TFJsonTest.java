@@ -414,6 +414,11 @@ public class TFJsonTest {
 
         DERSequence derCert = SM2CertGenUtil.makeSM2Cert(tbsc, certSV);
         System.out.println(Base64.getEncoder().encodeToString(derCert.getEncoded()));
+        try {
+            FileUtil.writeInFiles("C:\\Users\\49762\\Desktop\\test.cer", derCert);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
