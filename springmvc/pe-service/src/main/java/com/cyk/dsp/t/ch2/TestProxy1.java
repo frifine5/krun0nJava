@@ -3,6 +3,15 @@ package com.cyk.dsp.t.ch2;
 import javax.swing.*;
 import java.awt.*;
 
+
+/**
+ * 测试代理模式： 可以利用代理类对真实类做组合型扩展，而无需继承真实类
+ * 缺点是真实类改变，代理类也需要改变。
+ * 例子：springAop代理， Cglib代理
+ * 扩展：3种： 静态代理、动态代理、子类代理
+ * @author WangChengyu
+ * 2019/6/27 10:25
+ */
 public class TestProxy1 {
 
     public static void main(String[] args) {
