@@ -142,7 +142,7 @@
 		<dependency>
 			<groupId>gm.net.szca</groupId>
 			<artifactId>szcaservice</artifactId>
-			<version>1.0.1</version>
+			<version>1.0.2</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/dom4j/dom4j -->
@@ -290,7 +290,7 @@
 		<repository>
 			<id>spring-milestones</id>
 			<name>Spring Milestones</name>
-			<url>http://repo2.maven.org/maven2/</url>
+			<url>http://mvn.dev.baiwang-inner.com:8081/nexus/content/repositories/thirdparty/</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
@@ -302,6 +302,12 @@
 	 		http://mvn.dev.baiwang-inner.com:8081/nexus/content/repositories/thirdparty/
 
 	 		 -->
+
+	<!--
+
+	http://repo2.maven.org/maven2/
+
+	-->
 
 	<!-- for QRCode url:
 	 <url>http://develop.centit.com/nexus/content/repositories/centit-releases/</url>
