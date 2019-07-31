@@ -47,8 +47,8 @@ public class SM2EncUtil {
 //      System.out.println("C1 " + Util.byteToHex(c1.getEncoded()));
 //      System.out.println("C2 " + Util.byteToHex(source));
 //      System.out.println("C3 " + Util.byteToHex(c3));
-        //C1 C2 C3拼装成加密字串
-        return StrUtil.byteToHex(c1.getEncoded(false)) + StrUtil.byteToHex(source) + StrUtil.byteToHex(c3);
+        //C1 || C3 || C2 拼装成加密字串
+        return StrUtil.byteToHex(c1.getEncoded(false))  + StrUtil.byteToHex(c3) + StrUtil.byteToHex(source);
 
     }
 
@@ -69,9 +69,8 @@ public class SM2EncUtil {
          * （C2 = encryptedData.length * 2 - C1长度  - C2长度）
          */
         byte[] c1Bytes = StrUtil.hexToByte(data.substring(0, 130));
-        int c2Len = encryptedData.length - 97;
-        byte[] c2 = StrUtil.hexToByte(data.substring(130, 130 + 2 * c2Len));
-        byte[] c3 = StrUtil.hexToByte(data.substring(130 + 2 * c2Len, 194 + 2 * c2Len));
+        byte[] c3 = StrUtil.hexToByte(data.substring(130, 130 + 64));
+        byte[] c2 = StrUtil.hexToByte(data.substring(130 + 64));
 
         SM2 sm2 = SM2.getInstance();
         BigInteger userD = new BigInteger(1, privateKey);
