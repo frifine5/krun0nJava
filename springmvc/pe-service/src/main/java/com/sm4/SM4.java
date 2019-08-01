@@ -233,10 +233,9 @@ public class SM4 {
 
         byte[] output = bous.toByteArray();
 
-        System.out.println("before de-padding");
-        System.out.println(new String(output));
-
         if (ctx.isPadding && ctx.mode == SM4_DECRYPT) {
+            System.out.println("before de-padding");
+            System.out.println(new String(output));
             output = padding(output, SM4_DECRYPT);
         }
         bins.close();

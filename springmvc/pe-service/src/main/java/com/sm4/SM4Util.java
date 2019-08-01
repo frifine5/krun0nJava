@@ -17,60 +17,43 @@ public class SM4Util {
     private String iv = "";
     public boolean hexString = false;
 
-    public SM4Util()
-    {
+    public SM4Util() {
     }
-//
-//    public byte encryptData_ECB1(byte[] inputStream){
-//        try
-//        {
-//            SM4_Context ctx = new SM4_Context();
-//            ctx.isPadding = true;
-//            ctx.mode = SM4.SM4_ENCRYPT;
-//
-//            byte[] keyBytes;
-//            if (hexString)
-//            {
-//                keyBytes = Util.hexStringToBytes(secretKey);
-//            }
-//            else
-//            {
-//                keyBytes = secretKey.getBytes();
-//            }
-//
-//            SM4 sm4 = new SM4();
-//            sm4.sm4_setkey_enc(ctx, keyBytes);
-//            String cipherText = new BASE64Encoder().encode(inputStream);
-//            if (cipherText != null && cipherText.trim().length() > 0)
-//            {
-//                Pattern p = Pattern.compile("\\s*|\t|\r|\n");
-//                Matcher m = p.matcher(cipherText);
-//                cipherText = m.replaceAll("");
-//            }
-//            return cipherText;
-//        }
-//        catch (Exception e)
-//        {
-//            e.printStackTrace();
-//            return (Byte) null;
-//        }
-//    }
 
-    public String encryptData_ECB(String plainText)
-    {
-        try
-        {
+
+    public byte[] encryptData_ECB(byte[] plain, boolean isPad) {
+        try {
+            SM4_Context ctx = new SM4_Context();
+            ctx.isPadding = isPad;
+            ctx.mode = SM4.SM4_ENCRYPT;
+
+            byte[] keyBytes;
+            if (hexString) {
+                keyBytes = Util.hexStringToBytes(secretKey);
+            } else {
+                keyBytes = secretKey.getBytes();
+            }
+
+            SM4 sm4 = new SM4();
+            sm4.sm4_setkey_enc(ctx, keyBytes);
+           return sm4.sm4_crypt_ecb(ctx, plain);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public String encryptData_ECB(String plainText) {
+        try {
             SM4_Context ctx = new SM4_Context();
             ctx.isPadding = true;
             ctx.mode = SM4.SM4_ENCRYPT;
 
             byte[] keyBytes;
-            if (hexString)
-            {
+            if (hexString) {
                 keyBytes = Util.hexStringToBytes(secretKey);
-            }
-            else
-            {
+            } else {
                 keyBytes = secretKey.getBytes();
             }
 
@@ -78,16 +61,13 @@ public class SM4Util {
             sm4.sm4_setkey_enc(ctx, keyBytes);
             byte[] encrypted = sm4.sm4_crypt_ecb(ctx, plainText.getBytes("GBK"));
             String cipherText = Base64.getEncoder().encodeToString(encrypted);
-            if (cipherText != null && cipherText.trim().length() > 0)
-            {
+            if (cipherText != null && cipherText.trim().length() > 0) {
                 Pattern p = Pattern.compile("\\s*|\t|\r|\n");
                 Matcher m = p.matcher(cipherText);
                 cipherText = m.replaceAll("");
             }
             return cipherText;
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -95,24 +75,20 @@ public class SM4Util {
 
     /**
      * 解密后以十六进制字符串传递
+     *
      * @param cipherText
      * @return
      */
-    public String decryptData_ECB(String cipherText)
-    {
-        try
-        {
+    public String decryptData_ECB(String cipherText) {
+        try {
             SM4_Context ctx = new SM4_Context();
             ctx.isPadding = true;
             ctx.mode = SM4.SM4_DECRYPT;
 
             byte[] keyBytes;
-            if (hexString)
-            {
+            if (hexString) {
                 keyBytes = Util.hexStringToBytes(secretKey);
-            }
-            else
-            {
+            } else {
                 keyBytes = secretKey.getBytes();
             }
 
@@ -121,31 +97,24 @@ public class SM4Util {
             byte[] decrypted = sm4.sm4_crypt_ecb(ctx, new BASE64Decoder().decodeBuffer(cipherText));
 //            return new String(decrypted, "GBK");
             return Util.byteToHex(decrypted);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public String encryptData_CBC(String plainText)
-    {
-        try
-        {
+    public String encryptData_CBC(String plainText) {
+        try {
             SM4_Context ctx = new SM4_Context();
             ctx.isPadding = true;
             ctx.mode = SM4.SM4_ENCRYPT;
 
             byte[] keyBytes;
             byte[] ivBytes;
-            if (hexString)
-            {
+            if (hexString) {
                 keyBytes = Util.hexStringToBytes(secretKey);
                 ivBytes = Util.hexStringToBytes(iv);
-            }
-            else
-            {
+            } else {
                 keyBytes = secretKey.getBytes();
                 ivBytes = iv.getBytes();
             }
@@ -154,38 +123,30 @@ public class SM4Util {
             sm4.sm4_setkey_enc(ctx, keyBytes);
             byte[] encrypted = sm4.sm4_crypt_cbc(ctx, ivBytes, plainText.getBytes("GBK"));
             String cipherText = Base64.getEncoder().encodeToString(encrypted);
-            if (cipherText != null && cipherText.trim().length() > 0)
-            {
+            if (cipherText != null && cipherText.trim().length() > 0) {
                 Pattern p = Pattern.compile("\\s*|\t|\r|\n");
                 Matcher m = p.matcher(cipherText);
                 cipherText = m.replaceAll("");
             }
             return cipherText;
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public String decryptData_CBC(String cipherText)
-    {
-        try
-        {
+    public String decryptData_CBC(String cipherText) {
+        try {
             SM4_Context ctx = new SM4_Context();
             ctx.isPadding = true;
             ctx.mode = SM4.SM4_DECRYPT;
 
             byte[] keyBytes;
             byte[] ivBytes;
-            if (hexString)
-            {
+            if (hexString) {
                 keyBytes = Util.hexStringToBytes(secretKey);
                 ivBytes = Util.hexStringToBytes(iv);
-            }
-            else
-            {
+            } else {
                 keyBytes = secretKey.getBytes();
                 ivBytes = iv.getBytes();
             }
@@ -194,16 +155,13 @@ public class SM4Util {
             sm4.sm4_setkey_dec(ctx, keyBytes);
             byte[] decrypted = sm4.sm4_crypt_cbc(ctx, ivBytes, new BASE64Decoder().decodeBuffer(cipherText));
             return new String(decrypted, "GBK");
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static void main(String[] args) throws IOException
-    {
+    public static void main(String[] args) throws IOException {
         String plainText = "ererfeiisgod";
 
         SM4Util sm4 = new SM4Util();
