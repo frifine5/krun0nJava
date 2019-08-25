@@ -121,5 +121,12 @@ public class FileUtil {
         return txt.getBytes();
     }
 
+    public static void writeInFiles(String path, byte[] byt) throws IOException {
+        OutputStream out = new FileOutputStream(new File(path));
+        out.write(byt);
+        out.flush();
+        out.close();
+    }
+
 
 }
