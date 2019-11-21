@@ -26,9 +26,10 @@ public class GnP10structs {
 //    @Test
     public void genPBody() throws  Exception{
 
-        String fdp = "D:\\work documents\\统一电子印章\\税局\\pks\\";
-        String p10bodydir = "D:\\work documents\\统一电子印章\\税局\\p10body\\";
-        String p10SvDir = "D:\\work documents\\统一电子印章\\税局\\sv\\";
+        String fdp = "C:\\Users\\49762\\Desktop\\pks\\";
+        String p10bodydir = "C:\\Users\\49762\\Desktop\\p10body\\";
+        String p10SvDir = "C:\\Users\\49762\\Desktop\\sv\\";
+
 
 
         File fd = new File(fdp);
@@ -67,10 +68,10 @@ public class GnP10structs {
     byte[] genP10bodybyte(byte[] pk, String cn) throws IOException {
 
 
-        String st = "北京市";
-        String l = "北京市";
-        String o = "国家税务总局";
-        String ou = "征管和科技发展处";
+        String st = "陕西省";
+        String l = "西安市";
+        String o = "国家税务总局西安市税务局";
+        String ou = o;  //"征管和科技发展处";
 
         // 0 : integer
         ASN1Integer version = new ASN1Integer(0);
@@ -151,10 +152,10 @@ public class GnP10structs {
     @Test
     public void testComCsrs() throws Exception{
 
-        String p10bodydir = "D:\\work documents\\统一电子印章\\税局\\p10body\\";
-        String p10SvDir = "D:\\work documents\\统一电子印章\\税局\\sv\\";
+        String p10bodydir = "C:\\Users\\49762\\Desktop\\p10body\\";
+        String p10SvDir = "C:\\Users\\49762\\Desktop\\sv\\";
 
-        String p10Csr = "D:\\work documents\\统一电子印章\\税局\\p10\\";
+        String p10Csr = "C:\\Users\\49762\\Desktop\\p10\\";
 
 
         File fd = new File(p10bodydir);
@@ -218,7 +219,7 @@ public class GnP10structs {
     @Test
     public void testVfs() throws Exception{
 
-        String p10Csr = "D:\\work documents\\统一电子印章\\税局\\p10\\";
+        String p10Csr = "C:\\Users\\49762\\Desktop\\p10\\";
 
 
         File fd = new File(p10Csr);
@@ -230,6 +231,7 @@ public class GnP10structs {
         // 获得目录下
         File[] files = fd.listFiles();
         for (File fx : files ) {
+            if(fx.isDirectory()) continue;
 
             String name = fx.getName();
             byte[] src = Base64.getDecoder().decode(new String(FileUtil.fromDATfile(p10Csr + name)));
@@ -254,7 +256,7 @@ public class GnP10structs {
     @Test
     public void testGnChg() throws Exception{
 
-        String p10Csr = "D:\\work documents\\统一电子印章\\税局\\p10\\";
+        String p10Csr = "C:\\Users\\49762\\Desktop\\p10\\";
         String p10dest = p10Csr + "chg\\";
         File fd = new File(p10Csr);
         if(!fd.isDirectory()){
