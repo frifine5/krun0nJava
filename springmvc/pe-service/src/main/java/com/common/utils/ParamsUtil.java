@@ -63,7 +63,12 @@ public class ParamsUtil {
         return false;
     }
 
-
+    /**
+     * 列表为空则返回true，不为空，有子元素则返回false
+     */
+    public static boolean checkListNull(List list){
+        return (null == list || list.size()<=0);
+    }
 
     /**
      * 所有入参为NULL或者为空字符串，返回true；任一有非空字符即为false
