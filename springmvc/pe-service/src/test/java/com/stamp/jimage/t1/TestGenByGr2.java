@@ -32,7 +32,7 @@ public class TestGenByGr2 {
     @Test
     public void test1() throws Exception {
 
-        drawImg(496, 12, "中国科学院信息工程研究所()中国科学院信息工程研究所", "企业专用章");
+        drawImg(496, 12, "在线平台制作章一二", "企业专用章", .5f);
 
         // 东莞市骏和通信器材有限公司
 //        drawImg(496, 12, "东莞市厚街赤岭第一分公司2", "企业专用章");
@@ -40,7 +40,7 @@ public class TestGenByGr2 {
 
     }
 
-    public void drawImg(int canvas, int broad, String name, String type) {
+    public void drawImg(int canvas, int broad, String name, String type, float ri) {
 
         int canvasWidth = canvas;
         int canvasHeight = canvasWidth;
@@ -174,10 +174,14 @@ public class TestGenByGr2 {
 
 
         g2d.dispose();//销毁资源
-        String savepath = String.format("C:\\Users\\49762\\Desktop\\itext\\image_%s.png", System.currentTimeMillis());
-        ByteArrayOutputStream os = new ByteArrayOutputStream();//新建流。
+        String savepath = String.format("C:\\Users\\49762\\Desktop\\image_%s.png", System.currentTimeMillis());
+
+        // resize it
+
+        BufferedImage nbi = resizeImage(bi, (int)(ri*canvas));
+
         try {
-            ImageIO.write(bi, "PNG", new File(savepath));
+            ImageIO.write(nbi, "PNG", new File(savepath));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -185,6 +189,21 @@ public class TestGenByGr2 {
 
     }
 
+
+
+    public BufferedImage resizeImage(BufferedImage bi, int scaleSize)  {
+
+        float width = bi.getWidth(); // 像素
+        float height = bi.getHeight(); // 像素
+        float scale=width/scaleSize;
+        BufferedImage buffImg = null;
+        buffImg = new BufferedImage(scaleSize, (int)(height/scale), BufferedImage.TYPE_4BYTE_ABGR);
+        //使用TYPE_INT_RGB修改的图片会变色
+        buffImg.getGraphics().drawImage(
+                bi.getScaledInstance(scaleSize, (int)(height/scale), Image.SCALE_SMOOTH), 0,
+                0, null);
+        return buffImg;
+    }
 
     @Test
     public void test2() throws Exception {
