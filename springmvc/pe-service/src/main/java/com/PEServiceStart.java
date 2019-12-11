@@ -24,7 +24,7 @@ import org.springframework.context.annotation.Bean;
 @EnableFeignClients
 @EnableHystrix
 @EnableHystrixDashboard
-@MapperScan(basePackages = {"com..pe.*"})
+@MapperScan(basePackages = {"com.pe.*"})
 public class PEServiceStart {
     public static void main(String[] args) {
         SpringApplication.run(PEServiceStart.class, args);
