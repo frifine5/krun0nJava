@@ -253,6 +253,15 @@ public class TestGetPdfFormFiled {
 
 
     @Test
+    public void testTransfer2Images()throws Exception{
+        String pdf = "C:\\Users\\49762\\Desktop\\B2.pdf";
+
+    }
+
+
+
+
+    @Test
     public void testGetOriginData()throws Exception{
 
         String pdf = "C:\\Users\\49762\\Desktop\\B2.pdf";
@@ -263,6 +272,7 @@ public class TestGetPdfFormFiled {
         ArrayList<String> sigNames = acroFields.getSignatureNames();
         for(String sigName: sigNames){
 
+            System.out.println("域名 = " + sigName);
             PdfDictionary sig1Dic = acroFields.getSignatureDictionary(sigName);
             byte[] sigValue = sig1Dic.get(PdfName.CONTENTS).getBytes();
             PdfArray rangeArray = (PdfArray)sig1Dic.get(PdfName.BYTERANGE);
@@ -284,6 +294,8 @@ public class TestGetPdfFormFiled {
             byte[] md = SM3Util.sm3Digest(originData);
             System.out.println("hash value:\t" + Util.byteToHex(md));
 
+            /*
+
             // 执行验签
             String hpk = "04B869DBB74ACDF04925F711148B553F1392B36786628B3F05BEBEF04E0F37DFBED3BEB89128445B00B3CA3B5A4FF6CDBF3703FA74F1810547F5D567F7538E8B43";
             String hsk = "675160FFEAF0CAB760BD12C39F79CA6499238D76D2C845DF6A77AD69F3D1A4F1";
@@ -302,6 +314,7 @@ public class TestGetPdfFormFiled {
                     rects[0], rects[1], rects[2], rects[3],
                     rects[2] - rects[0] , rects[3] - rects[1] );
 
+*/
 
         }
 

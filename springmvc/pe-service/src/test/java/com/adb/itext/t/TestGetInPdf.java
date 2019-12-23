@@ -42,7 +42,8 @@ public class TestGetInPdf {
 //        pdf = "C:\\Users\\49762\\Documents\\WeChat Files\\bearpandaer\\FileStorage\\File\\2019-12\\ShouQuanWeiTuoShu.pdf";
 //        pdf = "C:\\Users\\49762\\Documents\\WeChat Files\\bearpandaer\\FileStorage\\File\\2019-12\\关于广报中心进驻办公区域调整的搬迁通知.pdf";
         pdf = "C:\\Users\\49762\\Desktop\\授权书.pdf";
-        pdf = "C:\\Users\\49762\\Desktop\\a1.pdf";
+//        pdf = "C:\\Users\\49762\\Desktop\\a1.pdf";
+        pdf = "C:\\Users\\49762\\Desktop\\wtr-00.pdf";
 
 
         Image signImage = Image.getInstance("D:\\home\\orgStamp2.png");
@@ -81,7 +82,7 @@ public class TestGetInPdf {
 
 
         if(null != tmpData){
-            FileOutputStream fos = new FileOutputStream("C:\\Users\\49762\\Desktop\\wtr-sd01.pdf");
+            FileOutputStream fos = new FileOutputStream("C:\\Users\\49762\\Desktop\\B2.pdf");
             int len = tmpData.length;
             fos.write(tmpData, 0, len);
             fos.flush();
@@ -355,7 +356,7 @@ public class TestGetInPdf {
 
         PdfReader pdfReader = new PdfReader(pdfData);
         AcroFields acroFields = pdfReader.getAcroFields();
-        String sigName = "gdqm3";
+        String sigName = "中文域名";
         AcroFields.Item sig1 = acroFields.getFields().get(sigName);
         PdfArray value = (PdfArray)sig1.getValue(0).get(PdfName.RECT);
         long[] rect = value.asLongArray();
