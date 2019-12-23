@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<configuration debug="false" scan="true" scanPeriod="30 seconds">
+
+    <jmxConfigurator/>
+    <!-- 运维保障日志服务器地址   互联网区请使用 192.168.205.6  公共区请使用 192.168.85.17-->
+    <property name="SYSLOG_HOST" value="192.168.85.17" />
+    <!-- 运维保障日志服务器端口1514 -->
+    <property name="SYSLOG_PORT" value="514" />
+    <!-- 第三参数：服务器IP，请根据实际系统部署情况修改。 -->
+    <property name="SERVER_IP" value="192.168.74.22" />
+    <!-- 制章系统A08 -->
+    <property name="SYSTEM_TYPE" value="A08" />
+    <!-- 部署模式 独立部署使用Alone；分布式使用Share-->
+    <property name="DEPLOYMENT_TYPE" value="Share" />
+    <!-- 系统日志输出类型-->
+    <property name="FACILITY" value="AUTH" />
+    <!-- 发送日志至运维平台的配置说明  -->
+    <appender name="consoleLog" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %5p %c{5}:%L - %m%n</pattern>
+        </layout>
+    </appender>
+    <appender name="fileInfoLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+        <encoder>
+            <pattern>%date [%thread] %level %logger{10} [%file : %line] [%X{requestId}] %msg%n</pattern>
+        </encoder>
+        <!--滚动策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--路径-->
+            <fileNamePattern>/mnt/logs/%d{yyyy-MM-dd}.info.log</fileNamePattern>
+            <!--不清理日志-->
+<!--            <maxHistory>90</maxHistory>-->
+        </rollingPolicy>
+    </appender>
+    <appender name="fileErrorLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <encoder>
+            <pattern>%date [%thread] %level %logger{10} [%file : %line] [%X{requestId}] %msg%n</pattern>
+        </encoder>
+        <!--滚动策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--路径-->
+            <fileNamePattern>/mnt/logs/%d{yyyy-MM-dd}.error.log</fileNamePattern>
+            <!--不清理日志-->
+<!--            <maxHistory>90</maxHistory>-->
+        </rollingPolicy>
+    </appender>
+    <appender name="FILE-INFO-ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>10000</queueSize>
+        <appender-ref ref="fileInfoLog"/>
+    </appender>
+    <appender name="FILE-ERROR-ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>10000</queueSize>
+        <appender-ref ref="fileErrorLog"/>
+    </appender>
+
+    <!--mybatis sql打印 -->
+    <logger name="org.mybatis">
+        <level value="INFO"/>
+    </logger>
+
+
+    <root level="INFO">
+        <appender-ref ref="consoleLog"/>
+        <appender-ref ref="fileInfoLog"/>
+        <appender-ref ref="fileErrorLog"/>
+
+    </root>
+</configuration>
