@@ -161,6 +161,20 @@
         </dependency>
 
 
+        <!-- https://mvnrepository.com/artifact/org.icepdf.os/icepdf-core -->
+        <dependency>
+            <groupId>org.icepdf.os</groupId>
+            <artifactId>icepdf-core</artifactId>
+            <version>6.2.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.media</groupId>
+                    <artifactId>jai_core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+
 
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
@@ -198,13 +212,35 @@
 
     <build>
         <plugins>
+            <!-- 指定编译java版本 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <!-- springboot 打包-->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+         <!--           <mainClass>com.TestMain</mainClass>-->
                     <finalName>${project.name}</finalName>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
+
+
+
         </plugins>
     </build>
 
