@@ -3,10 +3,12 @@ package com.http.es;
 
 import com.esr.entity.GmtESignSeal;
 import com.esr.entity.GmtEseal;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -17,7 +19,9 @@ public class ESealTestController {
 
     @RequestMapping(value = "/eseal/data")
     @ResponseBody
-    public Object applySeal() {
+    public Object applySeal(@RequestBody String param, HttpServletRequest request) {
+
+        System.out.printf("request param:\t%s\n", param);
 
         SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD");
 
