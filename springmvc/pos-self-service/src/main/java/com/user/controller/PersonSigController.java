@@ -1,6 +1,7 @@
 package com.user.controller;
 
 
+import com.user.entity.PsSigImg;
 import com.user.request.PersonSealRequest;
 import com.user.service.PersonImgService;
 import org.slf4j.Logger;
@@ -77,7 +78,28 @@ public class PersonSigController {
         return result;
     }
 
-
+    @RequestMapping(value = "/ps/getPsSigs", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public Object getPsSig(@RequestBody PersonSealRequest pssRequest) {
+        logger.info("请求参数: {}", com.alibaba.fastjson.JSONObject.toJSON(pssRequest));
+        Map<String, Object> result = new HashMap<>();
+        try{
+            PsSigImg data = personImgService.getPersonSigs(pssRequest.getAccount());
+            if(data == null){
+                logger.info("个人章查询到的结果为空");
+                data = new PsSigImg();
+                data.setAccount(pssRequest.getAccount());
+            }
+            result.put("code", 0);
+            result.put("msg", "获取成功");
+            result.put("data", data);
+        }catch (Exception e){
+            logger.error("个人章查询失败", e);
+            result.put("code", -10);
+            result.put("msg", e.getMessage());
+        }
+        return result;
+    }
 
 
 }

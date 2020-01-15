@@ -194,6 +194,13 @@ public class PersonImgService {
         }
     }
 
+    @Transactional(rollbackFor = {Exception.class})
+    public PsSigImg getPersonSigs(String account){
+        if(ParamsUtil.checkNull(account)){
+            throw new RuntimeException("参数错误");
+        }
+        return psSigDao.findPersonSigImg(account);
+    }
 
 
 
