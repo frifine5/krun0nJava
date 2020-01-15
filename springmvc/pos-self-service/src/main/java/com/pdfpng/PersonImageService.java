@@ -2,6 +2,13 @@ package com.pdfpng;
 
 import com.common.ParamsUtil;
 import com.common.PsaImageUtil;
+import com.user.dao.UserDao;
+import com.user.entity.PUser;
+import com.user.request.PersonSealRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -16,9 +23,10 @@ import java.io.IOException;
  * @author WangChengyu
  * 2020/1/14 11:21
  */
+@Service
 public class PersonImageService {
 
-
+    private Logger logger = LoggerFactory.getLogger(PersonImageService.class);
 
 
     /**
@@ -201,7 +209,7 @@ public class PersonImageService {
     /**
      * 矩形章：基础高196像素 宽按字数*52 + broads，大于6个字，最长16个字
      * */
-    public byte[] genPsRectSealTen(String name, float ri, float wh){
+    public byte[] genPsRectSealLonger(String name, float ri, float wh){
         int fontSize = 52;
         int nlen = name.length();
         if(name.length()>16|| nlen<7){
@@ -282,6 +290,7 @@ public class PersonImageService {
             throw new RuntimeException("图片生成失败", e);
         }
     }
+
 
 
 }

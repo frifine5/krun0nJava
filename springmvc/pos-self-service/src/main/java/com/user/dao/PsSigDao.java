@@ -4,7 +4,6 @@ import com.user.entity.PsSigImg;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 
 @Mapper
 @Repository
@@ -33,11 +32,16 @@ public interface PsSigDao {
 
     @Update("UPDATE PS_SIG_IMG SET ACCOUNT = #{account}, SIG1 = #{sig1}, " +
             " SIG2 = #{sig2}, SIG3 = #{sig3}, SEAL = #{seal} " +
-            " WERHE ACCOUNT=#{account}" )
+            " WHERE ACCOUNT=#{account}" )
     int uptPersonSigImg(PsSigImg record);
 
     @Delete("DELETE FROM PS_SIG_IMG WHERE ACCOUNT=#{account} ")
     int delPersonSigImgRecord(String account);
+
+    /** 插入/有则更新*/
+    @Insert("INSERT INTO PS_SIG_IMG(ACCOUNT, SEAL) VALUE(#{account}, #{seal})" +
+            " ON DUPLICATE KEY UPDATE SEAL=#{seal}")
+    int iouPersonSigImgByAccount(PsSigImg record);
 
 
 

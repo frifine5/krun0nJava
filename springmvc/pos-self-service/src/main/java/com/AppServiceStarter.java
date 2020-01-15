@@ -6,7 +6,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-@SpringBootApplication(scanBasePackages = {"com.http" })
+@SpringBootApplication
+//        (scanBasePackages = {"com.http" })
 @ComponentScan("com.*")
 @MapperScan(basePackages = {"com.pos.*.dao.*"})
 public class AppServiceStarter {
