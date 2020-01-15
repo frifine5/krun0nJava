@@ -52,11 +52,7 @@
 
 
         <!-- 数据源 -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid</artifactId>
-            <version>1.1.1</version> <!-- 1.1.10    ${alibaba.druid.version}-->
-        </dependency>
+
 
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
@@ -356,6 +352,12 @@
             https://repo.spring.io/milestone
              http://mvn.dev.baiwang-inner.com:8081/nexus/content/repositories/thirdparty/
 
+
+
+            http://maven.aliyun.com/nexus/content/groups/public/
+
+
+            https://maven.aliyun.com/repository/central
               -->
 
     <!--
