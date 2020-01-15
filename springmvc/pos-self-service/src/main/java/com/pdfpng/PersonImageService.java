@@ -9,7 +9,6 @@ import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 
 /**
@@ -200,9 +199,89 @@ public class PersonImageService {
 
 
     /**
-     * 矩形章：大于6个字，最长10个字
+     * 矩形章：基础高196像素 宽按字数*52 + broads，大于6个字，最长16个字
      * */
+    public byte[] genPsRectSealTen(String name, float ri, float wh){
+        int fontSize = 52;
+        int nlen = name.length();
+        if(name.length()>16|| nlen<7){
+            throw new RuntimeException("名字超长(16)");
+        }
 
+        int canvasWidth, canvasHeight;
+        canvasHeight =  196;
+        int broad = 5;
+        String t1, t2;
+        int hfLen = nlen%2 ==0? nlen/2: nlen/2 +1;
+        if(name.contains("·")){
+            t1 = name.substring(0, name.indexOf("·") + 1);
+            t2 = name.substring(name.indexOf("·") + 1);
+        }else{
+            t1 = name.substring(0, hfLen);
+            t2 = name.substring(hfLen);
+            if(nlen%2 == 1){
+                t2 = t2 + "印";
+            }
+        }
+
+        // 计算宽的值
+        int wcount = t1.length();
+        if(t1.length()>= t2.length()){
+            wcount = t1.length();
+        }else{
+            wcount = t2.length();
+        }
+
+        canvasWidth = fontSize * wcount + broad * 8;
+
+        BufferedImage bi = new BufferedImage(canvasWidth, canvasHeight, BufferedImage.TYPE_4BYTE_ABGR);
+        Graphics2D g2d = bi.createGraphics();
+        // 增加下面代码使得背景透明
+        bi = g2d.getDeviceConfiguration().createCompatibleImage(canvasWidth, canvasHeight, Transparency.TRANSLUCENT);
+        g2d.dispose();
+        g2d = bi.createGraphics();
+        // 画线平滑
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_DEFAULT);
+
+        /***********draw rectangle*************/
+        g2d.setPaint(Color.red);
+        g2d.setStroke(new BasicStroke(broad));//设置画笔的粗度
+        Shape rect = new Rectangle2D.Double(broad, broad, canvasWidth - broad * 2, canvasHeight - broad * 2);
+        g2d.draw(rect);
+
+
+        /*********** 写字 *************/
+
+        g2d.setPaint(Color.RED);
+        g2d.setStroke(new BasicStroke(5));
+        String fontName = "楷体"; // 楷体 黑体 宋体 隶书
+        Font typeFont = new Font(fontName, Font.BOLD, fontSize);
+
+        FontRenderContext mdCtx = g2d.getFontRenderContext();
+        Rectangle2D mdBound = typeFont.getStringBounds("单", mdCtx);
+        g2d.setFont(typeFont);
+        g2d.drawString(t1, (float)broad*2, (float)(canvasHeight/2 + mdBound.getCenterY()));
+        g2d.drawString(t2, (float)broad*2, (float)(canvasHeight/2 + mdBound.getCenterY() + mdBound.getHeight()));
+        g2d.dispose();
+
+        BufferedImage nbi = null;
+
+        if((1.0 == ri|| ri<=0) && wh<=0){
+            nbi = bi;
+        }else{
+            int nHeight = (int)(canvasHeight * ri);
+            int nWidth = (int)(canvasHeight * ri * wh);
+            nbi = PsaImageUtil.resizeImage(bi, nWidth, nHeight);
+        }
+
+        try (ByteArrayOutputStream os = new ByteArrayOutputStream(); ){
+            ImageIO.write(nbi, "png", os);
+            return os.toByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException("图片生成失败", e);
+        }
+    }
 
 
 }
