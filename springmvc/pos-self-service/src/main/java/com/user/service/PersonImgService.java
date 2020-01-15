@@ -137,6 +137,9 @@ public class PersonImgService {
             throw new RuntimeException("用户不存在");
         }
         byte[] data = Base64.getDecoder().decode(sigBase64);
+        if(null == data || data.length < 1){
+            throw new RuntimeException("参数错误");
+        }
         if("svg".equalsIgnoreCase(imgType)){
             data = convSvg2Png(data);
         }
