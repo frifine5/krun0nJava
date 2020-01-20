@@ -155,6 +155,27 @@ public class PsaImageUtil {
 
 
     /**
+     * 宽高比缩放
+     */
+    public static BufferedImage resizeImage(BufferedImage bi, float wh)  {
+
+        float width = bi.getWidth(); // 像素
+        float height = bi.getHeight(); // 像素
+        float nHeight = height / wh;
+        BufferedImage buffImg = null;
+        buffImg = new BufferedImage((int)width, (int)nHeight, BufferedImage.TYPE_4BYTE_ABGR);
+        //使用TYPE_INT_RGB修改的图片会变色
+        buffImg.getGraphics().drawImage(
+                bi.getScaledInstance((int)width, (int)nHeight, Image.SCALE_SMOOTH), 0, 0, null);
+        return buffImg;
+    }
+/*
+w/h = h * wh;
+
+ */
+
+
+    /**
      *  画定制的企业章
      * @param canvas 长宽
      * @param broad 外圆宽
