@@ -1,6 +1,9 @@
 package com.common;
 
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -176,6 +179,23 @@ public class ParamsUtil {
         byte[] out = new byte[i];
         System.arraycopy(in, 0, out, 0, i);
         return out;
+    }
+
+
+    /**
+     * 读取流中的数据
+     */
+    public static byte[] getRangeData(InputStream data) {
+        byte buf[] = new byte[8192];
+        int n;
+        try(ByteArrayOutputStream outputStream = new ByteArrayOutputStream();){
+            while (-1 != (n = data.read(buf))) {
+                outputStream.write(buf, 0, n);
+            }
+            return outputStream.toByteArray();
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
 }
