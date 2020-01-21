@@ -10,7 +10,6 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
 
-
 public class PsaImageUtil {
 
     /**
@@ -63,7 +62,7 @@ public class PsaImageUtil {
         double angel_dalta_width = Math.atan((double) src.height / src.width);
         double angel_dalta_height = Math.atan((double) src.width / src.height);
 
-        int len_dalta_width = (int) (len * Math.cos(Math.PI - angel_alpha  - angel_dalta_width));
+        int len_dalta_width = (int) (len * Math.cos(Math.PI - angel_alpha - angel_dalta_width));
         int len_dalta_height = (int) (len * Math.cos(Math.PI - angel_alpha - angel_dalta_height));
         int des_width = src.width + len_dalta_width * 2;
         int des_height = src.height + len_dalta_height * 2;
@@ -73,11 +72,12 @@ public class PsaImageUtil {
 
     /**
      * 旋转图片
-     * @param image 原图
+     *
+     * @param image  原图
      * @param degree 旋转角度
      * @return
      */
-    public static BufferedImage rotateImg(BufferedImage image, int degree){
+    public static BufferedImage rotateImg(BufferedImage image, int degree) {
         int iw = image.getWidth();// 原始图象的宽度
         int ih = image.getHeight();// 原始图象的高度
         int w = 0;
@@ -108,12 +108,10 @@ public class PsaImageUtil {
         y = (h / 2) - (ih / 2);
         BufferedImage rotatedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
         Graphics2D gs = rotatedImage.createGraphics();
-        rotatedImage = gs.getDeviceConfiguration().createCompatibleImage(w, h,
-                Transparency.TRANSLUCENT);
+        rotatedImage = gs.getDeviceConfiguration().createCompatibleImage(w, h, Transparency.TRANSLUCENT);
         gs.dispose();
         gs = rotatedImage.createGraphics();
-        gs.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        gs.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         AffineTransform at = new AffineTransform();
         at.rotate(ang, w / 2, h / 2);       // 旋转图象
         at.translate(x, y);
@@ -127,25 +125,28 @@ public class PsaImageUtil {
 
     /**
      * 缩放图片
-     * @param bi 原图
+     *
+     * @param bi        原图
      * @param scaleSize 缩放大小
-     * @return
      */
-    public static BufferedImage resizeImage(BufferedImage bi, int scaleSize)  {
+    public static BufferedImage resizeImage(BufferedImage bi, int scaleSize) {
 
         float width = bi.getWidth(); // 像素
         float height = bi.getHeight(); // 像素
-        float scale=width/scaleSize;
+        float scale = width / scaleSize;
         BufferedImage buffImg = null;
-        buffImg = new BufferedImage(scaleSize, (int)(height/scale), BufferedImage.TYPE_4BYTE_ABGR);
+        buffImg = new BufferedImage(scaleSize, (int) (height / scale), BufferedImage.TYPE_4BYTE_ABGR);
         //使用TYPE_INT_RGB修改的图片会变色
         buffImg.getGraphics().drawImage(
-                bi.getScaledInstance(scaleSize, (int)(height/scale), Image.SCALE_SMOOTH), 0,
+                bi.getScaledInstance(scaleSize, (int) (height / scale), Image.SCALE_SMOOTH), 0,
                 0, null);
         return buffImg;
     }
 
-    public static BufferedImage resizeImage(BufferedImage bi, int width, int height)  {
+    /**
+     * 按指定宽高重画
+     */
+    public static BufferedImage resizeImage(BufferedImage bi, int width, int height) {
         BufferedImage buffImg = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
         //使用TYPE_INT_RGB修改的图片会变色
         buffImg.getGraphics().drawImage(
@@ -157,35 +158,48 @@ public class PsaImageUtil {
     /**
      * 宽高比缩放
      */
-    public static BufferedImage resizeImage(BufferedImage bi, float wh)  {
+    public static BufferedImage resizeImage(BufferedImage bi, float wh) {
 
         float width = bi.getWidth(); // 像素
         float height = bi.getHeight(); // 像素
         float nHeight = height / wh;
         BufferedImage buffImg = null;
-        buffImg = new BufferedImage((int)width, (int)nHeight, BufferedImage.TYPE_4BYTE_ABGR);
+        buffImg = new BufferedImage((int) width, (int) nHeight, BufferedImage.TYPE_4BYTE_ABGR);
         //使用TYPE_INT_RGB修改的图片会变色
         buffImg.getGraphics().drawImage(
-                bi.getScaledInstance((int)width, (int)nHeight, Image.SCALE_SMOOTH), 0, 0, null);
+                bi.getScaledInstance((int) width, (int) nHeight, Image.SCALE_SMOOTH), 0, 0, null);
         return buffImg;
     }
-/*
-w/h = h * wh;
 
- */
+    /**
+     * 按宽缩放
+     */
+    public static BufferedImage scaleWidth(BufferedImage bi, float scale) {
+
+        float width = bi.getWidth(); // 像素
+        float height = bi.getHeight(); // 像素
+        float nWidth = width * scale;
+        BufferedImage buffImg = null;
+        buffImg = new BufferedImage((int) nWidth, (int) height, BufferedImage.TYPE_4BYTE_ABGR);
+        //使用TYPE_INT_RGB修改的图片会变色
+        buffImg.getGraphics().drawImage(
+                bi.getScaledInstance((int) nWidth, (int) height, Image.SCALE_SMOOTH), 0, 0, null);
+        return buffImg;
+    }
 
 
     /**
-     *  画定制的企业章
+     * 画定制的企业章
+     *
      * @param canvas 长宽
-     * @param broad 外圆宽
-     * @param name 外弧长文字
-     * @param type 章类型文字
+     * @param broad  外圆宽
+     * @param name   外弧长文字
+     * @param type   章类型文字
      * @return bufferedImage
      */
     public static BufferedImage drawImg(int canvas, int broad, String name, String type, int colorType) {
         Color color = Color.RED;
-        if(1 == colorType){// 仅指定蓝；默认红
+        if (1 == colorType) {// 仅指定蓝；默认红
             color = Color.BLUE;
         }
 
@@ -310,11 +324,34 @@ w/h = h * wh;
     }
 
 
-
-
-
-
-
+    /**
+     * 图片合成
+     */
+    public static BufferedImage mergeTogether(BufferedImage b, BufferedImage d, boolean centerAlign) {
+        Graphics2D g = null;
+        int dw = d.getWidth();
+        int dh = d.getHeight();
+//            System.out.printf("底图宽高：%s, %s\n", dw, dh);
+        int w = b.getWidth();
+        int h = b.getHeight();
+//            System.out.printf("上图宽高：%s, %s\n", w, h);
+//            System.out.println("是否中心对齐: " + centerAlign);
+        int x = 0;
+        int y = 0;
+        if (centerAlign) {
+            x = (dw - w) / 2;
+            y = (dh - h) / 2;
+        }
+//            System.out.printf("原点(x, y) = (%s, %s)\n", x, y);
+        g = d.createGraphics();
+        // 画线平滑
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_DEFAULT);
+        // 合成
+        g.drawImage(b, x, y, w, h, null);
+        g.dispose();
+        return d;
+    }
 
 
 }
