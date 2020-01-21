@@ -1,4 +1,4 @@
 # git忽略文件
 *.iml
-src/test
+# src/test
 target
