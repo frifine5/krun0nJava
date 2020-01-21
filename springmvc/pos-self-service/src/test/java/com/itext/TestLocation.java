@@ -54,24 +54,20 @@ public class TestLocation {
                 PdfNumber plly = sigNameRect.getAsNumber(3);
                 float x = px.floatValue();
                 float y = py.floatValue();
-                float llx = pllx.floatValue();
-                float lly = plly.floatValue();
+                float urx = pllx.floatValue();
+                float ury = plly.floatValue();
+                float width = Math.abs(x - urx);
+                float height = Math.abs(y - ury);
 
-                System.out.printf("%s, %s, %s, %s", x, y, llx, lly);
-                System.out.println();
-
-                long[] sigRect = sigNameRect.asLongArray();
                 int pageNo = item.getPage(0);
-                long width = Math.abs(sigRect[0] - sigRect[2]);
-                long height = Math.abs(sigRect[1] - sigRect[3]);
                 float[] rect = new float[5];
                 rect[0] = pageNo;
-                rect[1] = sigRect[0];
-                rect[2] = sigRect[1];
+                rect[1] = x;
+                rect[2] = y;
                 rect[3] = width;
                 rect[4] = height;
                 System.out.printf("签名域=%s | 页码：%s, 坐标xy( %s, %s), 对角坐标llxy(%s, %s) | 宽=%s, 高=%s\n",
-                        sigName, rect[0], rect[1], rect[2], sigRect[2], sigRect[3], width, height);
+                        sigName, x, y, urx, ury, width, height);
                 arrays.add(rect);
             }
 
