@@ -144,6 +144,21 @@ public class PsaImageUtil {
     }
 
     /**
+     * 等比例缩放
+     */
+    public static BufferedImage scaleRect(BufferedImage bi, float scale) {
+
+        float width = bi.getWidth() * scale;
+        float height = bi.getHeight() * scale;
+        BufferedImage buffImg = null;
+        buffImg = new BufferedImage((int)width, (int)height, BufferedImage.TYPE_4BYTE_ABGR);
+        //使用TYPE_INT_RGB修改的图片会变色
+        buffImg.getGraphics().drawImage(
+                bi.getScaledInstance((int)width, (int)height, Image.SCALE_SMOOTH), 0, 0, null);
+        return buffImg;
+    }
+
+    /**
      * 按指定宽高重画
      */
     public static BufferedImage resizeImage(BufferedImage bi, int width, int height) {
@@ -343,6 +358,30 @@ public class PsaImageUtil {
             y = (dh - h) / 2;
         }
 //            System.out.printf("原点(x, y) = (%s, %s)\n", x, y);
+        g = d.createGraphics();
+        // 画线平滑
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_DEFAULT);
+        // 合成
+        g.drawImage(b, x, y, w, h, null);
+        g.dispose();
+        return d;
+    }
+
+
+    /**
+     * 图片合成
+     */
+    public static BufferedImage mergeTogether(BufferedImage b, BufferedImage d, int xToCenter, int yToCenter) {
+        Graphics2D g = null;
+        int dw = d.getWidth();
+        int dh = d.getHeight();
+        int w = b.getWidth();
+        int h = b.getHeight();
+
+        int x = (dw - w)/2 - xToCenter;
+        int y = (dh - w)/2 - yToCenter;
+
         g = d.createGraphics();
         // 画线平滑
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
