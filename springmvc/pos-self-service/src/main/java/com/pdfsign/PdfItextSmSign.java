@@ -12,6 +12,7 @@ import com.smalg.sm2.GMTSM2;
 import com.smalg.sm3.SM3Util;
 import com.smalg.sm3.Util;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.stereotype.Service;
 
@@ -164,6 +165,24 @@ public class PdfItextSmSign {
             pdfReader = new PdfReader(pdfBytes);
             int totalPages = pdfReader.getNumberOfPages();
 
+            AcroFields acreFileds = pdfReader.getAcroFields();
+            Map<String, AcroFields.Item> fields = acreFileds.getFields();
+            AcroFields.Item item = fields.get(field);
+            if (null == item) {
+                throw new RuntimeException("文件中未找到指定签名域[" + field + "]");
+            }
+            PdfDictionary merged = item.getMerged(0);
+            if (!PdfName.SIG.equals(PdfReader.getPdfObject(merged.get(PdfName.FT)))){
+                throw new RuntimeException("指定域名[" + field + "]不是签名域的域名");
+            }
+            if (item.size() != 1) {
+                throw new RuntimeException("文件中指定签名域[" + field + "]超过1，不符合一般PDF签名域的规范");
+            }
+            PdfDictionary isSigned = acreFileds.getSignatureDictionary(field);
+            if(null != isSigned){
+                throw new RuntimeException("文件中指定签名域[" + field + "]已经签过电子数据，不得在同一域再次签署");
+            }
+
             Security.addProvider(new BouncyCastleProvider());
             // 字节流
             ByteArrayOutputStream result = new ByteArrayOutputStream();
@@ -189,19 +208,7 @@ public class PdfItextSmSign {
             appearance.setVisibleSignature(field);
 
 
-            AcroFields acreFileds = pdfReader.getAcroFields();
-            Map<String, AcroFields.Item> fields = acreFileds.getFields();
-            AcroFields.Item item = fields.get(field);
-            if (null == item) {
-                throw new RuntimeException("文件中未找到指定签名域[" + field + "]");
-            }
-            if (item.size() != 1) {
-                throw new RuntimeException("文件中指定签名域[" + field + "]超过1，不符合一般PDF签名域的规范");
-            }
-            PdfDictionary isSigned = acreFileds.getSignatureDictionary(field);
-            if(null != isSigned){
-                throw new RuntimeException("文件中指定签名域[" + field + "]已经签过电子数据，不得在同一域再次签署");
-            }
+
             // -------------- 读域 ----------
             PdfDictionary itmVlu = item.getValue(0);
             PdfArray sigNameRect = (PdfArray) itmVlu.get(PdfName.RECT);
@@ -280,7 +287,6 @@ public class PdfItextSmSign {
             } catch (Exception e) {
                 throw new RuntimeException("签章结构体生成失败", e);
             }
-
 
             PdfDictionary dic2 = new PdfDictionary();
             dic2.put(PdfName.CONTENTS, new PdfString(sigData).setHexWriting(true));
