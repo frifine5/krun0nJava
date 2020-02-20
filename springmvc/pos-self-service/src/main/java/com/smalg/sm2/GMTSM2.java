@@ -1,6 +1,8 @@
 package com.smalg.sm2;
 
 import com.smalg.sm3.SM3Digest;
+import com.smalg.sm3.SM3Util;
+import com.smalg.sm3.Util;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
@@ -78,7 +80,8 @@ public class GMTSM2 {
         ecc_gx_fieldelement = new ECFieldElement.Fp(this.ecc_p, this.ecc_gx);
         ecc_gy_fieldelement = new ECFieldElement.Fp(this.ecc_p, this.ecc_gy);
         ecc_curve = new ECCurve.Fp(this.ecc_p, this.ecc_a, this.ecc_b);
-        ecc_point_g = new ECPoint.Fp(this.ecc_curve, this.ecc_gx_fieldelement, this.ecc_gy_fieldelement, false);
+        ecc_point_g = new ECPoint.Fp(this.ecc_curve, this.ecc_gx_fieldelement, this.ecc_gy_fieldelement);
+        //, false);
 
         ecc_bc_spec = new ECDomainParameters(this.ecc_curve, this.ecc_point_g, this.ecc_n);
 
@@ -115,8 +118,8 @@ public class GMTSM2 {
         String hexPrivateKey = StrUtil.byteToHex(bsk);
 
         ECPoint p = ecc_bc_spec.getG().multiply(da);
-        byte[] bpx = p.getXCoord().toBigInteger().toByteArray();
-        byte[] bpy = p.getYCoord().toBigInteger().toByteArray();
+        byte[] bpx = p.getX().toBigInteger().toByteArray();
+        byte[] bpy = p.getY().toBigInteger().toByteArray();
         byte[] bpk = new byte[64];
         int lx = bpx.length;
         if (lx < 32) {
@@ -140,8 +143,8 @@ public class GMTSM2 {
     public String calcPkfrSk(byte[] sk){
         BigInteger da = new BigInteger(1, sk);
         ECPoint p = ecc_bc_spec.getG().multiply(da);
-        byte[] bpx = p.getXCoord().toBigInteger().toByteArray();
-        byte[] bpy = p.getYCoord().toBigInteger().toByteArray();
+        byte[] bpx = p.getX().toBigInteger().toByteArray();
+        byte[] bpy = p.getY().toBigInteger().toByteArray();
         byte[] bpk = new byte[64];
         int lx = bpx.length;
         if (lx < 32) {
@@ -245,7 +248,7 @@ public class GMTSM2 {
                 k = genKinN();
                 kp = calcPa(k.toString(16)); // 得到kp(x,y)
                 // 计算: r = (e+x) mod n
-                r = e.add(kp.getXCoord().toBigInteger());
+                r = e.add(kp.getX().toBigInteger());
                 r = r.mod(ecc_n);
                 // 结果r等于0或（r+k）等于n则重算
             } while (r.equals(BigInteger.ZERO) || r.add(k).equals(ecc_n));
@@ -304,7 +307,7 @@ public class GMTSM2 {
                 k = genKinN();
                 kp = calcPa(k.toString(16)); // 得到kp(x,y)
                 // 计算: r = (e+x) mod n
-                r = e.add(kp.getXCoord().toBigInteger());
+                r = e.add(kp.getX().toBigInteger());
                 r = r.mod(ecc_n);
                 // 结果r等于0或（r+k）等于n则重算
             } while (r.equals(BigInteger.ZERO) || r.add(k).equals(ecc_n));
@@ -396,10 +399,31 @@ public class GMTSM2 {
         k = G.multiply(s).add(Pa.multiply(t));
 
         //R = (e+k.x) mod n
-        R = e.add(k.getXCoord().toBigInteger()).mod(ecc_n);
+        R = e.add(k.getX().toBigInteger()).mod(ecc_n);
         //R == r  true
         if (R.equals(r)) return true;
         return false;
+    }
+
+
+    public static void main(String[] args) {
+
+        GMTSM2 sm2 = GMTSM2.getInstance();
+        String[] kps = sm2.genPairOnString();
+        String hpk = kps[0];
+        String hsk = kps[1];
+
+        String text = "123";
+        byte[] md = SM3Util.sm3Digest(text.getBytes(), Util.hexToByte(hpk));
+
+        byte[] sv = sm2.sm2Sign(md, Util.hexToByte(hsk));
+
+        System.out.println(String.format("{\"%s\",\"%s\",\"%s\"}", Util.byteToHex(md), Util.byteToHex(sv), hpk));
+
+        boolean ir = sm2.sm2Verify(md, sv, Util.hexToByte(hpk));
+        System.out.println(ir);
+
+
     }
 
 

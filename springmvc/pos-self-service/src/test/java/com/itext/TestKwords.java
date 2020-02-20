@@ -21,9 +21,10 @@ public class TestKwords {
     public void testFindKeywords() throws Exception {
         String pdfDir = "/home/dtmp/itextPdfs/";
         String pdfName = "src1.pdf";
+        String keyWord = "申请人";
 
         String pdf = pdfDir + pdfName;
-        List<float[]> kwLocList = getKeyWord(FileUtil.fromDATfile(pdf), "过户", 60, 40);
+        List<float[]> kwLocList = getKeyWord(FileUtil.fromDATfile(pdf), keyWord, 80, 60);
 
         for (float[] e : kwLocList) {
 

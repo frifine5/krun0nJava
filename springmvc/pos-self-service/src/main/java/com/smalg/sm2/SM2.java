@@ -61,7 +61,8 @@ public class SM2 {
         ecc_gy_fieldelement = new ECFieldElement.Fp(this.ecc_p, this.ecc_gy);
 
         ecc_curve = new ECCurve.Fp(this.ecc_p, this.ecc_a, this.ecc_b);
-        ecc_point_g = new ECPoint.Fp(this.ecc_curve, this.ecc_gx_fieldelement, this.ecc_gy_fieldelement, false);
+        ecc_point_g = new ECPoint.Fp(this.ecc_curve, this.ecc_gx_fieldelement, this.ecc_gy_fieldelement);
+//        , false);
 
         ecc_bc_spec = new ECDomainParameters(this.ecc_curve, this.ecc_point_g, this.ecc_n);
 
@@ -119,9 +120,9 @@ public class SM2 {
 
                 ecc_n = this.ecc_n;
                 userD = k;
-                System.out.println("kp.x:\t"+StrUtil.bigIntegerToHex(kp.getXCoord().toBigInteger()));
+                System.out.println("kp.x:\t"+StrUtil.bigIntegerToHex(kp.getX().toBigInteger()));
                 // r = (e+x) mod n
-                r = e.add(kp.getXCoord().toBigInteger());
+                r = e.add(kp.getX().toBigInteger());
 
                 r = r.mod(ecc_n);
             }
@@ -175,10 +176,10 @@ public class SM2 {
         //k(x,y) = s*G + t*Pa
         k = G.multiply(s).add(Pa.multiply(t));
 
-        System.out.println("k.x:\t"+StrUtil.bigIntegerToHex(k.getXCoord().toBigInteger()));
+        System.out.println("k.x:\t"+StrUtil.bigIntegerToHex(k.getX().toBigInteger()));
 
         //R = (e+k.x) mod n
-        R = e.add(k.getXCoord().toBigInteger()).mod(ecc_n);
+        R = e.add(k.getX().toBigInteger()).mod(ecc_n);
         //R == r  true
         if (R.equals(r)) return true;
         return false;
