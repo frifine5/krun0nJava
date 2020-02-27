@@ -2,6 +2,7 @@ package com.user.controller;
 
 
 import com.user.entity.PsSigImg;
+import com.user.request.PersonSealPreviewRequest;
 import com.user.request.PersonSealRequest;
 import com.user.service.PersonImgService;
 import org.slf4j.Logger;
@@ -101,5 +102,26 @@ public class PersonSigController {
         return result;
     }
 
+
+
+    /* maybe a test  */
+
+    @RequestMapping(value = "/ps/genPsSealPre", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public Object genPsSealPre(@RequestBody PersonSealPreviewRequest pspRequest) {
+        logger.info("请求参数: {}", com.alibaba.fastjson.JSONObject.toJSON(pspRequest));
+        Map<String, Object> result = new HashMap<>();
+        try{
+            Object imgData = personImgService.getPersonImagePreview(pspRequest);
+            result.put("code", 0);
+            result.put("msg", "制作名章成功");
+            result.put("data", imgData);
+        }catch (Exception e){
+            logger.error("制作名章失败", e);
+            result.put("code", -10);
+            result.put("msg", e.getMessage());
+        }
+        return result;
+    }
 
 }

@@ -105,12 +105,12 @@
             <version>1.2.47</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on -->
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>
             <version>1.59</version>
         </dependency>
-
 
         <!-- https://mvnrepository.com/artifact/QRCode/QRCode -->
         <dependency>
@@ -118,9 +118,6 @@
             <artifactId>QRCode</artifactId>
             <version>3.0.0</version>
         </dependency>
-
-
-
 
 
         <!-- https://mvnrepository.com/artifact/javassist/javassist -->
@@ -339,7 +336,7 @@
         <repository>
             <id>spring-milestones</id>
             <name>Spring Milestones</name>
-            <url>http://repo2.maven.org/maven2/</url>
+            <url>https://repo1.maven.org/maven2/</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -361,7 +358,7 @@
               -->
 
     <!--
-
+https://repo1.maven.org/maven2/
     http://repo2.maven.org/maven2/
 
     -->

@@ -7,6 +7,7 @@ import com.user.dao.PsSigDao;
 import com.user.dao.UserDao;
 import com.user.entity.PUser;
 import com.user.entity.PsSigImg;
+import com.user.request.PersonSealPreviewRequest;
 import com.user.request.PersonSealRequest;
 import com.user.request.UserRequest;
 import org.apache.batik.transcoder.TranscoderInput;
@@ -40,6 +41,41 @@ public class PersonImgService {
     PersonImageService psImageService;
 
 
+    /**
+     * 制作预览使用的个人名章
+     */
+    public Object getPersonImagePreview(PersonSealPreviewRequest param){
+        if(null == param || ParamsUtil.checkNull(param.getName())){
+            throw new RuntimeException("请检查参数");
+        }
+        if (ParamsUtil.checkNull(param.getCode())) {
+            param.setCode(ParamsUtil.getUUIDStr());
+        }
+        String name = param.getName();
+
+        // 需重新制作名章印模
+        int nameLen = name.length();
+        byte[] sealData = null;
+        if(nameLen<5){
+            sealData = psImageService.genPsSquareSeal(name, 1.0f);
+        }else if(nameLen<7){
+            sealData = psImageService.genPsSquareSealSix(name, 1.0f);
+        }else{
+            sealData = psImageService.genPsRectSealLonger(name, 1.0f, 1.0f);
+        }
+        if(null == sealData){
+            throw new RuntimeException("生成个人名章失败");
+        }
+        PersonSealPreviewRequest data = param;
+        data.setSeal(Base64.getEncoder().encodeToString(sealData));
+
+        return data;
+    }
+
+
+    /**
+     * 制作个人名章并入库
+     * */
     @Transactional(rollbackFor = {Exception.class})
     public String getPersonSealImage(PersonSealRequest param){
         String account = param.getAccount();
