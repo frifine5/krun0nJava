@@ -26,6 +26,8 @@
         <alibaba.druid.version>1.0.20</alibaba.druid.version>
         <mysql.version>5.1.21</mysql.version>
         <mybatis.version>1.1.1</mybatis.version>
+        <hadoop.version>3.2.0</hadoop.version>
+
     </properties>
 
     <dependencies>
@@ -285,6 +287,18 @@
         </dependency>
 
 
+        <!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.12.1</version>
+        </dependency>
+
+
+
+
+
+
     </dependencies>
 
     <dependencyManagement>
@@ -317,7 +331,7 @@
         <repository>
             <id>spring-milestones</id>
             <name>Spring Milestones</name>
-            <url>http://mvn.dev.baiwang-inner.com:8081/nexus/content/repositories/thirdparty/</url>
+            <url>https://repo1.maven.org/maven2/</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -329,12 +343,15 @@
     <!--  	http://mvn.dev.baiwang-inner.com:8081/nexus/content/groups/public/
             https://repo.spring.io/milestone
              http://mvn.dev.baiwang-inner.com:8081/nexus/content/repositories/thirdparty/
-
+https://repo1.maven.org/maven2/
               -->
 
     <!--
 
     http://repo2.maven.org/maven2/
+
+    https://repo1.maven.org/maven2/
+
 
     -->
 
