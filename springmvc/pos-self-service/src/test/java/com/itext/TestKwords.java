@@ -23,8 +23,12 @@ public class TestKwords {
         String pdfName = "src1.pdf";
         String keyWord = "申请人";
 
+        pdfDir = "C:\\Users\\49762\\Desktop\\";
+        pdfName = "测试文件.pdf";
+        keyWord = "秩序须知";
+
         String pdf = pdfDir + pdfName;
-        List<float[]> kwLocList = getKeyWord(FileUtil.fromDATfile(pdf), keyWord, 80, 60);
+        List<float[]> kwLocList = getKeyWord(FileUtil.fromDATfile(pdf), keyWord, 70, 40);
 
         for (float[] e : kwLocList) {
 

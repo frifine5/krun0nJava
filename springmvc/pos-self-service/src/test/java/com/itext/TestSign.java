@@ -19,11 +19,17 @@ public class TestSign {
 
         String pdfDir = "/home/dtmp/itextPdfs/";
         String pdfName = "src2.pdf";
+        String destName = "dest-2-f-03.pdf";
+
 //        pdfName = "dest-2-f-22.pdf";
+
+        pdfDir = "/home/dtmp/itextPdfs/addfieldtest/";
+        pdfName = "s3.pdf";
+        destName = "s6.pdf";
+
 
 
         String pdf = pdfDir + pdfName;
-        String destName = "dest-2-f-03.pdf";
 
         String psImg = "person.png";
         String orgImg = "orgStamp.png";
@@ -39,19 +45,22 @@ public class TestSign {
 
         byte[] pdfData = FileUtil.fromDATfile(pdf);
 
-        byte[] imageData = FileUtil.fromDATfile(pdfDir + orgImg);
+        byte[] imageData = FileUtil.fromDATfile("/home/dtmp/itextPdfs/orgStamp.png");//pdfDir + orgImg);
 
         byte[] sealData = Base64.getDecoder().decode(sealDataStr);
 
         PdfItextSmSign sign = new PdfItextSmSign();
 
-        /*
+/*
+
         byte[] destData = sign.ecPositionSignPdf(pdfData, imageData, 270.58f, 358.76428f, 80, 60, 1,
                 sealData, "123", certStr, new Date(), pdfName);
-        */
+*/
 
-        byte[] destData = sign.ecFieldSignPdf(pdfData, imageData, fields[1], true, sealData, "123", certStr, new Date(), pages, pdfName);
+        String field = "s3";
+        pdfData = sign.writeFieldEmpty(pdfData, field, true, 2, 100, 600, 80, 70);
 
+        byte[] destData = sign.ecFieldSignPdf(pdfData, imageData, field, true, sealData, "123", certStr, new Date(), pages, pdfName);
 
 
         FileUtil.writeInFiles(pdfDir + destName, destData);

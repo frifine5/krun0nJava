@@ -4,7 +4,7 @@ import com.user.entity.PUser;
 import net.sf.json.JSONObject;
 import org.junit.Test;
 
-import java.util.Date;
+import java.util.*;
 
 public class UserTest {
 
@@ -20,6 +20,13 @@ public class UserTest {
         System.out.println(JSONObject.fromObject(user1));
         System.out.println("--------------------------------------------");
         System.out.println(com.alibaba.fastjson.JSONObject.toJSON(user1).toString());
+
+
+
+    }
+
+    @Test
+    public void test(){
 
 
 
