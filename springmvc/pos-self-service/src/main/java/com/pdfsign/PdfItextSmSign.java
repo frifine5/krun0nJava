@@ -4,15 +4,11 @@ package com.pdfsign;
 import com.common.ParamsUtil;
 import com.common.PsaImageUtil;
 import com.common.SignSealUtil;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
-import com.itextpdf.text.pdf.security.MakeSignature;
 import com.smalg.sm2.GMTSM2;
 import com.smalg.sm3.SM3Util;
 import com.smalg.sm3.Util;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.stereotype.Service;
 
@@ -303,6 +299,97 @@ public class PdfItextSmSign {
 
     }
 
+
+    /**
+     * 绘制空表单域
+     * @param pdfBytes
+     * @param field
+     * @return
+     */
+    public byte[] writeFieldEmpty(byte[] pdfBytes, String field, boolean check,
+                                  int pageNo, float x, float y, float w, float h){
+
+        PdfReader pdfReader = null;
+        try {
+            pdfReader = new PdfReader(pdfBytes);
+
+            AcroFields acreFields = pdfReader.getAcroFields();
+            Map<String, AcroFields.Item> fields = acreFields.getFields();
+            AcroFields.Item item = fields.get(field);
+            if (null != item) {
+                if(check)//true - > 检查存在则报错
+                    throw new RuntimeException("文件中指定域[" + field + "]已经存在");
+
+                PdfDictionary merged = item.getMerged(0);
+                if (!PdfName.SIG.equals(PdfReader.getPdfObject(merged.get(PdfName.FT)))) {
+                    throw new RuntimeException("指定域名[" + field + "]已存在，且不是签名域的域名");
+                }
+                if (item.size() != 1) {
+                    throw new RuntimeException("文件中指定签名域[" + field + "]超过1，不符合一般PDF签名域的规范");
+                }
+
+                PdfDictionary isSigned = acreFields.getSignatureDictionary(field);
+                if (null != isSigned) {
+                    throw new RuntimeException("文件中指定签名域[" + field + "]已经签过电子数据，无法绘制该域名空域");
+                }
+                return pdfBytes;
+            }else{// 绘制空域
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                PdfStamper ps = new PdfStamper(pdfReader, bos);
+
+                Rectangle areaSignatureRect = new Rectangle(
+                        x, y, x + w, y + h
+                );
+
+                PdfFormField pdfFormField = PdfFormField.createSignature(ps.getWriter());
+                pdfFormField.setFieldName(field); // 签名域标识
+                pdfFormField.setPage(pageNo);
+                pdfFormField.setWidget(areaSignatureRect, PdfAnnotation.HIGHLIGHT_OUTLINE); // 高亮显示
+
+
+
+                // *******************************************
+
+                // 设置区域宽高和边框厚度，以及边框颜色，填充颜色
+                PdfAppearance pdfAppearance = PdfAppearance.createAppearance(
+                        ps.getWriter(), w, h );
+
+                pdfAppearance.setColorStroke(BaseColor.LIGHT_GRAY); // 边框颜色
+                pdfAppearance.setColorFill(BaseColor.YELLOW); // 填充颜色
+
+                // 填充矩形区域-开始
+                pdfAppearance.rectangle(0, 0, w, h );
+                pdfAppearance.fillStroke();
+                // 填充矩形区域-结束
+
+                // 添加文字-开始
+                pdfAppearance.setColorFill(BaseColor.BLACK); // 填充颜色重置为黑色，显示文字
+                ColumnText.showTextAligned(
+                        pdfAppearance,
+                        Element.ALIGN_CENTER,
+                        new Phrase("签名区域", new Font(BaseFont.createFont())),
+                        w / 2, h / 2, 0
+                );
+                // 添加文字-结束
+
+                // 将外观应用到签名域对象之上
+                pdfFormField.setAppearance(PdfAnnotation.APPEARANCE_NORMAL, pdfAppearance);
+
+
+
+            // *******************************************
+
+                ps.addAnnotation(pdfFormField, pageNo);
+                ps.close();
+
+                return bos.toByteArray();
+            }
+
+        }catch (Exception e){
+            throw new RuntimeException("绘制空签名域失败", e);
+        }
+
+    }
 
 
 }
