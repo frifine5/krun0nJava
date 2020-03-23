@@ -35,22 +35,17 @@ public class TestGetInPdf {
 
     @Test
     public void test1GetLocation() throws Exception {
+        String dir = "/home/dtmp/";
 
-        String pdf = "C:\\Users\\49762\\Desktop\\12345.pdf";
+        String pdfName = "01.pdf";
 
-        pdf = "D:\\work documents\\统一电子印章\\广东数广-公众侧\\文档查验itext对比\\test.pdf";
-//        pdf = "C:\\Users\\49762\\Documents\\WeChat Files\\bearpandaer\\FileStorage\\File\\2019-12\\ShouQuanWeiTuoShu.pdf";
-//        pdf = "C:\\Users\\49762\\Documents\\WeChat Files\\bearpandaer\\FileStorage\\File\\2019-12\\关于广报中心进驻办公区域调整的搬迁通知.pdf";
-        pdf = "C:\\Users\\49762\\Desktop\\授权书.pdf";
-//        pdf = "C:\\Users\\49762\\Desktop\\a1.pdf";
-        pdf = "C:\\Users\\49762\\Desktop\\wtr-00.pdf";
-
+        String pdf = dir + pdfName;
 
         Image signImage = Image.getInstance("D:\\home\\orgStamp2.png");
 
 
-        List<float[]> keyWordsList = getKeyWords1(FileUtil.fromDATfile(pdf),
-                "业1214143151");
+        List<float[]> keyWordsList = getKeyWords(FileUtil.fromDATfile(pdf),
+                "代理人姓名1");
         if (ParamsUtil.checkListNull(keyWordsList)) {
             System.out.println("没查到关键字");
 //            return;
@@ -58,31 +53,12 @@ public class TestGetInPdf {
 
         byte[] tmpData = FileUtil.fromDATfile(pdf);
 
-        for (float[] eObj : keyWordsList) {
-            if (eObj.length < 4) {
-                System.out.println("此项不全，跳过");
-                continue;
-            }
-            String ts = String.format("x=%s,\t y=%s,\t page=%s,\t height=\t%s\t\t%sf, %sf",
-                    eObj[1], eObj[2], eObj[0], eObj[3], eObj[1], eObj[2]);
-            System.out.println(ts);
-//            tmpData = testSignByRsa(eObj, tmpData,
-//                    Base64.getEncoder().encodeToString("测试位置rsa签".getBytes()),
-//                    "{123}", signImage);
-
-            tmpData = testSignByEcc(eObj, tmpData,
-                    Base64.getEncoder().encodeToString("测试位置ecc签".getBytes()),
-                    "{123}", signImage);
-
-        }
-
-        tmpData = testSignByEcc(null, tmpData,
-                Base64.getEncoder().encodeToString("测试位置ecc签".getBytes()),
+        tmpData = testSignByEcc(null, tmpData, Base64.getEncoder().encodeToString("测试位置ecc签".getBytes()),
                 "{123}", signImage);
 
 
         if(null != tmpData){
-            FileOutputStream fos = new FileOutputStream("C:\\Users\\49762\\Desktop\\B2.pdf");
+            FileOutputStream fos = new FileOutputStream("C:\\Users\\49762\\Desktop\\011.pdf");
             int len = tmpData.length;
             fos.write(tmpData, 0, len);
             fos.flush();
@@ -356,7 +332,7 @@ public class TestGetInPdf {
 
         PdfReader pdfReader = new PdfReader(pdfData);
         AcroFields acroFields = pdfReader.getAcroFields();
-        String sigName = "中文域名";
+        String sigName = "sig1";
         AcroFields.Item sig1 = acroFields.getFields().get(sigName);
         PdfArray value = (PdfArray)sig1.getValue(0).get(PdfName.RECT);
         long[] rect = value.asLongArray();
@@ -425,7 +401,9 @@ public class TestGetInPdf {
         // 设置签章的显示方式，如下选择的是只显示图章（还有其他的模式，可以图章和签名描述一同显示）
         appearance.setRenderingMode(PdfSignatureAppearance.RenderingMode.GRAPHIC);
         // 设置签章位置 图章左下角x，原点为pdf页面左下角，图章左下角y，图章右上角x，图章右上角y
-        appearance.setVisibleSignature(tmpRectangle, pageNo,  sigName);
+        appearance.setVisibleSignature(
+                tmpRectangle, pageNo,  sigName);
+//        new Rectangle(100, 500, 200, 550), pageNo,  sigName);
 //                getRectangle( xyPoint[1], xyPoint[2], 100), (int)xyPoint[0], null);
 
         // 设置签章图片
@@ -456,8 +434,6 @@ public class TestGetInPdf {
         String oP7bString = "MIIGpQYJKoZIhvcNAQcCoIIGljCCBpICAQExDDAKBggqgRzPVQGDETCCAk4GCSqGSIb3DQEHAaCCAj8EggI7eyJidXNpbmVzc0NlbnRlcklkIjoxLCJjZXJ0Ijp7ImNlcnRTTiI6IjIwMGZiODNmZmU3ODBjZDA3ZGI3N2Y0MmU0ZDJjYWExZjE5MWM4NWEiLCJpc3N1ZXIiOiIzMDYyMzEwQjMwMDkwNjAzNTUwNDA2MTMwMjQzNEUzMTI0MzAyMjA2MDM1NTA0MEEwQzFCNEU0NTU0NDM0MTIwNDM2NTcyNzQ2OTY2Njk2MzYxNzQ2NTIwNDE3NTc0Njg2RjcyNjk3NDc5MzEyRDMwMkIwNjAzNTUwNDAzMEMyNDRFNDU1NDQzNDEyMDUzNEQzMjIwNTQ0NTUzNTQzMTMxMjA2MTZFNjQyMDQ1NzY2MTZDNzU2MTc0Njk2RjZFMjA0MzQxMzAzMiJ9LCJsaW5rbWFuIjp7ImFkZHJlc3MiOiLlub/kuJznnIEiLCJlbWFpbCI6IjEzNTEyMzQ1Njc4QGNuY2EubmV0IiwiaWRlbnRpdHkiOiI0NDAxMDMxOTkwMDMwNzIxOTgiLCJpZGVudGl0eVR5cGUiOjIsIm5hbWUiOiLlvKDkuIkiLCJwaG9uZSI6IjEzNTEyMzQ1Njc4In0sIm91dFJlcUlkIjoiMjAxODA3MjUwMDEiLCJwcm9qZWN0SWQiOiJQMDAwMTIwMTYwODExMDAxIiwic3lzdGVtSWQiOiJuYXRpb25hbFNlYWxTZXJ2aWNlIiwidGVtcGxhdGVJZCI6IlQwNTAxMDEyMDE5MDMwNzAwMDIifaCCA08wggNLMIIC8KADAgECAgsQzGafH7D6m/A93zAKBggqgRzPVQGDdTBiMQswCQYDVQQGEwJDTjEkMCIGA1UECgwbTkVUQ0EgQ2VydGlmaWNhdGUgQXV0aG9yaXR5MS0wKwYDVQQDDCRORVRDQSBTTTIgVEVTVDAxIGFuZCBFdmFsdWF0aW9uIENBMDEwHhcNMTkwMzEzMDIyMzM0WhcNMjIwMzEzMDIyMzM0WjCBhzELMAkGA1UEBhMCQ04xEjAQBgNVBAgMCUd1YW5nZG9uZzEPMA0GA1UEBwwG5bm/5beeMSowKAYDVQQKDCFHT01BSU4gU00yIFRFU1QgYW5kIEV2YWx1YXRpb24gcDcxJzAlBgNVBAMMHkdPTUFJTiBTTTIgVEVTVCBhbmQgRXZhbHVhdGlvbjBZMBMGByqGSM49AgEGCCqBHM9VAYItA0IABE1PWIt2iI2ddHhduHoY/TRnQ2AgcN0h2CS45AJ0UtaNkLYznPhuSCeKvXsvwkkJT/Mc1FxZ7c4LIRaa9QX6DtijggFlMIIBYTAfBgNVHSMEGDAWgBQMe+ticwN1+oxKJAz2jzshZX4X6TAdBgNVHQ4EFgQUstyGAmk5/Y6F59mUwvqpDft4nUwwawYDVR0gBGQwYjBgBgorBgEEAYGSSA0KMFIwUAYIKwYBBQUHAgEWRGh0dHA6Ly93d3cuY25jYS5uZXQvY3Mva25vd2xlZGdlL3doaXRlcGFwZXIvY3BzL25ldENBdGVzdGNlcnRjcHMucGRmMDMGA1UdHwQsMCowKKAmoCSGImh0dHA6Ly90ZXN0LmNuY2EubmV0L2NybC9TTTJDQS5jcmwwDAYDVR0TAQH/BAIwADAOBgNVHQ8BAf8EBAMCBLAwNAYKKwYBBAGBkkgBDgQmDCQ1NWZjMGFjODM1MTBmZGUwNjUzNmFkZDM5ZTU2ZTQ5MUBTMDIwKQYDVR0RBCIwIIIeR09NQUlOIFNNMiBURVNUIGFuZCBFdmFsdWF0aW9uMAoGCCqBHM9VAYN1A0kAMEYCIQDD+GWWvJURtPsuHeMRqzfUtWqtGnglWGhYl1AdldJyAgIhAKGoyZBghCfhlF01/AzmoFr4T9fXJ4/pxl30QMtVUrj1MYHZMIHWAgEBMHEwYjELMAkGA1UEBhMCQ04xJDAiBgNVBAoMG05FVENBIENlcnRpZmljYXRlIEF1dGhvcml0eTEtMCsGA1UEAwwkTkVUQ0EgU00yIFRFU1QwMSBhbmQgRXZhbHVhdGlvbiBDQTAxAgsQzGafH7D6m/A93zAKBggqgRzPVQGDETAKBggqgRzPVQGDdQRGMEQCIFbEEAuMK0PWdsXErikPrwIb0TODlbEhzmL5HYVdxPj8AiAVF+iAkrpNhk0SRI1XsoPgepDtEKbO++5BPHKWdBMDoQ==";
 
         byte[] sigData = Base64.getDecoder().decode(oP7bString);
-
-        sigData = FileUtil.fromDATfile("C:\\Users\\49762\\Desktop\\ORG-3da24b771baf4778a3b97f5aba1ce808.dat");
 
         int sigDataLen = sigData.length;
         sigDataLen = 64;

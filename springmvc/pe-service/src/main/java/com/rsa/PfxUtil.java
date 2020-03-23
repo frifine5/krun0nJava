@@ -2,14 +2,20 @@ package com.rsa;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.security.tools.keytool.CertAndKeyGen;
+import sun.security.x509.X500Name;
 
 import javax.management.RuntimeMBeanException;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.security.Key;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
+import java.util.Date;
 import java.util.Enumeration;
 
 /**
@@ -84,11 +90,64 @@ public class PfxUtil {
             log.info("rsa private key = " + prikey);
             return new Key[]{prikey, pubkey};
         } catch (Exception e) {
-            throw new RuntimeException("从pfx中提取密钥失败",e);
+            throw new RuntimeException("从pfx中提取密钥失败", e);
         }
     }
 
 
+    /**
+     * 生成rsa的PFX文件（java-软）：自签证书
+     */
+    public static byte[] genRsaPfx(String keyAlias, char[] password, String issuer, int day) throws Exception {
+        String cn = "与休";
+        String ou = "组织某部门";
+        String o = "组织";
+        String l = "某市";
+        String st = "某省";
+        String c = "CN";
+        String[] issArr = issuer.split(",");
+        if (issArr.length < 5) {
+            throw new RuntimeException("主体信息不足");
+        } else if (issArr.length == 5) {
+            cn = issArr[0];
+            o = issArr[1];
+            l = issArr[2];
+            st = issArr[3];
+        } else {//第六项之后的都忽略
+            cn = issArr[0];
+            ou = issArr[1];
+            o = issArr[2];
+            l = issArr[3];
+            st = issArr[4];
+        }
+
+
+        byte[] ksByts = null;
+        KeyStore ks = KeyStore.getInstance("pkcs12");
+        ks.load(null, null);
+        CertAndKeyGen keypair = new CertAndKeyGen("RSA", "SHA1WithRSA", null);
+        X500Name x500Name = new X500Name(cn, ou, o, l, st, c);
+        keypair.generate(2048);
+
+        PrivateKey privateKey = keypair.getPrivateKey();
+        X509Certificate[] chain = new X509Certificate[1];
+        chain[0] = keypair.getSelfCertificate(x500Name, new Date(), (long) day * 24 * 60 * 60);
+
+        KeyStore outputKeyStore = KeyStore.getInstance("PKCS12");
+        outputKeyStore.load(null, password);
+        outputKeyStore.setKeyEntry(keyAlias, privateKey, password, chain);
+
+        // store to byte[]
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        outputKeyStore.store(baos, password);
+
+        ksByts = baos.toByteArray();
+        baos.close();
+        System.out.println("create pfx Success !");
+
+        return ksByts;
+
+    }
 
 
 }
