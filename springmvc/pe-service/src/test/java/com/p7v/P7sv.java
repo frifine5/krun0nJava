@@ -262,4 +262,124 @@ public class P7sv {
     }
 
 
+    @Test // 验证rsa带明文无认证属性的p7
+    public void test3()throws  Exception{
+
+        String n = "含原文不含认证属性";
+        String p7Base64 = "MIID6AYJKoZIhvcNAQcCoIID2TCCA9UCAQExDzANBglghkgBZQMEAgEFADA7BgkqhkiG9w0BBwGgLgQs6L+Z5bCx5piv5LiA5q615piO5paH5pWw5o2uOmFiY2RlZjEyMzQ1Njc4OTCgggJbMIICVzCCAcCgAwIBAgIEV6LRLjANBgkqhkiG9w0BAQUFADBvMQswCQYDVQQGEwJDTjESMBAGA1UECBMJR3Vhbmdkb25nMRIwEAYDVQQHEwlHdWFuZ3pob3UxDjAMBgNVBAoTBU5FVENBMQ4wDAYDVQQLEwVORVRDQTEYMBYGA1UEAwwP55yB6LSo55uR5rWL6K+VMCAXDTE2MDgwNDA1MjI1NFoYDzIxMTYwNzExMDUyMjU0WjBvMQswCQYDVQQGEwJDTjESMBAGA1UECBMJR3Vhbmdkb25nMRIwEAYDVQQHEwlHdWFuZ3pob3UxDjAMBgNVBAoTBU5FVENBMQ4wDAYDVQQLEwVORVRDQTEYMBYGA1UEAwwP55yB6LSo55uR5rWL6K+VMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDMx4UDmOgeV5ZUcSNf6qHiIdaqGqFMMpZ2vk36RM/KIJXUSZWDwu52iPf0ETTu7BQjVFUrGHQOofnJQx5nWDh76gMrPFbPfxemTW2qElxgNes3QQxYluBF/n0tatz8WhvCrQApbDOtAAtJUqKG2Ay9hWM/4E7I+M7jHoagCuhoIwIDAQABMA0GCSqGSIb3DQEBBQUAA4GBAJcWmiSLr/jLLyuKSW9eyjpHeAvo/8+haKDaGr09ebb1jUE5sJOwuKRpbV0boEnwltaPBAEFcPeKytMhtPj1Aq2gjqiersX4HATJRdQ2rmVvDqPXKZIZFyfT7zmaVEFIgmyoVRxuHWSvu2v3f1fGi1f2zwrTMfwOBQQe3GgECZIaMYIBITCCAR0CAQEwdzBvMQswCQYDVQQGEwJDTjESMBAGA1UECBMJR3Vhbmdkb25nMRIwEAYDVQQHEwlHdWFuZ3pob3UxDjAMBgNVBAoTBU5FVENBMQ4wDAYDVQQLEwVORVRDQTEYMBYGA1UEAwwP55yB6LSo55uR5rWL6K+VAgRXotEuMA0GCWCGSAFlAwQCAQUAMA0GCSqGSIb3DQEBAQUABIGAFzLugGehkj8AoBXVhOrQo+SuE2DLhCMdN0riUKwio+9vohCd0T2ZjXHNiYM0G28OPM+mvaNVYcqpmxS3RcVRBB+aEs1Rtb9qaL074LimKqsgRCbjScESGtl/BspzLd73EBz1R4+iEBzFRZc1nh/WpTRUTrDwpH+wQIQJCLfP1w8=";
+        byte[] src = Base64.getDecoder().decode(p7Base64);
+
+        ASN1Sequence root = (ASN1Sequence)ASN1Sequence.fromByteArray(src); // 1级
+        ASN1ObjectIdentifier ctnType = (ASN1ObjectIdentifier)root.getObjectAt(0);
+        System.out.println(ctnType);
+
+        ASN1TaggedObject contentTag = (ASN1TaggedObject)root.getObjectAt(1);
+//        System.out.println(contentTag);
+
+        System.out.println("二级：");
+        ASN1Sequence content = (ASN1Sequence)contentTag.getObjectParser(0, true);// 2级
+        System.out.println(content);
+
+        // 原文
+        ASN1Sequence signedDataSeq = (ASN1Sequence)content.getObjectAt(2);
+        ASN1TaggedObject ctnTag1 = (ASN1TaggedObject)signedDataSeq.getObjectAt(1);
+        ASN1OctetString ctnOct = (ASN1OctetString)ctnTag1.getObjectParser(0, true);
+        System.out.println(ctnOct);
+        byte[] data = ctnOct.getOctets();// 原文的byte[]
+//        System.out.println(new String(data));
+
+
+        // 读取证书和公钥
+        ASN1TaggedObject cerTag0 = (ASN1TaggedObject)content.getObjectAt(3);
+        ASN1Sequence cerSeq = (ASN1Sequence)cerTag0.getObjectParser(0, true);
+        int certSize = cerSeq.size();
+        ASN1Sequence certNeed = cerSeq;
+        if(cerSeq.getObjectAt(certSize-1) instanceof ASN1Sequence){
+            certNeed = (ASN1Sequence)cerSeq.getObjectAt(certSize - 1);
+        }
+
+        byte[] pk = getRsaPublicKey(certNeed.getEncoded());
+        PublicKey publicKey =
+                KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(pk));
+        System.out.println(pk.length);
+        System.out.println(Util.byteToHex(pk));
+
+
+        // 解析签名者信息
+        int lastIndex = content.size()-1;
+        ASN1Set signerInfos =(ASN1Set)content.getObjectAt(lastIndex);
+        ASN1Sequence signerInfo0 = (ASN1Sequence)signerInfos.getObjectAt(0);
+
+        // 按pkcs#7对签名者要认证属性进行摘要和组包后作为签名入参
+        // 获取签名待摘要数据  authenticatedAttributes
+        ASN1Sequence digAlgOid = (ASN1Sequence)signerInfo0.getObjectAt(2);
+       /*
+        ASN1TaggedObject authAttrsTag = (ASN1TaggedObject)signerInfo0.getObjectAt(3);
+        ASN1Sequence digAlgOid2 = (ASN1Sequence)signerInfo0.getObjectAt(4); // 签名算法
+
+        // 获取attribute集合-->获得消息摘要过程的最终摘要,同时也是签名的原文
+        ASN1Sequence attrs = (ASN1Sequence)authAttrsTag.getObjectParser(0, true);
+        ASN1EncodableVector attVect = new ASN1EncodableVector();
+        for (int j= 0; j<attrs.size(); j++){
+            attVect.add((ASN1Sequence)attrs.getObjectAt(j));
+        }
+        DERSet attSets = new DERSet(attVect);
+        byte[] originData = attSets.getEncoded(ASN1Encoding.DER);
+        // 验签过程
+        data = originData;
+
+        */
+
+        String rsaAlgSign = "SHA256withRSA";
+        if("1.3.14.3.2.26".equalsIgnoreCase(digAlgOid.getObjectAt(0).toString())){
+            rsaAlgSign = "SHA1withRSA";
+        }
+
+
+
+
+
+        // 获得p7中的签名值
+        byte[] signed = null;
+        for(int i = 0; i< signerInfo0.size(); i++){
+            ASN1Encodable objAti = signerInfo0.getObjectAt(i);
+            if(objAti instanceof ASN1OctetString){
+                ASN1OctetString encryptedDigest = (ASN1OctetString)objAti;
+                signed = encryptedDigest.getOctets();
+                System.out.println(Base64.getEncoder().encodeToString(signed));
+            }
+        }
+        System.out.println("验签>>>");
+        String vsInfoTotal = String.format("解析得到的验签的各入参数据 >>>\n签名摘要算法：\t%s\n" +
+                        "消息摘要结果（HEX）：\t%s\n公钥（编码结构的HEX）：\t%s\n签名值（HEX）：\t%s\n",
+                rsaAlgSign, Util.byteToHex(data), Util.byteToHex(publicKey.getEncoded()), Util.byteToHex(signed));
+        System.out.println(vsInfoTotal);
+        String logPath = "C:\\Users\\49762\\Desktop\\vsLog.txt";
+        FileUtil.appendCtx2File1(logPath, n + "\n");
+        FileUtil.appendCtx2File1(logPath, vsInfoTotal);
+
+
+
+        // 验签
+        try {
+            Signature verifySign = Signature.getInstance(rsaAlgSign);  // SHA256withRSA
+            verifySign.initVerify(publicKey);
+            verifySign.update(data);
+            boolean isSuc = verifySign.verify(signed);
+            String logRtn = ">>> 验证结果:\t" + isSuc;
+            System.out.println(logRtn);
+            FileUtil.appendCtx2File1(logPath, logRtn + "\n");
+        } catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
+            throw new RuntimeException("验签异常", e);
+        }
+
+
+
+
+
+
+
+    }
+
+
 }
