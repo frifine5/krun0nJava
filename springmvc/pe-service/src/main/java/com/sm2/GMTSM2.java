@@ -422,6 +422,69 @@ public class GMTSM2 {
     }
 
 
+
+    /**
+     * 验证签名（摘要， 签名值， 公钥）
+     */
+    public boolean sm2Verify(byte[] hashData, BigInteger r, BigInteger s, byte[] pk) {
+        // check before verifySign
+        if (hashData.length != 32) {
+            throw new IllegalArgumentException("input digest length error: export 32, actual " + hashData.length);
+        }
+
+        if (pk.length != 65) {
+            throw new IllegalArgumentException("input publicKey length error: export 65, actual " + pk.length);
+        }
+        // e
+        BigInteger e = new BigInteger(1, hashData);
+
+        // k
+        ECPoint k;
+        ECPoint G = null;
+        ECPoint Pa = null;
+        BigInteger t = null;
+        BigInteger R = null;
+        BigInteger ecc_n = null;
+
+        byte[] bx = new byte[32];
+        byte[] by = new byte[32];
+        System.arraycopy(pk, 1, bx, 0, 32);
+        System.arraycopy(pk, 33, by, 0, 32);
+        BigInteger x = new BigInteger(1, bx);
+        BigInteger y = new BigInteger(1, by);
+
+
+        Pa = new ECPoint.Fp(this.ecc_curve, new ECFieldElement.Fp(ecc_p, x), new ECFieldElement.Fp(ecc_p, y));
+//        Pa = ecc_curve.decodePoint(pk);
+
+
+        G = this.ecc_bc_spec.getG();
+        ecc_n = this.ecc_n;
+
+        if (r.equals(BigInteger.ONE) || r.equals(ecc_n)) {
+            return false;
+        }
+        if (s.equals(BigInteger.ONE) || s.equals(ecc_n)) {
+            return false;
+        }
+
+        t = r.add(s).mod(ecc_n);
+        if (t.equals(BigInteger.ZERO)) {
+            return false;
+        }
+
+        //k(x,y) = s*G + t*Pa
+        k = G.multiply(s).add(Pa.multiply(t));
+
+        //R = (e+k.x) mod n
+        R = e.add(k.getX().toBigInteger()).mod(ecc_n);
+        //R == r  true
+        if (R.equals(r)) return true;
+        return false;
+    }
+
+
+
     // ----=====================================================----
     public BigInteger[] sm2Sign(byte[] hashData, ECPrivateKeyParameters ecpriv) {
         // e
