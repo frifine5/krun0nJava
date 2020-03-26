@@ -257,7 +257,7 @@ public class P7sv {
             ASN1Sequence at06 = (ASN1Sequence)ASN1Sequence.getInstance(at0).getObjectAt(6);
             return at06.getEncoded();
         } catch (IOException e) {
-            throw new IOException("不符合SM2证书的格式，获取主体公钥信息失败", e);
+            throw new IOException("不符合rsa证书的格式，获取主体公钥信息失败", e);
         }
     }
 
