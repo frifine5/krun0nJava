@@ -24,8 +24,8 @@ public class TestSign {
 //        pdfName = "dest-2-f-22.pdf";
 
         pdfDir = "/home/dtmp/itextPdfs/addfieldtest/";
-        pdfName = "s3.pdf";
-        destName = "s6.pdf";
+        pdfName = "file1.pdf";
+        destName = "signed1.pdf";
 
 
 
@@ -57,8 +57,8 @@ public class TestSign {
                 sealData, "123", certStr, new Date(), pdfName);
 */
 
-        String field = "s3";
-        pdfData = sign.writeFieldEmpty(pdfData, field, true, 2, 100, 600, 80, 70);
+        String field = "s1";
+//        pdfData = sign.writeFieldEmpty(pdfData, field, true, 2, 100, 600, 80, 70);
 
         byte[] destData = sign.ecFieldSignPdf(pdfData, imageData, field, true, sealData, "123", certStr, new Date(), pages, pdfName);
 

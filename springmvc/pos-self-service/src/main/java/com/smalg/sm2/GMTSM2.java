@@ -406,6 +406,67 @@ public class GMTSM2 {
     }
 
 
+    public boolean sm2Verify(byte[] hashData, BigInteger r, BigInteger s,  byte[] pk) {
+        // check before verifySign
+        if (hashData.length != 32) {
+            throw new IllegalArgumentException("input digest length error: export 32, actual " + hashData.length);
+        }
+        if (pk.length != 65) {
+            throw new IllegalArgumentException("input publicKey length error: export 65, actual " + pk.length);
+        }
+        // e
+        BigInteger e = new BigInteger(1, hashData);
+
+        // r s
+//        byte[] svx = new byte[32];
+//        byte[] svy = new byte[32];
+//        System.arraycopy(sv, 0, svx, 0, 32);
+//        System.arraycopy(sv, 32, svy, 0, 32);
+//        BigInteger r = new BigInteger(1, svx);
+//        BigInteger s = new BigInteger(1, svy);
+        // k
+        ECPoint k;
+        ECPoint G = null;
+        ECPoint Pa = null;
+        BigInteger t = null;
+        BigInteger R = null;
+        BigInteger ecc_n = null;
+
+        byte[] bx = new byte[32];
+        byte[] by = new byte[32];
+        System.arraycopy(pk, 1, bx, 0, 32);
+        System.arraycopy(pk, 33, by, 0, 32);
+        BigInteger x = new BigInteger(1, bx);
+        BigInteger y = new BigInteger(1, by);
+
+        Pa = new ECPoint.Fp(this.ecc_curve, new ECFieldElement.Fp(ecc_p, x), new ECFieldElement.Fp(ecc_p, y), false);
+
+        G = this.ecc_bc_spec.getG();
+        ecc_n = this.ecc_n;
+
+        if (r.equals(BigInteger.ONE) || r.equals(ecc_n)) {
+            return false;
+        }
+        if (s.equals(BigInteger.ONE) || s.equals(ecc_n)) {
+            return false;
+        }
+
+        t = r.add(s).mod(ecc_n);
+        if (t.equals(BigInteger.ZERO)) {
+            return false;
+        }
+
+        //k(x,y) = s*G + t*Pa
+        k = G.multiply(s).add(Pa.multiply(t));
+
+        //R = (e+k.x) mod n
+        R = e.add(k.getX().toBigInteger()).mod(ecc_n);
+        //R == r  true
+        if (R.equals(r)) return true;
+        return false;
+    }
+
+
     public static void main(String[] args) {
 
         GMTSM2 sm2 = GMTSM2.getInstance();
@@ -414,7 +475,8 @@ public class GMTSM2 {
         String hsk = kps[1];
 
         String text = "123";
-        byte[] md = SM3Util.sm3Digest(text.getBytes(), Util.hexToByte(hpk));
+        byte[] data = text.getBytes();
+        byte[] md = SM3Util.sm3Digest(data, Util.hexToByte(hpk));
 
         byte[] sv = sm2.sm2Sign(md, Util.hexToByte(hsk));
 
@@ -423,7 +485,30 @@ public class GMTSM2 {
         boolean ir = sm2.sm2Verify(md, sv, Util.hexToByte(hpk));
         System.out.println(ir);
 
+        String pre1 = "008031323334353637383132333435363738FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFC28E9FA9E9D9F5E344D5A9E4BCF6509A7F39789F515AB8F92DDBCBD414D940E9332C4AE2C1F1981195F9904466A39C9948FE30BBFF2660BE1715A4589334C74C7BC3736A2F4F6779C59BDCEE36B692153D0A9877CC62A474002DF32E52139F0A0"
+                + hpk.substring(2);
+        org.bouncycastle.crypto.digests.SM3Digest sm3 = new org.bouncycastle.crypto.digests.SM3Digest();
+        byte[] mdpre2 = new byte[32];
+        byte[] preTxt = Util.hexToByte(pre1);
 
+        sm3.update(preTxt, 0, preTxt.length);
+        sm3.doFinal(mdpre2, 0);
+
+        byte[] data2 = new byte[data.length + 32];
+        System.arraycopy(mdpre2, 0, data2, 0, 32);
+        System.arraycopy(data, 0, data2, 32, data.length);
+
+        org.bouncycastle.crypto.digests.SM3Digest sm3_1 = new org.bouncycastle.crypto.digests.SM3Digest();
+        byte[] md2 = new byte[32];
+        sm3_1.update(data2, 0, data2.length);
+        sm3_1.doFinal(md2, 0);
+
+        System.out.println(Util.byteToHex(md));
+
+        System.out.println(Util.byteToHex(md2));
+
+
+        System.out.println(Util.byteToHex(SM3Util.sm3DegestByBc(data, Util.hexToByte(hpk))));
     }
 
 

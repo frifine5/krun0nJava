@@ -41,4 +41,30 @@ public class SM3Util {
 
 
 
+    public static byte[] pureDigest(byte[] data){
+        byte[] digest;
+        org.bouncycastle.crypto.Digest md2 = new org.bouncycastle.crypto.digests.SM3Digest();
+        md2.update(data,0, data.length);
+        digest = new byte[md2.getDigestSize()];
+        md2.doFinal(digest, 0);
+        return digest;
+    }
+
+
+    /**
+     * 带公钥预处理的摘要
+     */
+    public static byte[] sm3DegestByBc(byte[] data, byte[] puk) {
+        if(null == puk || puk.length != 65){
+            throw new RuntimeException("公钥的长度不符: expect 65");
+        }
+        // 1 公钥预处理
+        String pre1 = "008031323334353637383132333435363738FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFC28E9FA9E9D9F5E344D5A9E4BCF6509A7F39789F515AB8F92DDBCBD414D940E9332C4AE2C1F1981195F9904466A39C9948FE30BBFF2660BE1715A4589334C74C7BC3736A2F4F6779C59BDCEE36B692153D0A9877CC62A474002DF32E52139F0A0"
+                + Util.byteToHex(puk).substring(2);
+        byte[] z = pureDigest(Util.hexToByte(pre1));
+        // 2 最终摘要
+        byte[] zm = Util.hexToByte(Util.byteToHex(z) + Util.byteToHex(data));
+        return pureDigest(zm);
+    }
+
 }

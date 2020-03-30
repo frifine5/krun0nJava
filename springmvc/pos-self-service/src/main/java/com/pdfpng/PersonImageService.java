@@ -32,7 +32,7 @@ public class PersonImageService {
     /**
      * 方章：固名缩比 196像素, 2-4个字
      * */
-    public byte[] genPsSquareSeal(String name, float ri){
+    public byte[] genPsSquareSeal(String name, float ri, String entName){
         int canvasWidth = 196;// 正方形以宽为准
         int canvasHeight = 196;
         int broad = 5;
@@ -95,6 +95,16 @@ public class PersonImageService {
         text = n4;
         g2d.setFont(typeFont);
         g2d.drawString(text, (float) (cetX  - mdBound.getWidth()), (float)(cetY  + mdBound.getHeight() + mdBound.getCenterY()));
+
+
+        if(null !=entName&& !"".equalsIgnoreCase(entName)){
+            // 在左下角 画上企业/机构名 log
+            Font logFont = new Font(fontName, Font.BOLD, 24);
+            g2d.setFont(logFont);
+            g2d.drawString(entName, (float) (broad + 1), (float)(canvasHeight - broad -1));
+
+            System.out.printf("%s\t%s\t%s", entName, (float) (broad *2), (float)(canvasHeight - broad *2));
+        }
 
         g2d.dispose();//销毁资源
 

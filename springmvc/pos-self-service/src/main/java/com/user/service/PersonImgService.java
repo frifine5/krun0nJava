@@ -57,7 +57,7 @@ public class PersonImgService {
         int nameLen = name.length();
         byte[] sealData = null;
         if(nameLen<5){
-            sealData = psImageService.genPsSquareSeal(name, 1.0f);
+            sealData = psImageService.genPsSquareSeal(name, 1.0f, "");
         }else if(nameLen<7){
             sealData = psImageService.genPsSquareSealSix(name, 1.0f);
         }else{
@@ -101,7 +101,7 @@ public class PersonImgService {
         int nameLen = name.length();
         byte[] sealData = null;
         if(nameLen<5){
-            sealData = psImageService.genPsSquareSeal(name, 1.0f);
+            sealData = psImageService.genPsSquareSeal(name, 1.0f, "");
         }else if(nameLen<7){
             sealData = psImageService.genPsSquareSealSix(name, 1.0f);
         }else{

@@ -48,14 +48,15 @@ public class ImgCovTest {
 
     @Test
     public void testGenPsImg() throws Exception{
+        String destFile = String.format("C:\\Users\\49762\\Desktop\\image_%s.png", System.currentTimeMillis());
 
         PersonImageService psImgService = new PersonImageService();
-//        byte[] imgData = psImgService.genPsSquareSeal("穆罕默德", 1.0f);
+        byte[] imgData = psImgService.genPsSquareSeal("穆罕默德", 1.0f, "测试企业");
 //        byte[] imgData = psImgService.genPsSquareSealSix("这是五个字", 1.0f);
-        byte[] imgData = psImgService.genPsRectSealLonger("迪丽热巴·迪力木拉提", 1.0f, 1.0f);
+//        byte[] imgData = psImgService.genPsRectSealLonger("迪丽热巴·迪力木拉提", 1.0f, 1.0f);
 
 
-        FileUtil.writeInFiles("/home/dtmp/rect/迪丽热巴-3.png", imgData);
+        FileUtil.writeInFiles(destFile, imgData);
 
     }
 
@@ -84,6 +85,40 @@ public class ImgCovTest {
     }
 
 
+
+    @Test
+    public void calcFitTrg(){
+        // 画五角星
+        double r1 = 40;
+        double r2 = (Math.cos(0.2d * Math.PI) + Math.sin(0.2d * Math.PI) / Math.tan(0.1d * Math.PI)) * r1;
+
+        // point x,y
+        double x = 100;
+        double y = 100;
+
+        // calc point; outer point
+        double p1x = x, p1y = y - r2;
+        double p2x = x + r2 * Math.cos(0.1d * Math.PI), p2y = y - r1 * Math.cos(0.2d * Math.PI);
+        double p3x = x + r2 * Math.sin(.2d * Math.PI), p3y = y + r2 * Math.cos(0.2d * Math.PI);
+        double p4x = x - r2 * Math.sin(.2d * Math.PI), p4y = y + r2 * Math.cos(0.2d * Math.PI);
+        double p5x = x - r2 * Math.cos(0.1d * Math.PI), p5y = y - r1 * Math.cos(0.2d * Math.PI);
+
+
+        String outPointsXy = String.format("%s,%s %s,%s %s,%s %s,%s %s,%s %s,%s", p1x, p1y,
+                 p3x, p3y, p5x, p5y, p2x, p2y,p4x, p4y, p1x, p1y );
+        System.out.println("外围点:\t" + outPointsXy);
+
+        // A C E B D A
+        int[] xPts0 = {(int) p1x, (int) p3x, (int) p5x, (int) p2x, (int) p4x, (int) p1x};
+        int[] yPts0 = {(int) p1y, (int) p3y, (int) p5y, (int) p2y, (int) p4y, (int) p1y};
+
+        // get a Triangle
+        double mdx = x, mdy = y + r1;
+        int[] tx0 = {(int) p2x, (int) mdx, (int) p5x};
+        int[] ty0 = {(int) p2y, (int) mdy, (int) p5y};
+
+
+    }
 
 
 
