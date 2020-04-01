@@ -55,8 +55,12 @@ public class TokenAuthInterceptor extends WebMvcConfigurerAdapter {
         addInterceptor.excludePathPatterns("/user/login");
         addInterceptor.excludePathPatterns("/user/logout");
 
-        addInterceptor.excludePathPatterns("/test/download1"); // for get test
 
+
+
+        // for get test
+        addInterceptor.excludePathPatterns("/test/**");
+        addInterceptor.excludePathPatterns("/t/**");
 
         //拦截所有路径
         addInterceptor.addPathPatterns("/**");
