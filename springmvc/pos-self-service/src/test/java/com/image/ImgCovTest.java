@@ -89,12 +89,12 @@ public class ImgCovTest {
     @Test
     public void calcFitTrg(){
         // 画五角星
-        double r1 = 40;
+        double r1 = 5;
         double r2 = (Math.cos(0.2d * Math.PI) + Math.sin(0.2d * Math.PI) / Math.tan(0.1d * Math.PI)) * r1;
 
         // point x,y
-        double x = 100;
-        double y = 100;
+        double x = 25;
+        double y = 25;
 
         // calc point; outer point
         double p1x = x, p1y = y - r2;

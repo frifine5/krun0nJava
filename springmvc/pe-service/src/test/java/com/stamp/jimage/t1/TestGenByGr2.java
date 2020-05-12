@@ -32,7 +32,7 @@ public class TestGenByGr2 {
     @Test
     public void test1() throws Exception {
 
-        drawImg(496, 12, "在线平台制作章一二", "企业专用章", .5f);
+        drawImg(496, 12, "企业机构测试圆章", "测试专用章", 1.0f);
 
         // 东莞市骏和通信器材有限公司
 //        drawImg(496, 12, "东莞市厚街赤岭第一分公司2", "企业专用章");
@@ -211,7 +211,7 @@ public class TestGenByGr2 {
         int canvasWidth = 400;
         int canvasHeight = 400;
         double lineArc = 270 * (Math.PI / 180);//角度转弧度
-        String savepath = String.format("C:\\Users\\49762\\Desktop\\itext\\image_%s.png", System.currentTimeMillis());
+        String savepath = String.format("C:\\Users\\49762\\Desktop\\image_%s.png", System.currentTimeMillis());
         SimpleDateFormat format = new SimpleDateFormat("yyyy'年'MM'月'dd'日'");
         String head = "中国科学院信息工程研究所-1024";
         String foot = "受理专用章";

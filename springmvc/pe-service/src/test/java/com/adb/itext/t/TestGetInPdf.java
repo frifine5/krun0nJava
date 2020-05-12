@@ -39,13 +39,17 @@ public class TestGetInPdf {
 
         String pdfName = "01.pdf";
 
+
+        dir = "C:\\Users\\49762\\Documents\\WeChat Files\\bearpandaer\\FileStorage\\File\\2020-03\\";
+        pdfName = "M2020032500004.pdf";
+
         String pdf = dir + pdfName;
 
         Image signImage = Image.getInstance("D:\\home\\orgStamp2.png");
 
 
         List<float[]> keyWordsList = getKeyWords(FileUtil.fromDATfile(pdf),
-                "代理人姓名1");
+                "0buyer_sign");
         if (ParamsUtil.checkListNull(keyWordsList)) {
             System.out.println("没查到关键字");
 //            return;
@@ -53,7 +57,7 @@ public class TestGetInPdf {
 
         byte[] tmpData = FileUtil.fromDATfile(pdf);
 
-        tmpData = testSignByEcc(null, tmpData, Base64.getEncoder().encodeToString("测试位置ecc签".getBytes()),
+        tmpData = testSignByEcc(keyWordsList.get(0), tmpData, Base64.getEncoder().encodeToString("测试位置ecc签".getBytes()),
                 "{123}", signImage);
 
 
@@ -333,15 +337,17 @@ public class TestGetInPdf {
         PdfReader pdfReader = new PdfReader(pdfData);
         AcroFields acroFields = pdfReader.getAcroFields();
         String sigName = "sig1";
+        /*
         AcroFields.Item sig1 = acroFields.getFields().get(sigName);
         PdfArray value = (PdfArray)sig1.getValue(0).get(PdfName.RECT);
         long[] rect = value.asLongArray();
         System.out.println(Arrays.toString(rect));
 
+
         Rectangle tmpRectangle = new Rectangle(rect[0], rect[1], rect[2], rect[3] );
         Integer pageNo = sig1.getPage(0);
 
-
+*/
         //
 
 
@@ -402,9 +408,9 @@ public class TestGetInPdf {
         appearance.setRenderingMode(PdfSignatureAppearance.RenderingMode.GRAPHIC);
         // 设置签章位置 图章左下角x，原点为pdf页面左下角，图章左下角y，图章右上角x，图章右上角y
         appearance.setVisibleSignature(
-                tmpRectangle, pageNo,  sigName);
+//                tmpRectangle, pageNo,  sigName);
 //        new Rectangle(100, 500, 200, 550), pageNo,  sigName);
-//                getRectangle( xyPoint[1], xyPoint[2], 100), (int)xyPoint[0], null);
+                getRectangle( xyPoint[1], xyPoint[2], 100), (int)xyPoint[0], null);
 
         // 设置签章图片
         appearance.setSignatureGraphic(signImage);

@@ -1,9 +1,11 @@
 package com.cyk.util;
 
+import com.sm3.Util;
 import org.junit.Test;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.util.Base64;
 
 /**
  * 一些辅助功能的java实现方式
@@ -46,4 +48,36 @@ public class SomeFunTest1 {
 
 
     }
+
+
+
+    @Test
+    public void test(){
+
+        String fileName = "a.png";
+        String out = fileName.substring(fileName.lastIndexOf("."));
+        System.out.println(out);
+
+        String nasPath = "/mnt/logs/nas/2020-04-07/";
+        if(nasPath.contains("/mnt/logs/nas/")){
+            nasPath = nasPath.substring(nasPath.indexOf("/mnt/logs/nas/") + 13);
+        }
+        System.out.println(nasPath);
+    }
+
+    @Test
+    public void test1(){
+
+        String s = "AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAdYniR/hUQZkgAb6dR51D2bnmzd9VWI6g5y/OYX2+W+wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJYHLyAi0ND6eQ0eVigDQrfyiQe3Ec+wJE6+FVZZN4kq";
+
+        System.out.println(Util.byteToHex(Base64.getDecoder().decode(s)));
+
+        String h = "DDB5DAE482528387954E1A3BC7AF2CA3";
+        System.out.println(h.length()/2);
+
+
+
+
+    }
+
 }
