@@ -92,14 +92,17 @@ public class WebSocketClient {
     public static void main(String[] args) throws URISyntaxException, InterruptedException, UnsupportedEncodingException {
         String result = "";
         String wsIpUrl = "ws://localhost:11001/mms/" + ParamsUtil.getUUIDStr();
+        wsIpUrl = "ws://192.168.6.238:11003/mms/" + ParamsUtil.getUUIDStr();
+
+
         WebSocketClient webSocketClient = new WebSocketClient(wsIpUrl);
 
         JSONObject reqJson = new JSONObject();
         String ctx = Base64.getEncoder().encodeToString("testdata-111111111111111111L".getBytes("UTF-8"));
 
-        String svData = "{\"code\":0,\"msg\":\"SUCCESS\",\"data\":\"MEUCIQCZ4GO42JPF2GfStwEfVFDNkjiBJk80ty3l2Xq770HSkwIgMqG2vu/VCh0/oEsXaw6DCO+/8gh3iJTmqOGJuT1jT+g=\"}";
+        String svData = "{\"code\":0,\"msg\":\"SUCCESS\",\"data\":\"MEYCIQCgVvWrHl0GTWP4E2LaN0H2fMPvETCuVHdKSMdf0nbOJwIhAPQmdtFuGUbRaDcIYCkRC+iFSW8gNWa/0CZ3JfO1k2xp\"}";
 
-//                "{\"code\":0,\"msg\":\"SUCCESS\",\"data\":\"MEQCIAvdBjEBMrvlXcVhPFJJRXQ2GndxFNSRrOjKLLCBbiprAiBMrlpwQMYOkLX9BKXdbyrkxMwZ+fV0iZRb1vbkxuXU+A==\"}";
+
         JSONObject svRtnJson = JSONObject.fromObject(svData);
         String data = svRtnJson.getString("data");
 
