@@ -16,7 +16,7 @@ public class TestGenGcirImg1 {
 
 
     @Test
-    public void testRotateText(){
+    public void testRotateText() {
         long st = System.currentTimeMillis();
         int fontSize = 68;
         int r = 496;
@@ -27,23 +27,23 @@ public class TestGenGcirImg1 {
         char[] texts = sealName.toCharArray();
         int len = texts.length;
         int totalDegree = 120;
-        int eachDegree = (int)(totalDegree/len);
-        int start =  -totalDegree/2 + eachDegree/2;
+        int eachDegree = (int) (totalDegree / len);
+        int start = -totalDegree / 2 + eachDegree / 2;
         System.out.println(eachDegree);
 
-        boolean seen = len %2 == 0;
+        boolean seen = len % 2 == 0;
         BufferedImage bi = null;
         int middle = -1;
-        if(seen){
-            bi = drawText2(r, broad, fontSize, (char)'\0', 0);
-        }else {
-            middle = len/2;
+        if (seen) {
+            bi = drawText2(r, broad, fontSize, (char) '\0', 0);
+        } else {
+            middle = len / 2;
             bi = drawText2(r, broad, fontSize, texts[middle], 0);
         }
 
         for (int i = 0; i < len; i++) {
-            if(i == middle)continue;
-            BufferedImage step = drawText2(r, broad, fontSize, texts[i], start + eachDegree*i);
+            if (i == middle) continue;
+            BufferedImage step = drawText2(r, broad, fontSize, texts[i], start + eachDegree * i);
             bi = PsaImageUtil.mergeTogether(step, bi, true);
         }
 
@@ -53,7 +53,7 @@ public class TestGenGcirImg1 {
         typeBi = PsaImageUtil.scaleRect(typeBi, .8f);
 
         bi = PsaImageUtil.mergeTogether(inBi, bi, true);
-        bi = PsaImageUtil.mergeTogether(typeBi, bi, 0, -(int)(r * .35));
+        bi = PsaImageUtil.mergeTogether(typeBi, bi, 0, -(int) (r * .35));
 
 
         String destFile = String.format("C:\\Users\\49762\\Desktop\\image_%s.png", System.currentTimeMillis());
@@ -76,7 +76,7 @@ public class TestGenGcirImg1 {
     }
 
 
-    public BufferedImage drawText(int canvasLen, int broad, int fontSize, char theTxt, int degree){
+    public BufferedImage drawText(int canvasLen, int broad, int fontSize, char theTxt, int degree) {
 
         int fontThickness = 5;
 
@@ -122,7 +122,7 @@ public class TestGenGcirImg1 {
         FontRenderContext mdCtx = g2d.getFontRenderContext();
         Rectangle2D mdBound = typeFont.getStringBounds(txt, mdCtx);
         g2d.setFont(typeFont);
-        g2d.drawString(txt, (float)(cetX - mdBound.getWidth()/2), (float) ( mdBound.getHeight() + broad));
+        g2d.drawString(txt, (float) (cetX - mdBound.getWidth() / 2), (float) (mdBound.getHeight() + broad));
 
         g2d.dispose();//销毁资源
 
@@ -135,10 +135,8 @@ public class TestGenGcirImg1 {
     }
 
 
-
-
     @Test
-    public void testRzTxt(){
+    public void testRzTxt() {
         long st = System.currentTimeMillis();
         int fontSize = 68;
         int canvasLen = 496;
@@ -177,7 +175,7 @@ public class TestGenGcirImg1 {
         g2d.draw(circle);
 
         g2d.setStroke(new BasicStroke(2));//设置画笔的粗度
-        Shape cpoint = new Arc2D.Double(cetX-1, cetY-1, 2,  2, 0, 360, Arc2D.OPEN);
+        Shape cpoint = new Arc2D.Double(cetX - 1, cetY - 1, 2, 2, 0, 360, Arc2D.OPEN);
         g2d.draw(cpoint);
 
         g2d.setStroke(new BasicStroke(fontThickness));
@@ -191,12 +189,8 @@ public class TestGenGcirImg1 {
         Rectangle2D mdBound = txtFont.getStringBounds(txt, mdCtx);
 
 
-
         g2d.setFont(txtFont);
-        g2d.drawString(txt, (float)(cetX - mdBound.getWidth()/2), (float) ( mdBound.getHeight() + broad));
-
-
-
+        g2d.drawString(txt, (float) (cetX - mdBound.getWidth() / 2), (float) (mdBound.getHeight() + broad));
 
 
         g2d.dispose();//销毁资源
@@ -218,10 +212,8 @@ public class TestGenGcirImg1 {
     }
 
 
-
-
     @Test
-    public void testMergeCaText(){
+    public void testMergeCaText() {
         long st = System.currentTimeMillis();
         int fontSize = 68;
         int canvasLen = 496;
@@ -233,7 +225,7 @@ public class TestGenGcirImg1 {
 
         BufferedImage txtBi = drawTxtAndRz(fontBroad, theTxt, fontSize, 0.6f, 0, 1);
 
-        PsaImageUtil.mergeTogether(txtBi, bi, 0, (int)(canvasLen/2 - fontSize*.8) );
+        PsaImageUtil.mergeTogether(txtBi, bi, 0, (int) (canvasLen / 2 - fontSize * .8));
 
 
         String destFile = String.format("C:\\Users\\49762\\Desktop\\image_%s.png", System.currentTimeMillis());
@@ -248,14 +240,13 @@ public class TestGenGcirImg1 {
     }
 
 
-
-    public BufferedImage drawText2(int canvasLen, int broad, int fontSize, char theTxt, int degree){
+    public BufferedImage drawText2(int canvasLen, int broad, int fontSize, char theTxt, int degree) {
         int fontBroad = 5;
         String txt = theTxt + "";
 
         BufferedImage bi = drawCircle(canvasLen, broad);
         BufferedImage txtBi = drawTxtAndRz(fontBroad, txt, fontSize, 0.6f, 0, 1);
-        PsaImageUtil.mergeTogether(txtBi, bi, 0,  (int)(canvasLen/2 - fontSize*.8) );
+        PsaImageUtil.mergeTogether(txtBi, bi, 0, (int) (canvasLen / 2 - fontSize * .8));
 
         bi = PsaImageUtil.rotateImg(bi, degree);
 
@@ -263,10 +254,7 @@ public class TestGenGcirImg1 {
     }
 
 
-
-
-
-    public BufferedImage drawCircle(int canvasLen, int broad){
+    public BufferedImage drawCircle(int canvasLen, int broad) {
 
         int fontThickness = 5;
 
@@ -301,11 +289,11 @@ public class TestGenGcirImg1 {
         return bi;
     }
 
-    public BufferedImage drawTxtAndRz(int fontBStroke, String txt, int fontSize, float rz, float rx, float ry){
+    public BufferedImage drawTxtAndRz(int fontBStroke, String txt, int fontSize, float rz, float rx, float ry) {
         int width = fontSize;
         int height = fontSize + fontBStroke;
-        if(txt.length()>1){
-            width = txt.length() * fontSize + fontBStroke*2;
+        if (txt.length() > 1) {
+            width = txt.length() * fontSize + fontBStroke * 2;
         }
 
         BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
@@ -326,8 +314,8 @@ public class TestGenGcirImg1 {
         FontRenderContext mdCtx = g2d.getFontRenderContext();
         Rectangle2D mdBound = typeFont.getStringBounds(txt, mdCtx);
         g2d.setFont(typeFont);
-        float mrx = rx == 0? 0: (float)(mdBound.getX() + mdBound.getCenterY());
-        float mry = ry == 0? 0: (float) ( mdBound.getHeight() + mdBound.getCenterY());
+        float mrx = rx == 0 ? 0 : (float) (mdBound.getX() + mdBound.getCenterY());
+        float mry = ry == 0 ? 0 : (float) (mdBound.getHeight() + mdBound.getCenterY());
 
         g2d.drawString(txt, mrx, mry);
         g2d.dispose();//销毁资源
@@ -337,7 +325,7 @@ public class TestGenGcirImg1 {
     }
 
 
-    public BufferedImage drawInnerImage(int canvasLen, int broad){
+    public BufferedImage drawInnerImage(int canvasLen, int broad) {
 
         int fontThickness = 5;
 
@@ -406,9 +394,8 @@ public class TestGenGcirImg1 {
     }
 
 
-
     @Test
-    public void drawText(){
+    public void drawText() {
         long st = System.currentTimeMillis();
         int fontSize = 68;
         int canvasLen = 496;
@@ -428,16 +415,13 @@ public class TestGenGcirImg1 {
         System.out.println("耗时：" + (System.currentTimeMillis() - st));
 
 
-
     }
 
 
-
-
     @Test
-    public void drawOvalText(){
+    public void drawOvalText() {
         long st = System.currentTimeMillis();
-        BufferedImage bi = drawOval( 300, 200, 10, 0);
+        BufferedImage bi = drawOval(300, 200, 10, 0);
         BufferedImage inBi = drawOval(300, 200, 2, 20);
         bi = PsaImageUtil.mergeTogether(inBi, bi, true);
         String destFile = String.format("C:\\Users\\49762\\Desktop\\image_%s.png", System.currentTimeMillis());
@@ -451,10 +435,10 @@ public class TestGenGcirImg1 {
     }
 
 
-    public BufferedImage drawOval(int width, int height,  int broad, int padding){
+    public BufferedImage drawOval(int width, int height, int broad, int padding) {
 
-        int w = width - 2* padding;
-        int h = height - 2* padding;
+        int w = width - 2 * padding;
+        int h = height - 2 * padding;
 
         BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
         Graphics2D g2d = bi.createGraphics();
@@ -475,13 +459,12 @@ public class TestGenGcirImg1 {
 
         g2d.setPaint(Color.red);
         g2d.setStroke(new BasicStroke(broad));//设置画笔的粗度
-        Shape oval = new Arc2D.Double(broad+padding, broad+padding, w - 2*broad, h - 2*broad, 0, 360, Arc2D.OPEN);
+        Shape oval = new Arc2D.Double(broad + padding, broad + padding, w - 2 * broad, h - 2 * broad, 0, 360, Arc2D.OPEN);
         g2d.draw(oval);
         g2d.dispose();//销毁资源
 
         return bi;
     }
-
 
 
 }
