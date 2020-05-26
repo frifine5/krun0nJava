@@ -1,6 +1,8 @@
 package com.common.utils;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1InputStream;
@@ -128,5 +130,30 @@ public class FileUtil {
         out.close();
     }
 
+
+
+    public static List<String> readLine(String p, int stLine, int endLine){
+
+        List<String> result = new ArrayList<String>();
+        try (BufferedReader bReader = new BufferedReader(new InputStreamReader(new FileInputStream(p), "gbk"));){
+
+            String line = null;
+            int lineIndex = 0;
+            while ((line = bReader.readLine()) != null) {
+                if(lineIndex >= endLine) break;
+                if(lineIndex < stLine){
+                    lineIndex++;
+                    continue;
+                }
+                result.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+        return null;
+    }
 
 }
