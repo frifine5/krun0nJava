@@ -19,10 +19,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.Security;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class PdfItextSmSign {
@@ -179,6 +176,7 @@ public class PdfItextSmSign {
                 throw new RuntimeException("文件中指定签名域[" + field + "]已经签过电子数据，不得在同一域再次签署");
             }
 
+
             Security.addProvider(new BouncyCastleProvider());
             // 字节流
             ByteArrayOutputStream result = new ByteArrayOutputStream();
@@ -214,6 +212,20 @@ public class PdfItextSmSign {
             long width = Math.abs(sigRect[0] - sigRect[2]);
             long height = Math.abs(sigRect[1] - sigRect[3]);
 
+            // 设置签名时间
+            Calendar signDate = appearance.getSignDate();
+            String signTime = ParamsUtil.formatTime19(signDate.getTime());
+
+            BaseFont bfChinese = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H", false);
+            PdfContentByte over = pdfStamper.getOverContent(pageNo);
+            over.beginText();
+            over.setFontAndSize(bfChinese, 10);
+            over.setColorFill(BaseColor.RED);
+            over.setTextMatrix(sigRect[0], sigRect[1]-16);
+            over.showText(signTime);
+            over.endText();
+
+
             // 调整图片大小
             InputStream ss = new ByteArrayInputStream(imgBytes);
             BufferedImage bi = ImageIO.read(ss);
@@ -243,7 +255,7 @@ public class PdfItextSmSign {
             dic.setLocation(appearance.getLocation());
             dic.setSignatureCreator(appearance.getSignatureCreator());
             dic.setContact(appearance.getContact());
-            dic.setDate(new PdfDate(appearance.getSignDate()));
+            dic.setDate(new PdfDate(signDate));
 
             dic.put(PdfName.ID, new PdfString("1234567890abcdef"));
             dic.put(new PdfName("sealCode"), new PdfString("sealCode-11010100000001"));
@@ -283,9 +295,14 @@ public class PdfItextSmSign {
             } catch (Exception e) {
                 throw new RuntimeException("签章结构体生成失败", e);
             }
+            byte[] finalData = new byte[sealSigValuePreLength];
+            System.arraycopy(sigData, 0, finalData, 0, sigData.length);
+            for(int i = sigData.length; i< sealSigValuePreLength; i++){
+                finalData[i] = 0;
+            }
 
             PdfDictionary dic2 = new PdfDictionary();
-            dic2.put(PdfName.CONTENTS, new PdfString(sigData).setHexWriting(true));
+            dic2.put(PdfName.CONTENTS, new PdfString(finalData).setHexWriting(true));
             appearance.close(dic2);
 
             return result.toByteArray();
