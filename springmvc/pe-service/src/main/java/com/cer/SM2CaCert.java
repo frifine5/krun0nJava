@@ -186,6 +186,30 @@ public class SM2CaCert {
 		}
 	}
 
+	public static String getSm2IssuerName(byte[] src)throws IOException{
+		try {
+			ASN1Encodable at0 = ASN1Sequence.getInstance((ASN1Sequence.fromByteArray(src))).getObjectAt(0);
+			ASN1Sequence at03 = (ASN1Sequence)ASN1Sequence.getInstance(at0).getObjectAt(3);
+			if(at03.size()<1){
+				throw new RuntimeException("证书解析失败，无颁发者信息");
+			}
+			ASN1Encodable issNameSeq = ((ASN1Sequence)
+					((ASN1Set)at03.getObjectAt(at03.size() - 1))	.getObjectAt(0))
+					.getObjectAt(1);
+			if(issNameSeq instanceof  DERPrintableString){
+				return issNameSeq.toString();
+			}else if(issNameSeq instanceof ASN1BitString){
+				return ((ASN1BitString) issNameSeq).getString();
+			}else{
+				return issNameSeq.toString();
+			}
+		}catch (IOException e){
+			throw new IOException("不符合SM2证书的格式，获取颁发者信息失败", e);
+		}
+	}
+
+
+
 	public static ASN1Sequence getSm2OwnerDN(byte[] src)throws IOException{
 		try {
 			ASN1Encodable at0 = ASN1Sequence.getInstance((ASN1Sequence.fromByteArray(src))).getObjectAt(0);
@@ -207,6 +231,8 @@ public class SM2CaCert {
 			throw new IOException("不符合SM2证书的格式，获取颁发者信息失败", e);
 		}
 	}
-	
+
+
+
 
 }
