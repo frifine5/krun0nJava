@@ -12,8 +12,8 @@ spring:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://192.168.6.218:8761/eureka/
-#       defaultZone: http://registerserver-pool.dev.baiwang-inner.com:8889/eureka
+#      defaultZone: http://192.168.6.218:8761/eureka/
+       defaultZone: http://registerserver-pool.dev.baiwang-inner.com:8889/eureka
 
   instance:
     prefer-ip-address: true

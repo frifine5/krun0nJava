@@ -80,6 +80,63 @@ public class SM2CertGenUtil {
     }
 
 
+    public static byte[] generateCertTBSCert(int version, long serial, int validAge, byte[] csr) {
+
+        try {
+            // 1) version 证书版本
+            DERTaggedObject certVersion = new DERTaggedObject(true, 0, new DERInteger(version));
+            // 2) serial 证书序列号
+            DERInteger certSerial = new DERInteger(serial);
+            // 3) algorithm oid
+            // default sm2 算法OID
+            ASN1Encodable[] smAlg = {GMObjectIdentifiers.sm2sign_with_sm3, DERNull.INSTANCE};
+            DERSequence certAlg = new DERSequence(smAlg);
+            // 4) issue 颁发者
+            ASN1EncodableVector issueVector = new ASN1EncodableVector();
+            ASN1Encodable[] issueName = {new DERObjectIdentifier(CertOidEnum.NAME.oid), new DERUTF8String("王师CA")};
+            ASN1Encodable[] issueOrg = {new DERObjectIdentifier(CertOidEnum.ORGANIZATION.oid), new DERUTF8String("CA机构")};
+            ASN1Encodable[] issueDN = {new DERObjectIdentifier(CertOidEnum.STREET.oid), new DERUTF8String("xx街道")};
+            ASN1Encodable[] issueCity = {new DERObjectIdentifier(CertOidEnum.STATE.oid), new DERUTF8String("北京")};
+            ASN1Encodable[] issueCountry = {new DERObjectIdentifier(CertOidEnum.COUNTRY.oid), new DERPrintableString("CN")};
+            issueVector.add(new DERSet(new DERSequence(issueName)));
+            issueVector.add(new DERSet(new DERSequence(issueOrg)));
+            issueVector.add(new DERSet(new DERSequence(issueDN)));
+            issueVector.add(new DERSet(new DERSequence(issueCity)));
+            issueVector.add(new DERSet(new DERSequence(issueCountry)));
+            DERSequence certIssue = new DERSequence(issueVector);
+            // 5) valid start add age to end 证书有效期（从--止）
+            ASN1EncodableVector validVector = new ASN1EncodableVector();
+            Date st = new Date();
+            if (validAge <= 0 || validAge > 10) {// default one year
+                validAge = 1;
+            }
+            Calendar calendar = Calendar.getInstance();
+            int thisYear = calendar.get(Calendar.YEAR);
+            calendar.set(Calendar.YEAR, thisYear + validAge);
+            Date et = calendar.getTime();
+            validVector.add(new ASN1UTCTime(st));
+            validVector.add(new ASN1UTCTime(et));
+            DERSequence certValid = new DERSequence(validVector);
+
+            // 6) subject 证书的申请者/持有者/主体
+            ASN1Sequence csrAsn = (ASN1Sequence) ((ASN1Sequence) ASN1Sequence.fromByteArray(csr)).getObjectAt(0);
+            ASN1Sequence certSubject = (ASN1Sequence)csrAsn.getObjectAt(1);
+            // 7) publicKey 主体的公钥
+            ASN1Sequence certPk = (ASN1Sequence)csrAsn.getObjectAt(2);
+
+            // tbsc 证书主体
+            ASN1Encodable[] tbsCertAsn = {certVersion, certSerial, certAlg, certIssue, certValid, certSubject, certPk};
+            DERSequence certTBSCert = new DERSequence(tbsCertAsn);
+
+            return certTBSCert.getEncoded();
+        }catch (Exception e){
+            throw new RuntimeException("生产证书主体失败", e);
+        }
+    }
+
+
+
+
     /**
      * 证书主体， 签名值 ==》 证书结构体 | 指定为SM2算法oid
      * @return

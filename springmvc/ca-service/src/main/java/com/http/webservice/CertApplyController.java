@@ -211,9 +211,6 @@ public class CertApplyController {
     public Object reqCertOnCsr(@RequestParam("file") MultipartFile file, HttpServletRequest request){
 
 
-
-
-
         // 解析
         try {
             String contentType = file.getContentType();

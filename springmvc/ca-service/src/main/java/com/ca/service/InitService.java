@@ -71,7 +71,7 @@ public class InitService {
                     "  rdtime datetime NOT NULL,\n" +
                     "  PRIMARY KEY (id)\n" +
                     ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
-            "CREATE TABLE dlcert_request (\n" +
+            "CREATE TABLE IF NOT EXISTS dlcert_request (\n" +
                     "  id bigint(20) NOT NULL,\n" +
                     "  reqtime datetime NOT NULL,\n" +
                     "  status tinyint(4) NOT NULL DEFAULT '0' COMMENT '0: req, 1: pre, 2: refuse, 9:finish',\n" +
@@ -120,6 +120,7 @@ public class InitService {
                     rsIsDbExist = true;
                 }
             }
+            log.info("数据库是否存在：" + rsIsDbExist);
             if(!rsIsDbExist){
                 //创建数据库
                 stat.executeUpdate("create database " + dbName);
@@ -137,6 +138,7 @@ public class InitService {
             if(null != conn) {
                 try {
                     conn.close();
+                    conn = null;
                 } catch (Exception e) {
                 }
             }
@@ -153,9 +155,12 @@ public class InitService {
             conn.commit();
             conn.setAutoCommit(true);
         } catch (Exception e) {
+            e.printStackTrace();
+
             try {
                 conn.rollback();
             } catch (SQLException e1) {
+                e1.printStackTrace();
             }
             throw new RuntimeException("创建数据表失败");
         }finally {

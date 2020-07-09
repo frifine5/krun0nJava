@@ -64,7 +64,19 @@ public class CertService {
         }catch (Exception e){
             throw new RuntimeException("p10结构错误", e);
         }
-        return generateCertByPk(pk, age);
+
+        long serial = genNumberService.getNumber();
+        byte[] tbsc = SM2CertGenUtil.generateCertTBSCert(1, serial, age, csr);
+        GMTSM2 sm2 = GMTSM2.getInstance();
+        String[] kp = sysService.getSysKPair();
+        byte[] spk = Util.hexStringToBytes(kp[0]);
+        byte[] ssk = Util.hexStringToBytes(kp[1]);
+
+        byte[] md = SM3Util.sm3Digest(tbsc, spk);
+        byte[] sv = sm2.sm2Sign(md, ssk);
+
+        byte[] bytCert = SM2CertGenUtil.makeSM2Cert(tbsc, sv);
+        return bytCert;
     }
 
 
