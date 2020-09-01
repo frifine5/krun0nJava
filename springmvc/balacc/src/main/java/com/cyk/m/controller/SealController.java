@@ -1,7 +1,7 @@
 package com.cyk.m.controller;
 
-import com.common.ParamsUtil;
-import com.common.Result;
+import com.cyk.common.ParamsUtil;
+import com.cyk.common.Result;
 import com.cyk.m.ev.Seal;
 import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,6 +1,6 @@
 package com.cyk.m.controller;
 
-import com.common.Result;
+import com.cyk.common.Result;
 import com.cyk.m.ev.District;
 import com.cyk.m.service.DistrictService;
 import org.apache.log4j.Logger;

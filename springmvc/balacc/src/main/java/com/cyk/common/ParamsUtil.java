@@ -1,4 +1,4 @@
-package com.common;
+package com.cyk.common;
 
 import net.sf.json.JSONObject;
 import java.text.SimpleDateFormat;

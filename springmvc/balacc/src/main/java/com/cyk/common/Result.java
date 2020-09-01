@@ -1,4 +1,4 @@
-package com.common;
+package com.cyk.common;
 
 import java.util.List;
 import java.util.UUID;

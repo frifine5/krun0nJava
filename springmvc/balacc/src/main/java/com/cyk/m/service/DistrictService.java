@@ -1,6 +1,6 @@
 package com.cyk.m.service;
 
-import com.common.ParamsUtil;
+import com.cyk.common.ParamsUtil;
 import com.cyk.m.dao.DistrictDao;
 import com.cyk.m.ev.District;
 import org.springframework.beans.factory.annotation.Autowired;
