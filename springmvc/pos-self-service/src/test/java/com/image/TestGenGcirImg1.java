@@ -22,27 +22,20 @@ public class TestGenGcirImg1 {
         int r = 496;
         int broad = 10;
         String sealName = "测试机构使用章";
+        sealName = "深圳市福田区梅林街道国微汽车配件店";
         String type = "测试专用章";
 
         char[] texts = sealName.toCharArray();
         int len = texts.length;
-        int totalDegree = 120;
-        int eachDegree = (int) (totalDegree / len);
-        int start = -totalDegree / 2 + eachDegree / 2;
-        System.out.println(eachDegree);
+        int totalDegree = len > 19? 240: len>15? 180: len>11? 120: 120;
 
-        boolean seen = len % 2 == 0;
-        BufferedImage bi = null;
-        int middle = -1;
-        if (seen) {
-            bi = drawText2(r, broad, fontSize, (char) '\0', 0);
-        } else {
-            middle = len / 2;
-            bi = drawText2(r, broad, fontSize, texts[middle], 0);
-        }
+        int eachDegree = (int) (totalDegree / len);
+        int start = -totalDegree / 2 + (len%2>0 ? eachDegree: eachDegree/2) ;
+        System.out.println("每个字占的角度数：" + eachDegree);
+
+        BufferedImage bi = drawCircle(r, broad);
 
         for (int i = 0; i < len; i++) {
-            if (i == middle) continue;
             BufferedImage step = drawText2(r, broad, fontSize, texts[i], start + eachDegree * i);
             bi = PsaImageUtil.mergeTogether(step, bi, true);
         }
@@ -62,13 +55,13 @@ public class TestGenGcirImg1 {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        bi = PsaImageUtil.resizeImage(bi, 1.5f);
-        destFile = String.format("C:\\Users\\49762\\Desktop\\image_%s.png", System.currentTimeMillis());
-        try {
-            ImageIO.write(bi, "PNG", new File(destFile));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        bi = PsaImageUtil.resizeImage(bi, 1.5f);
+//        destFile = String.format("C:\\Users\\49762\\Desktop\\image_%s.png", System.currentTimeMillis());
+//        try {
+//            ImageIO.write(bi, "PNG", new File(destFile));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
 
         System.out.println("耗时：" + (System.currentTimeMillis() - st));
@@ -309,7 +302,7 @@ public class TestGenGcirImg1 {
         g2d.setPaint(Color.red);
         g2d.setStroke(new BasicStroke(fontBStroke));//设置画笔的粗度
         // 写字
-        Font typeFont = new Font("楷体", Font.BOLD, fontSize);
+        Font typeFont = new Font("隶书", Font.PLAIN, fontSize);
 
         FontRenderContext mdCtx = g2d.getFontRenderContext();
         Rectangle2D mdBound = typeFont.getStringBounds(txt, mdCtx);
