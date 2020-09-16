@@ -237,11 +237,11 @@ public class TestGenGcirImg1 {
         int fontBroad = 5;
         String txt = theTxt + "";
 
-        BufferedImage bi = drawCircle(canvasLen, broad);
-        BufferedImage txtBi = drawTxtAndRz(fontBroad, txt, fontSize, 0.6f, 0, 1);
-        PsaImageUtil.mergeTogether(txtBi, bi, 0, (int) (canvasLen / 2 - fontSize * .8));
+        BufferedImage bi = drawCircle(canvasLen, broad);    // 画外框
+        BufferedImage txtBi = drawTxtAndRz(fontBroad, txt, fontSize, 0.6f, 0, 1);   // 在正上方写字
+        PsaImageUtil.mergeTogether(txtBi, bi, 0, (int) (canvasLen / 2 - fontSize * .8));    // 合并
 
-        bi = PsaImageUtil.rotateImg(bi, degree);
+        bi = PsaImageUtil.rotateImg(bi, degree);    // 旋转
 
         return bi;
     }
