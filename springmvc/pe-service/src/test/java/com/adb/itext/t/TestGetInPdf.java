@@ -1,6 +1,7 @@
 package com.adb.itext.t;
 
 
+import com.adb.pdfbox.util.PdfBoxKeyWordPosition;
 import com.common.utils.FileUtil;
 import com.common.utils.ParamsUtil;
 import com.google.common.collect.Lists;
@@ -43,17 +44,37 @@ public class TestGetInPdf {
         dir = "C:\\Users\\49762\\Documents\\WeChat Files\\bearpandaer\\FileStorage\\File\\2020-03\\";
         pdfName = "M2020032500004.pdf";
 
+
+        dir = "C:\\Users\\49762\\Documents\\WeChat Files\\bearpandaer\\FileStorage\\File\\2020-08\\";
+//        pdfName = "c8b26d9a0b264511a626c036107f5de1.pdf";
+
+//        dir = "C:\\Users\\49762\\Desktop\\";
+        pdfName = "b1d-4c88-a279-887fcd07.pdf";
+//        pdfName = "关键字签章偏转左上角.pdf";
+        pdfName = "现场检查笔录（WS001）2.pdf";
+
+
         String pdf = dir + pdfName;
 
         Image signImage = Image.getInstance("D:\\home\\orgStamp2.png");
 
+        String kword = "检查勘验人";
 
-        List<float[]> keyWordsList = getKeyWords(FileUtil.fromDATfile(pdf),
-                "0buyer_sign");
+        List<float[]> keyWordsList = null;
+
+        keyWordsList = getKeyWords(FileUtil.fromDATfile(pdf),kword);
+
+        PdfBoxKeyWordPosition positionResult = new PdfBoxKeyWordPosition(FileUtil.fromDATfile(pdf), kword, 100, 100);
+        keyWordsList = positionResult.getCoordinate();
+
         if (ParamsUtil.checkListNull(keyWordsList)) {
             System.out.println("没查到关键字");
-//            return;
+            return;
         }
+        for(float[] e: keyWordsList){
+            System.out.println(Arrays.toString(e));
+        }
+
 
         byte[] tmpData = FileUtil.fromDATfile(pdf);
 
@@ -90,6 +111,8 @@ public class TestGetInPdf {
                 Rectangle pageRect = pdfReader.getPageSize(1);
                 float height = pageRect.getHeight();
                 float width = pageRect.getWidth();
+
+//                System.out.println(String.format("页面高 %s ， 宽 %s", height, width));
 
                 pdfReaderContentParser.processContent(pageNum, new RenderListener() {
 
@@ -409,7 +432,7 @@ public class TestGetInPdf {
         // 设置签章位置 图章左下角x，原点为pdf页面左下角，图章左下角y，图章右上角x，图章右上角y
         appearance.setVisibleSignature(
 //                tmpRectangle, pageNo,  sigName);
-//        new Rectangle(100, 500, 200, 550), pageNo,  sigName);
+//        new Rectangle(xyPoint[1], xyPoint[2], xyPoint[1] +100, xyPoint[2]+100), (int)xyPoint[0],  sigName);
                 getRectangle( xyPoint[1], xyPoint[2], 100), (int)xyPoint[0], null);
 
         // 设置签章图片
@@ -425,7 +448,10 @@ public class TestGetInPdf {
 //        digest.getMessageDigest("SM3withSM2");
 
 
-        PdfSignature dic = new PdfSignature(PdfName.ADOBE_PPKLITE, MakeSignature.CryptoStandard.CMS == MakeSignature.CryptoStandard.CADES ? PdfName.ETSI_CADES_DETACHED : PdfName.ADBE_PKCS7_DETACHED);
+//        PdfSignature dic = new PdfSignature(PdfName.ADOBE_PPKLITE, PdfName.ETSI_CADES_DETACHED );
+
+
+        PdfSignature dic = new PdfSignature(new PdfName("GM.PPKLite"), new PdfName("GM.eSeal") );
         dic.setReason(appearance.getReason());
         dic.setLocation(appearance.getLocation());
         dic.setSignatureCreator(appearance.getSignatureCreator());
@@ -536,5 +562,8 @@ public class TestGetInPdf {
         return new Rectangle(x - halfWith, y - halfHeight, x + halfWith, y + halfHeight);
 
     }
+
+
+
 
 }

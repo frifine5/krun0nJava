@@ -5,10 +5,8 @@ import org.slf4j.LoggerFactory;
 import sun.security.tools.keytool.CertAndKeyGen;
 import sun.security.x509.X500Name;
 
-import javax.management.RuntimeMBeanException;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.security.Key;
 import java.security.KeyStore;
 import java.security.PrivateKey;

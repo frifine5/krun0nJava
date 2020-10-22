@@ -93,6 +93,7 @@ public class WebSocketClient {
         String result = "";
         String wsIpUrl = "ws://localhost:11001/mms/" + ParamsUtil.getUUIDStr();
         wsIpUrl = "ws://192.168.6.238:11003/mms/" + ParamsUtil.getUUIDStr();
+//        wsIpUrl = "ws://localhost:11002/mms/" + ParamsUtil.getUUIDStr();
 
 
         WebSocketClient webSocketClient = new WebSocketClient(wsIpUrl);
@@ -100,13 +101,19 @@ public class WebSocketClient {
         JSONObject reqJson = new JSONObject();
         String ctx = Base64.getEncoder().encodeToString("testdata-111111111111111111L".getBytes("UTF-8"));
 
-        String svData = "{\"code\":0,\"msg\":\"SUCCESS\",\"data\":\"MEYCIQCgVvWrHl0GTWP4E2LaN0H2fMPvETCuVHdKSMdf0nbOJwIhAPQmdtFuGUbRaDcIYCkRC+iFSW8gNWa/0CZ3JfO1k2xp\"}";
+        String svData = "{\"code\":0,\"msg\":\"SUCCESS\",\"data\":\"MEQCIC5nea06LsQ6fWyz8tFAd1dBq5+6+kPvxoo4IK3kysCiAiBNVtpqfpJWG2DwasnEX0ki/t5ovqYFVEnX/wg7i+kIaA==\"}";
 
 
         JSONObject svRtnJson = JSONObject.fromObject(svData);
         String data = svRtnJson.getString("data");
 
-        reqJson.put("function", "eccVerify");
+        String function = "eccSign";
+        function = "eccVerify";
+//        function = "exportEccPubkey";
+
+        reqJson.put("function", function);
+        reqJson.put("encode", true);
+
         reqJson.put("index", 1);
         reqJson.put("data", ctx);
         reqJson.put("sv", data);
@@ -116,8 +123,7 @@ public class WebSocketClient {
         System.out.println("receive: " + result);
 
 
-
-
+        System.exit(0);
     }
 
 }
