@@ -3,6 +3,7 @@ package com.netty.t1;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
+import java.net.InetSocketAddress;
 import java.util.UUID;
 
 public class N1ServerHandler extends ChannelInboundHandlerAdapter {
@@ -10,8 +11,16 @@ public class N1ServerHandler extends ChannelInboundHandlerAdapter {
 
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 
+        // 获取客户端ip和端口
+        InetSocketAddress cli = (InetSocketAddress) ctx.channel().remoteAddress();
+        String clientIP = cli.getAddress().getHostAddress();
+        String clientPort = String.valueOf(cli.getPort());
+        System.out.println(String.format("客户终端：%s : %s", clientIP, clientPort ) );
+
+        // 接收的信息
         RpcRequest request = (RpcRequest) msg;
         System.out.println("接收到客户端信息:" + request.toString());
+
         //返回的数据结构
         RpcResponse response = new RpcResponse();
         response.setId(UUID.randomUUID().toString());
