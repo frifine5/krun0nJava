@@ -37,7 +37,18 @@ public class TestGetPdfFormFiled {
     public void testGetForm()throws Exception{
 
         String pdf = "C:\\Users\\49762\\Desktop\\7e40c7236c054c19824ac9df3fb05f79.pdf";
+        String formName = "Signature1";
+        pdf = "C:\\Users\\49762\\Desktop\\可见2.pdf";
 
+//        pdf = "C:\\Users\\49762\\Documents\\WeChat Files\\bearpandaer\\FileStorage\\File\\2020-11\\个体工商户登记（备案）申请书(2).pdf";
+//        formName = "pjx";
+//        pdf = "C:\\Users\\49762\\Desktop\\apply_3.pdf";
+        pdf = "C:\\Users\\49762\\Desktop\\个体工商户登记（备案）申请书_21.pdf";
+        formName = "pjx";
+        formName = "ldc";
+
+        pdf = "/home/itext/Signature0.pdf";
+        formName = "Signature0";
 
         PdfReader pdfReader = new PdfReader(pdf);
 
@@ -48,7 +59,7 @@ public class TestGetPdfFormFiled {
 
 
 
-        AcroFields.Item gcqm11 = fields.get("Signature1");
+        AcroFields.Item gcqm11 = fields.get(formName);
 
         System.out.println(gcqm11.getValue(0));
         System.out.println(gcqm11.getWidget(0));

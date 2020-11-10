@@ -82,17 +82,17 @@ public class TestPdfAddForm01 {
     @Test
     public void testAddFormField() throws Exception {
 
-        String dir = "C:\\Users\\49762\\Desktop\\itext-测试\\";
-        String a = dir + "file0.pdf";
-        String b = dir + "form-finish1.pdf";
+        String dir = "/home/itext/";
+        String a = dir + "1.pdf";               // 源文件
+        String b = dir + "Signature0.pdf";      // 生成的新文件
         PdfReader reader = new PdfReader(a);
 
         PdfStamper pdfStamper = new PdfStamper(reader, new FileOutputStream(new File(b)));
 
         PdfWriter writer = pdfStamper.getWriter();
 
-        // 创建数组签名域
-        int x = 300, y = 400, width = 200, height = 200; // 坐标系远点位于页面左下角，左下角到右下角为  x 轴，左下角到左上角为 y 轴
+        // 创建签名域区域的矩形 坐标数组
+        int x = 300, y = 400, width = 80, height = 80; // 坐标系远点位于页面左下角，左下角到右下角为  x 轴，左下角到左上角为 y 轴
         Rectangle areaSignatureRect = new Rectangle(// 签名域区域，由两个对角点构成的矩形区域
                 x, // 点1 x坐标
                 y, // 点1 y坐标
@@ -101,7 +101,7 @@ public class TestPdfAddForm01 {
         );
         int pageNo = 1; // PDF 文件的页码从 1 开始，而不是 0
         PdfFormField pdfFormField = PdfFormField.createSignature(writer);
-        pdfFormField.setFieldName("签名0"); // 签名域标识
+        pdfFormField.setFieldName("Signature0"); // 签名域标识 -- 签名域域名 如果已经存在同名的会报错
         pdfFormField.setPage(pageNo);
         pdfFormField.setWidget(areaSignatureRect, PdfAnnotation.HIGHLIGHT_OUTLINE); // 高亮显示
 
