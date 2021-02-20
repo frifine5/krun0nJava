@@ -1,11 +1,35 @@
 package com.itext;
 
 import com.common.FileUtil;
+import com.common.ParamsUtil;
+import com.common.PsaImageUtil;
+import com.common.SignSealUtil;
+import com.itextpdf.awt.PdfGraphics2D;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.ImgTemplate;
+import com.itextpdf.text.pdf.*;
 import com.pdfsign.PdfItextSmSign;
+import com.smalg.sm2.GMTSM2;
+import com.smalg.sm3.SM3Util;
+import com.smalg.sm3.Util;
+import org.apache.batik.bridge.*;
+import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
+import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.util.XMLResourceDescriptor;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Test;
+import org.w3c.dom.svg.SVGDocument;
 
-import java.util.Base64;
-import java.util.Date;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.Security;
+import java.util.*;
 
 public class TestSign {
 
@@ -25,7 +49,7 @@ public class TestSign {
 
         pdfDir = "/home/dtmp/itextPdfs/addfieldtest/";
         pdfName = "file1.pdf";
-        destName = "signed1.pdf";
+        destName = "signed20200514-01.pdf";
 
 
 
@@ -67,4 +91,6 @@ public class TestSign {
 
 
     }
+
+
 }

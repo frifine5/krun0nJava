@@ -27,6 +27,11 @@ public class TestKwords {
         pdfName = "测试文件.pdf";
         keyWord = "秩序须知";
 
+
+        pdfDir = "C:\\Users\\49762\\Documents\\WeChat Files\\bearpandaer\\FileStorage\\File\\2020-12\\";
+        pdfName = "网签合同.pdf";
+        keyWord = "Ceder";
+
         String pdf = pdfDir + pdfName;
         List<float[]> kwLocList = getKeyWord(FileUtil.fromDATfile(pdf), keyWord, 70, 40);
 

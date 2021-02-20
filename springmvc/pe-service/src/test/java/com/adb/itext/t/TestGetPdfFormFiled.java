@@ -50,6 +50,11 @@ public class TestGetPdfFormFiled {
         pdf = "/home/itext/Signature0.pdf";
         formName = "Signature0";
 
+
+        pdf = "C:\\Users\\49762\\Documents\\WeChat Files\\bearpandaer\\FileStorage\\File\\2020-11\\天然气.pdf";
+        formName = "signatureArea";
+
+
         PdfReader pdfReader = new PdfReader(pdf);
 
         AcroFields acroFields = pdfReader.getAcroFields();
@@ -65,11 +70,11 @@ public class TestGetPdfFormFiled {
         System.out.println(gcqm11.getWidget(0));
 
         System.out.println("页码：" + gcqm11.getPage(0));
-        System.out.println("框坐标：");
+        System.out.println("域框坐标：");
         PdfObject gcqm11Rect = gcqm11.getValue(0).get(PdfName.RECT);
         System.out.println(gcqm11Rect);
 
-        System.out.println("finish it");
+        System.out.println("扫描完成");
 
 
 
