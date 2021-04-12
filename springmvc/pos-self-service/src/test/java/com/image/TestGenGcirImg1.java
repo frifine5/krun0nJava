@@ -18,16 +18,20 @@ public class TestGenGcirImg1 {
     @Test
     public void testRotateText() {
         long st = System.currentTimeMillis();
-        int fontSize = 68;
+        int fontSize = 64;
         int r = 496;
         int broad = 10;
         String sealName = "测试机构使用章";
         sealName = "深圳市福田区梅林街道国微汽车配件店";
         String type = "测试专用章";
 
+        sealName = "测试32";
+//        type = "标准模板测试印章1";
+
         char[] texts = sealName.toCharArray();
         int len = texts.length;
-        int totalDegree = len > 19? 240: len>15? 180: len>11? 120: 120;
+        System.out.println(len);
+        int totalDegree = len > 19? 280: len>15? 220: len>11? 150: len> 9? 120: 120;
 
         int eachDegree = (int) (totalDegree / len);
         int start = -totalDegree / 2 + (len%2>0 ? eachDegree: eachDegree/2) ;
@@ -40,16 +44,19 @@ public class TestGenGcirImg1 {
             bi = PsaImageUtil.mergeTogether(step, bi, true);
         }
 
-        bi = PsaImageUtil.resizeImage(bi, 496, 496);
+
         BufferedImage inBi = drawInnerImage(r, broad);
         BufferedImage typeBi = drawTxtAndRz(broad, type, fontSize, 0.6f, 0, 1);
         typeBi = PsaImageUtil.scaleRect(typeBi, .8f);
 
         bi = PsaImageUtil.mergeTogether(inBi, bi, true);
-        bi = PsaImageUtil.mergeTogether(typeBi, bi, 0, -(int) (r * .35));
+        bi = PsaImageUtil.mergeTogether(typeBi, bi, 0, -(int) (r * .25));
 
+        System.out.printf("--> typeBi: width=%s, height=%s \n" , typeBi.getWidth(),  typeBi.getHeight() );
 
-        String destFile = String.format("C:\\Users\\49762\\Desktop\\image_%s.png", System.currentTimeMillis());
+        bi = PsaImageUtil.resizeImage(bi, 200, 200);
+
+        String destFile = String.format("C:\\Users\\86183\\Desktop\\image_%s.png", System.currentTimeMillis());
         try {
             ImageIO.write(bi, "PNG", new File(destFile));
         } catch (IOException e) {
@@ -309,6 +316,8 @@ public class TestGenGcirImg1 {
         g2d.setFont(typeFont);
         float mrx = rx == 0 ? 0 : (float) (mdBound.getX() + mdBound.getCenterY());
         float mry = ry == 0 ? 0 : (float) (mdBound.getHeight() + mdBound.getCenterY());
+
+//        System.out.printf("中间文字：宽=%s, 高=%s\n", mrx, mry);
 
         g2d.drawString(txt, mrx, mry);
         g2d.dispose();//销毁资源

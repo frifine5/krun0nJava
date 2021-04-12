@@ -380,7 +380,7 @@ public class PsaImageUtil {
         int h = b.getHeight();
 
         int x = (dw - w)/2 - xToCenter;
-        int y = (dh - w)/2 - yToCenter;
+        int y = (dh - h)/2 - yToCenter;
 
         g = d.createGraphics();
         // 画线平滑
